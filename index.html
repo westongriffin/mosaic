@@ -101,6 +101,11 @@ input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 .nav-tile{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--mod,#6366f1) 14%,transparent);color:var(--mod,#6366f1);transition:transform .15s}
 .nav-tile svg{width:13px;height:13px}
 .nav-badge{margin-left:auto;background:var(--bad);color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px}
+.nav-open{display:none;margin-left:auto;width:20px;height:20px;border-radius:6px;place-items:center;color:var(--ink3);flex:none}
+.nav-item:hover .nav-open{display:grid}
+.nav-item:hover .nav-open:hover{background:var(--bg2);color:var(--brand)}
+.nav-open svg{width:11px;height:11px}
+.nav-item:hover .nav-badge{display:none}
 .sidebar-foot{padding:12px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--ink3);line-height:1.5}
 .sidebar-foot b{color:var(--ink2)}
 
@@ -507,6 +512,78 @@ html.dark .letter{background:#f4f4f6}
 .tpl-card{cursor:pointer;text-align:left;transition:transform .15s,border-color .15s}
 .tpl-card:hover{transform:translateY(-2px);border-color:#e0457b}
 
+/* ---------- deep passes r3: drive + meet ---------- */
+.dr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:14px 16px}
+.dr-card{border:1.5px solid var(--line);border-radius:13px;padding:12px;cursor:pointer;text-align:center;position:relative;transition:all .12s}
+.dr-card:hover{border-color:#1fa463;transform:translateY(-1px)}
+.dr-card .big-ic{font-size:34px}
+.dr-kebab{position:absolute;top:6px;right:6px;display:none}
+.dr-card:hover .dr-kebab,.dr-row:hover .dr-kebab{display:inline-grid}
+.dr-row{position:relative}
+.kebab-menu{position:absolute;right:10px;top:34px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);z-index:60;padding:6px;min-width:170px}
+.kebab-menu button{display:flex;gap:9px;align-items:center;width:100%;padding:7px 10px;border-radius:8px;font-size:12.5px;text-align:left}
+.kebab-menu button:hover{background:var(--bg)}
+.storage-meter{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.storage-meter i{display:block;height:100%;background:linear-gradient(90deg,#1fa463,#f59e0b)}
+.meet-wrap{display:grid;grid-template-columns:1fr 280px;gap:14px}
+.meet-panel{background:#161a2c;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;color:#eef0fa}
+.meet-panel .mp-head{padding:11px 14px;border-bottom:1px solid #262b42;font-weight:700;font-size:13px;display:flex;gap:6px}
+.meet-panel .mp-head button{flex:1;padding:5px;border-radius:8px;font-size:12px;color:#a8adc4}
+.meet-panel .mp-head button.on{background:#262b42;color:#fff}
+.meet-panel .mp-body{flex:1;overflow-y:auto;padding:10px 12px;font-size:12.5px}
+.meet-panel .mp-foot{padding:9px 10px;border-top:1px solid #262b42}
+.float-emoji{position:absolute;font-size:30px;animation:floatUp 2.4s ease-out forwards;pointer-events:none;z-index:20}
+@keyframes floatUp{0%{transform:translateY(0) scale(.7);opacity:0}15%{opacity:1;transform:translateY(-30px) scale(1.1)}100%{transform:translateY(-260px) scale(1);opacity:0}}
+.rec-badge{position:absolute;top:10px;left:12px;background:rgba(239,68,68,.92);color:#fff;font-size:10.5px;font-weight:800;border-radius:7px;padding:2px 8px;display:flex;gap:5px;align-items:center;z-index:10}
+.rec-badge:before{content:'';width:7px;height:7px;border-radius:99px;background:#fff;animation:recPulse 1.2s infinite}
+@keyframes recPulse{50%{opacity:.3}}
+.caption-bar{position:absolute;left:50%;transform:translateX(-50%);bottom:78px;background:rgba(0,0,0,.65);color:#fff;font-size:13px;border-radius:10px;padding:6px 14px;max-width:70%;text-align:center;z-index:10}
+.hand-badge{position:absolute;top:8px;right:8px;font-size:18px;animation:recPulse 1.4s infinite}
+.meet-present{display:grid;grid-template-rows:1fr 84px;gap:10px;flex:1}
+.meet-present .present-stage{background:#1a1f33;border-radius:14px;display:grid;place-items:center;color:#a8adc4;position:relative}
+.meet-thumbs{display:flex;gap:8px;overflow-x:auto}
+.meet-thumbs .meet-tile{min-height:80px;min-width:120px;flex:none}
+
+/* ---------- deep passes r2: gmail-tier mail + gcal-tier calendar ---------- */
+.mail-row{grid-template-columns:24px 24px 180px 1fr auto}
+.mail-row input[type=checkbox]{width:15px;height:15px;accent-color:#e25141}
+.bulk-bar{display:flex;gap:8px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--card2)}
+.lbl-dot{width:8px;height:8px;border-radius:3px;display:inline-block;flex:none}
+.thread-msg{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.thread-msg.mine{background:color-mix(in srgb,#e25141 4%,var(--card))}
+.mini-month{font-size:10.5px}
+.mini-month table{border-collapse:collapse;width:100%}
+.mini-month td{text-align:center;padding:3px 2px;border-radius:6px;cursor:pointer;color:var(--ink2)}
+.mini-month td:hover{background:var(--bg)}
+.mini-month td.today{background:#2d7ff0;color:#fff;font-weight:700}
+.mini-month td.dim{color:var(--ink3);opacity:.45}
+.mini-month td.dot{position:relative}
+.mini-month td.dot:after{content:'';position:absolute;bottom:0px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:99px;background:#2d7ff0}
+.layer-chip{cursor:pointer}
+.layer-chip.off{opacity:.4;text-decoration:line-through}
+.cw-cell{cursor:pointer}
+.cw-cell:hover{background:color-mix(in srgb,#2d7ff0 5%,transparent)}
+.cal-month-day{min-height:96px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 7px;font-size:11px;cursor:pointer;overflow:hidden}
+.cal-month-day:hover{border-color:#2d7ff0}
+.cal-month-day.today{border-color:#2d7ff0;background:color-mix(in srgb,#2d7ff0 5%,var(--card))}
+.cal-month-day.dim{opacity:.45}
+.cm-ev{border-radius:5px;padding:0 5px;font-size:10px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;margin-top:2px}
+
+/* ---------- deep passes: cheers, slack-tier chat, parity ---------- */
+.cheer-composer{background:var(--card);border:2px solid #22c55e44;border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+.cheer-composer input{width:100%;border:none;outline:none;background:none;font-size:15px}
+.cheer-hint .tok{font-weight:700;border-radius:6px;padding:0 5px}
+.msg .m-acts{display:none;gap:4px;margin-left:auto}
+.msg:hover .m-acts{display:flex}
+.pin-bar{background:var(--warn-soft);border-bottom:1px solid var(--line);padding:7px 16px;font-size:12px;display:flex;gap:8px;align-items:center}
+.thread-chip{display:inline-flex;align-items:center;gap:5px;color:#6d28d9;font-size:11.5px;font-weight:700;cursor:pointer;margin-top:4px;background:color-mix(in srgb,#6d28d9 8%,transparent);border-radius:8px;padding:2px 8px}
+.mention{background:color-mix(in srgb,#6d28d9 14%,transparent);color:#6d28d9;font-weight:700;border-radius:5px;padding:0 4px}
+html.dark .mention{color:#b69af7}
+.parity-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);align-items:flex-start;font-size:12.5px}
+.parity-row:last-child{border-bottom:none}
+.p-b{color:#076b4c;font-weight:800}.p-s{color:#8f5c03;font-weight:800}.p-x{color:#b32222;font-weight:800}
+html.dark .p-b{color:#4ade9d}html.dark .p-s{color:#fbc34d}html.dark .p-x{color:#f87f7f}
+
 /* ---------- phase 4: deep modules ---------- */
 .as-sources{display:flex;gap:5px;flex-wrap:wrap;align-self:flex-start;margin-top:-4px}
 .as-sources .chip{font-size:10.5px;padding:1px 8px;cursor:pointer}
@@ -657,6 +734,7 @@ const daysAhead=n=>iso(new Date(Date.now()+n*DAY));
 function fmtD(d,opts){if(!d)return'—';return new Date(d+(String(d).length===10?'T12:00:00':'')).toLocaleDateString('en-US',opts||{month:'short',day:'numeric',year:'numeric'});}
 const fmtDshort=d=>fmtD(d,{month:'short',day:'numeric'});
 function rel(d){const t=new Date(d+(String(d).length===10?'T12:00:00':'')).getTime();const diff=Date.now()-t;const days=Math.round(diff/DAY);
+  if(String(d).length===10&&d===todayISO())return 'today';
   if(Math.abs(days)<1){const h=Math.round(diff/3600000);if(Math.abs(h)<1){const m=Math.round(diff/60000);return m<=0?(m<0?`in ${-m}m`:'just now'):`${m}m ago`;}return h<0?`in ${-h}h`:`${h}h ago`;}
   if(days===1)return'yesterday';if(days===-1)return'tomorrow';
   if(days<0)return -days<30?`in ${-days}d`:fmtDshort(d);
@@ -1468,6 +1546,8 @@ function buildMail(emps){
     mk('Jordan Lee',1,'Mosaic Learning','no-reply@meridianlabs.com','Reminder: Data Privacy & Security due in 9 days','You\'re 0% through "Data Privacy & Security Essentials" (35 min). It\'s due July 20 — knock it out before launch week eats your calendar.'),
     mk('Jordan Lee',2,'Priya Sharma','priya.sharma@meridianlabs.com','1:1 agenda — added a growth item','Added "cross-team project ideas (path to Senior)" for tomorrow. Bring the deploy-pipeline numbers; they tell a great story.',{read:true,starred:true}),
     mk('Jordan Lee',4,'Meridian Payroll','payroll@meridianlabs.com','Your pay statement is ready (Jun 15)','Your June 15 statement is available in Pay → My pay. Net deposit: on schedule to ····4821.',{read:true}),
+    mk('Wes Griffin',1,'Sam Torres','sam.torres@meridianlabs.com','Re: Offer — Senior Robotics Engineer','Saw Alex\'s reply — coordinating the DocuSign envelope and day-one logistics now. Tomás is thrilled.\n\n— Sam',{thread:'offer-alex',read:true}),
+    mk('Wes Griffin',2,'Robo-Prize Direct','win@robo-prize-now.biz','You\'ve WON a FREE industrial robot arm!!! Claim in 24hrs','CONGRATULATIONS!! Your company has been SELECTED. Click here immediately and enter your banking details to claim your FREE robot arm (retail value $94,000)!!!',{folder:'spam',read:true}),
   ];
 }
 function buildEvents(emps){
@@ -1565,7 +1645,49 @@ const WF_TEMPLATES=[
    form:[['rtype','Request type','select',['Org change','Policy work','Letter / document','Event support','Other']],['needBy','Needed by','date'],['details','Details','textarea']]},
   {id:'it-request',name:'IT request',icon:'💻',blurb:'Equipment, access, software installs.',stages:['Submitted','Triage','In progress','Done'],ownerIds:['E013'],ownerLabel:'IT',
    form:[['itype','Type','select',['Equipment','Access','Software']],['details','Details','textarea']]},
+  /* ---- Workday-style business processes: completing the final approval APPLIES the change ---- */
+  {id:'bp-job-change',name:'Job Change',icon:'🪪',bp:true,blurb:'Transfer, promotion or org change — approvals route, then the worker record updates itself.',stages:['Initiate','Manager approval','HR approval','Complete'],ownerIds:['E021'],ownerLabel:'People Ops (BP)',
+   form:[['workerId','Worker','worker'],['reason','Reason','select',['Promotion','Lateral transfer','Org change','Manager change','Location change']],['newTitle','New title (blank = keep)','text'],['newDept','New department (blank = keep)','select',['','Engineering','Data','Product','Design','Marketing','Sales','Customer Experience','Finance','Operations','IT','People']],['newManager','New manager (blank = keep)','worker'],['newLocation','New location (blank = keep)','select',['','San Francisco HQ','Austin','New York','Remote']],['effective','Effective date','date']]},
+  {id:'bp-comp-change',name:'Compensation Change',icon:'💸',bp:true,blurb:'Off-cycle base adjustment with manager + HR sign-off; comp history entry on completion.',stages:['Initiate','Manager approval','HR approval','Complete'],ownerIds:['E021'],ownerLabel:'People Ops (BP)',
+   form:[['workerId','Worker','worker'],['newBase','New base salary ($)','number'],['reason','Reason','select',['Market adjustment','Counter-offer','Equity correction','Role scope change']],['effective','Effective date','date'],['notes','Justification','textarea']]},
+  {id:'bp-one-time',name:'One-Time Payment',icon:'🎁',bp:true,blurb:'Spot bonus or special payment — manager then Finance approve, payroll is notified.',stages:['Initiate','Manager approval','Finance approval','Complete'],ownerIds:['E019'],ownerLabel:'Finance (BP)',
+   form:[['workerId','Worker','worker'],['amount','Amount ($)','number'],['reason','Reason','select',['Spot bonus','Referral bonus','Patent award','Relocation','Other']],['notes','Context','textarea']]},
+  {id:'bp-termination',name:'Termination',icon:'👋',bp:true,bpSensitive:true,blurb:'Involuntary or voluntary — HR approves, then the offboarding journey starts automatically.',stages:['Initiate','HR approval','Complete'],ownerIds:['E021'],ownerLabel:'People Ops (BP)',
+   form:[['workerId','Worker','worker'],['reason','Reason','select',['Voluntary — new opportunity','Voluntary — relocation','Voluntary — compensation','Involuntary — performance','Involuntary — restructuring']],['effective','Last day','date'],['regret','Regretted?','select',['Yes','No']]]},
 ];
+function applyBP(f){
+  const tpl=tplOf(f.templateId);
+  const e=emp(f.fields.workerId);if(!e)return;
+  if(f.templateId==='bp-job-change'){
+    const ch=[];
+    if(f.fields.newTitle){e.title=f.fields.newTitle;ch.push('title');}
+    if(f.fields.newDept){const d=DEPTS.find(x=>x.name===f.fields.newDept);if(d){e.dept=d.id;e.team=d.name;ch.push('department');}}
+    if(f.fields.newManager&&f.fields.newManager!==e.id){e.managerId=f.fields.newManager;ch.push('manager');}
+    if(f.fields.newLocation){e.location=f.fields.newLocation;ch.push('location');}
+    e.compHistory.push({date:f.fields.effective||todayISO(),type:'Job change',base:e.comp.base,note:f.fields.reason+(ch.length?' — '+ch.join(', '):'')});
+    notify(e.id,'🪪',`Your job change is approved (${f.fields.reason}) — effective ${fmtDshort(f.fields.effective||todayISO())}`,'#/people/'+e.id);
+    audit('BP applied: Job Change',e.name+' · '+ch.join(', '));
+  }else if(f.templateId==='bp-comp-change'){
+    const nb=+f.fields.newBase||e.comp.base;
+    e.comp.base=nb;
+    e.compHistory.push({date:f.fields.effective||todayISO(),type:'Compensation change',base:nb,note:f.fields.reason});
+    const mrow=DB.merit&&DB.merit.rows.find(r=>r.employeeId===e.id);if(mrow)mrow.currentBase=nb;
+    notify(e.id,'💸',`Compensation change approved — effective ${fmtDshort(f.fields.effective||todayISO())}`,'#/pay');
+    audit('BP applied: Comp Change',e.name+' → '+fmt$(nb));
+  }else if(f.templateId==='bp-one-time'){
+    e.docs.unshift({name:'One-Time Payment — '+f.fields.reason+'.pdf',date:todayISO(),kind:'Payroll'});
+    notify(e.id,'🎁',`A one-time payment of ${fmt$(+f.fields.amount||0)} (${f.fields.reason}) was approved — next payroll`,'#/pay');
+    audit('BP applied: One-Time Payment',e.name+' · '+fmt$(+f.fields.amount||0));
+  }else if(f.templateId==='bp-termination'){
+    const lastDay=f.fields.effective||daysAhead(14);
+    e.status='offboarding';e.lastDay=lastDay;
+    DB.offboarding.push({id:uid('OFFB'),employeeId:e.id,lastDay,reason:f.fields.reason,regret:f.fields.regret==='Yes',
+      tasks:OFFB_TEMPLATE.map(t=>({id:uid('OT'),title:t.title,owner:t.owner,due:iso(new Date(new Date(lastDay).getTime()+t.offset*DAY)),cat:t.cat,done:false,doneAt:null}))});
+    if(e.managerId)notify(e.managerId,'👋',`Termination BP completed for ${e.name} — offboarding journey is live`,'#/onboard');
+    audit('BP applied: Termination',e.name+' · last day '+lastDay);
+  }
+  f.activity.push({at:todayISO(),by:'Mosaic',text:'Business process completed — changes applied to the worker record automatically'});
+}
 function buildFlows(emps){
   const idOf=n=>(emps.find(e=>e.name===n)||{}).id;
   return [
@@ -1620,8 +1742,11 @@ function buildSeed(){
     c.slaDue=iso(new Date(new Date(c.createdAt).getTime()+DAY));
     c.tags=[c.cat];});
   const chat=buildChat(employees);
-  return {v:6,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
-    channels:chat.channels,chatMsgs:chat.msgs,mail:buildMail(employees),events:buildEvents(employees),
+  const mail=buildMail(employees);
+  mail.forEach(m=>{m.threadId=m.thread==='offer-alex'||/Offer — Senior Robotics/.test(m.subject)?'th-offer-alex':uid('TH');m.labels=m.labels||[];});
+  return {v:8,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
+    mailLabels:[{id:'lb1',name:'Benefits',color:'#10b981'},{id:'lb2',name:'Launch',color:'#6d28d9'},{id:'lb3',name:'Board',color:'#f59e0b'}],
+    channels:chat.channels,chatMsgs:chat.msgs,mail,events:buildEvents(employees),
     files:buildDrive(employees),posts:buildPosts(employees),
     envelopes:buildEnvelopes(employees),flows:buildFlows(employees),
     lifeEvents:[{id:'LE-1',employeeId:(employees.find(e=>e.name==='Chloe Marchand')||{}).id,kind:'Birth or adoption',date:daysAgo(20),deadline:daysAgo(-10),changes:'+1 dependent · kept Sequoia PPO',status:'approved'}],
@@ -1632,11 +1757,12 @@ function buildSeed(){
     benefits,merit,surveys:buildSurveys(employees),
     cases,kb:KB.map(k=>({...k})),
     groups:buildGroups(employees),leaves:buildLeaves(employees),redemptions:[],
+    chatRead:{},saved:{},statuses:{},canned:CANNED.map(c=>({...c,id:uid('CN')})),slaHours:24,autoAssign:false,
     notifications:buildNotifs(employees),audit:buildAudit(employees),
     integrations:INTEGRATIONS.map(i=>({...i}))};
 }
 const Store={
-  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===6){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save();},
+  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===8){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save();},
   save(){DB.savedAt=Date.now();try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){console.warn('Persist failed (private mode?)',e);}},
   reset(){try{localStorage.removeItem(LS_KEY);}catch(e){}location.hash='#/home';location.reload();}
 };
@@ -1679,7 +1805,7 @@ const canSee=mod=>{
     help:['admin','manager','employee'],admin:['admin'],askpeople:[],
     intranet:['admin','manager','employee'],chat:['admin','manager','employee'],mail:['admin','manager','employee'],
     cal:['admin','manager','employee'],drive:['admin','manager','employee'],meet:['admin','manager','employee'],
-    sign:['admin','manager','employee'],flows:['admin','manager','employee']};
+    sign:['admin','manager','employee'],flows:['admin','manager','employee'],cheers:['admin','manager','employee']};
   if((map[mod]||[]).includes(role))return true;
   /* group grants stack on top of the role baseline */
   return groupsOf(DB.me.employeeId).some(g=>g.modules&&g.modules.includes(mod));
@@ -1903,6 +2029,7 @@ const Chart={
 const MODULES=[
   {id:'home',label:'Home',icon:'home',color:'var(--c-home)',group:'Workspace',desc:'Your day at a glance'},
   {id:'people',label:'People',icon:'people',color:'var(--c-people)',group:'Workspace',desc:'Directory, profiles & org chart'},
+  {id:'cheers',label:'Cheers',icon:'gift',color:'#22c55e',group:'Workspace',desc:'Recognition — points, boosts, rewards & leaderboards'},
   {id:'intranet',label:'Hub',icon:'globe',color:'#0891b2',group:'Connect',desc:'Company & department intranet + knowledge base'},
   {id:'chat',label:'Messages',icon:'chat',color:'#6d28d9',group:'Connect',desc:'Channels, DMs & threads'},
   {id:'mail',label:'Mail',icon:'mail',color:'#e25141',group:'Connect',desc:'Your inbox, native to Mosaic'},
@@ -1933,18 +2060,37 @@ function parseHash(){
 function nav(hash){if(location.hash===hash){render();}else location.hash=hash;}
 window.addEventListener('hashchange',()=>render());
 
+function moduleBadge(mod){
+  const myId=DB.me.employeeId;
+  try{switch(mod){
+    case 'home':return inboxFor(myId).length;
+    case 'chat':return sum((DB.channels||[]).filter(chanVisible).map(c=>chUnread(c.id)));
+    case 'mail':return (DB.mail||[]).filter(mm=>mm.ownerId===myId&&mm.folder==='inbox'&&!mm.read).length;
+    case 'sign':return (DB.envelopes||[]).filter(env=>envMyTurn(env)).length;
+    case 'flows':return (DB.flows||[]).filter(flowNeedsMe).length;
+    case 'askpeople':return hasCap('cases')?DB.cases.filter(c=>c.status==='open').length:0;
+    case 'time':return DB.timeoff.filter(toAwaitingMe).length;
+    case 'grow':{const cyc=DB.cycles.find(c=>c.stage!=='done');return cyc?DB.reviews.filter(r=>r.cycleId===cyc.id&&r.reviewerId===myId&&r.status==='open').length:0;}
+    case 'learn':return DB.enrollments.filter(en=>en.employeeId===myId&&en.progress<100&&en.due&&en.due<=daysAhead(7)).length;
+    case 'cal':return weekEventsFor(todayISO()).length;
+    case 'help':return DB.cases.filter(c=>c.employeeId===myId&&c.status==='waiting').length;
+    case 'cheers':return ptsLeft(myId)>0&&now().getDate()>=24?1:0;
+    default:return 0;
+  }}catch(e){return 0;}
+}
 function renderSidebar(){
   const groups=groupBy(MODULES.filter(m=>canSee(m.id)),'group');
-  const unread=DB.notifications.filter(n=>n.forId===DB.me.employeeId&&!n.read).length;
-  const inboxN=inboxFor(DB.me.employeeId).length;
   $('#sidebar').innerHTML=`
     <div class="logo-row">${logoSVG(30)}<div><div class="logo-name">Mosaic</div><div class="logo-sub">${esc(COMPANY.name)}</div></div></div>
     <nav class="nav-scroll">
-      ${Object.entries(groups).map(([g,mods])=>`<div class="nav-label">${g}</div>`+mods.map(m=>`
-        <a class="nav-item ${ROUTE.mod===m.id?'active':''}" style="--mod:${m.color}" href="#/${m.id}" title="${m.desc}${m.id==='home'&&inboxN?' · '+inboxN+' action item'+(inboxN===1?'':'s')+' waiting':''}">
+      ${Object.entries(groups).map(([g,mods])=>`<div class="nav-label">${g}</div>`+mods.map(m=>{
+        const n=moduleBadge(m.id);
+        return `
+        <a class="nav-item ${ROUTE.mod===m.id?'active':''}" style="--mod:${m.color}" href="#/${m.id}" title="${m.desc}${n?' · '+n+' waiting':''}">
           <span class="nav-tile">${I[m.icon]}</span>${m.label}
-          ${m.id==='home'&&inboxN?`<span class="nav-badge" title="${inboxN} action items waiting on you">${inboxN}</span>`:''}
-        </a>`).join('')).join('')}
+          ${n?`<span class="nav-badge" title="${n} item${n===1?'':'s'} waiting for you">${n}</span>`:''}
+          <span class="nav-open" data-act="openModTab" data-arg="${m.id}" title="Open ${m.label} in its own browser tab" onclick="event.preventDefault();event.stopPropagation()">${I.link}</span>
+        </a>`;}).join('')).join('')}
     </nav>
     <div class="sidebar-foot"><b>Mosaic</b> · one platform, every piece.<br>Created by Wes Griffin · Designed &amp; built with AI.<br>© 2026 Wes Griffin · All rights reserved.</div>`;
 }
@@ -2061,6 +2207,12 @@ document.addEventListener('click',ev=>{
 document.addEventListener('keydown',ev=>{
   if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='k'){ev.preventDefault();openPalette();return;}
   if(ev.key==='Escape'){closePalette();UI.closeModal();UI.closeDrawer();closePopovers();ACT.closeSidebar();Tour.end();return;}
+  /* gmail-style keys inside an open mail thread */
+  if(ROUTE.mod==='mail'&&ROUTE.param&&!/INPUT|TEXTAREA|SELECT/.test((ev.target||{}).tagName||'')&&!$('#modal').classList.contains('open')){
+    if(ev.key==='e'){ev.preventDefault();ACT.mailArchive(ROUTE.param);return;}
+    if(ev.key==='s'){ev.preventDefault();ACT.mailStar(ROUTE.param);return;}
+    if(ev.key==='u'){ev.preventDefault();nav('#/mail');return;}
+  }
   /* keep keyboard focus inside an open modal/drawer */
   if(ev.key==='Tab'&&!$('#palette').classList.contains('open')){
     const cont=$('#modal').classList.contains('open')?$('#modal .box'):($('#drawer').classList.contains('open')?$('#drawer'):null);
@@ -2372,7 +2524,7 @@ function profileView(id){
   const mgr=emp(e.managerId);
   const team=reportsOf(e.id);
   const canPersonal=e.id===DB.me.employeeId||hasCap('edit-people')||isAdmin();
-  const tabsAll=[['overview','Overview']].concat(canPersonal?[['personal','Personal info']]:[]).concat([['job','Job & Comp'],['time','Time Off'],['learning','Learning'],['perf','Performance'],['docs','Documents']]);
+  const tabsAll=[['overview','Overview']].concat(canPersonal?[['personal','Personal info']]:[]).concat([['job','Job & Comp'],['time','Time Off'],['learning','Learning'],['perf','Performance'],['docs','Documents']]).concat(canPersonal?[['history','History']]:[]);
   const tab=tabsAll.some(t=>t[0]===UIS.profileTab)?UIS.profileTab:'overview';
   const tabs=tabsAll;
   return `
@@ -2395,6 +2547,7 @@ function profileView(id){
         <button class="btn sm soft" data-act="openPraise" data-arg="${e.id}">⭐ Praise</button>
         ${e.id===DB.me.employeeId?'<button class="btn sm ghost" data-act="openTimeReq">🏖️ Time off</button>':''}
         ${isAdmin()||hasCap('edit-people')?`<button class="btn sm ghost" data-act="editJob" data-arg="${e.id}">${I.edit} Edit job</button>`:''}
+        ${(isAdmin()||hasCap('hr-admin'))&&e.id!==DB.me.employeeId?`<button class="btn sm ghost" data-act="startBP" data-arg="${e.id}" title="Start a Workday-style business process for this worker">🧩 BP</button>`:''}
         ${canSeeComp(e)&&e.id!==DB.me.employeeId&&e.level!=='E'&&e.status==='active'&&isManager()?`<button class="btn sm good" data-act="openPromote" data-arg="${e.id}">📈 Promote</button>`:''}
         ${isAdmin()&&e.status==='active'&&e.id!==DB.me.employeeId?`<button class="btn sm ghost" data-act="openOffboard" data-arg="${e.id}">👋 Offboard</button>`:''}
       </div>
@@ -2406,6 +2559,7 @@ function profileView(id){
 ACT.setProfileTab=a=>{UIS.profileTab=a;render();};
 function profileTab(e,tab,mgr,team){
   if(tab==='personal')return personalTab(e);
+  if(tab==='history')return historyTab(e);
   if(tab==='overview'){
     const fb=DB.feedback.filter(f=>fbRecipients(f).includes(e.id)).slice(0,3);
     const myGoals=DB.goals.filter(g=>g.ownerId===e.id);
@@ -3211,14 +3365,14 @@ ACT.continueCourse=cid=>{
    VIEW: PERFORMANCE (Grow)
    ============================================================ */
 Views.grow=()=>{
-  const tabs=[['goals','Goals & OKRs'],['reviews','Reviews'],['feedback','Feedback'],['career','Career path'],['ones','1:1s']].concat(isManager()?[['talent','Talent map']]:[]);
+  const tabs=[['goals','Goals & OKRs'],['reviews','Reviews'],['career','Career path'],['ones','1:1s']].concat(isManager()?[['talent','Talent map']]:[]);
   const tab=tabs.some(t=>t[0]===UIS.growTab)?UIS.growTab:'goals';
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Performance</h1>
     <div class="page-sub">Goals ladder up to company OKRs · reviews and feedback feed the talent map</div></div>
     <button class="btn primary" style="--brand:var(--c-grow);--brand-deep:#7c4ce0" data-act="openPraise">⭐ Give praise</button></div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setGrowTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
-  ${tab==='goals'?growGoals():tab==='reviews'?growReviews():tab==='feedback'?growFeedback():tab==='career'?growCareer():tab==='ones'?growOnes():growTalent()}`;
+  ${tab==='goals'?growGoals():tab==='reviews'?growReviews():tab==='career'?growCareer():tab==='ones'?growOnes():growTalent()}`;
 };
 ACT.setGrowTab=a=>{UIS.growTab=a;render();};
 ACT.setGoalsView=a=>{UIS.goalsView=a;render();};
@@ -3332,41 +3486,258 @@ ACT.submitReview=rid=>{
   Store.save();UI.closeModal();render();
   UI.toast('Review submitted ✓ — calibration sees it instantly','📝');
 };
-function growFeedback(){
+/* ============================================================
+   CHEERS — Bonusly-complete recognition
+   ============================================================ */
+const CHEER_GREEN='#22c55e';
+function parseCheer(s){
+  const pts=+((s.match(/\+(\d{1,3})/)||[])[1]||0);
+  const tags=[...s.matchAll(/#([a-zA-Z-]+)/g)].map(x=>x[1].toLowerCase());
+  const ats=[...s.matchAll(/@([a-zA-Z]+)/g)].map(x=>x[1].toLowerCase());
+  const recips=uniq(DB.employees.filter(e=>e.status!=='terminated'&&e.id!==DB.me.employeeId&&ats.some(a=>e.name.toLowerCase().startsWith(a)||e.name.toLowerCase().split(' ').some(w=>w.startsWith(a)))).map(e=>e.id));
+  const values=VALUES.filter(v=>tags.some(t=>v.toLowerCase().replace(/[^a-z]/g,'').startsWith(t.replace(/-/g,''))));
+  const text=s.replace(/\+\d{1,3}\s?/,'').trim();
+  return {pts,recips,values,text,tags};
+}
+Views.cheers=()=>{
+  const tab=UIS.cheersTab||'feed';
+  const tabs=[['feed','Feed'],['boards','Leaderboards'],['rewards','Rewards']].concat(isAdmin()?[['analytics','Analytics']]:[]);
   const myId=DB.me.employeeId;
-  const quarterAgo=daysAgo(90);
-  const earned={};
-  DB.feedback.filter(f=>f.at>=quarterAgo&&f.pts).forEach(f=>fbRecipients(f).forEach(id=>earned[id]=(earned[id]||0)+f.pts));
-  const top=Object.entries(earned).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([id,p])=>({e:emp(id),p})).filter(x=>x.e);
   return `
-  <div class="grid g3 mb16">
-    <div class="card pad" style="--mod:var(--c-grow)"><span class="tiny faint" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">To give this month</span>
-      <div class="row mt8" style="gap:12px"><b style="font-size:25px;font-family:var(--font-display)" class="num">${ptsLeft(myId)}<span class="small faint"> / ${PTS_ALLOWANCE} pts</span></b><span class="spacer"></span>
-      <button class="btn sm primary" style="--brand:var(--c-grow);--brand-deep:#7c4ce0" data-act="openPraise">⭐ Recognize</button></div>
-      ${progressBar(ptsLeft(myId)/PTS_ALLOWANCE*100,'var(--c-grow)')}<span class="tiny faint" style="margin-top:4px">Allowance resets on the 1st — use it or lose it.</span></div>
-    <div class="card pad"><span class="tiny faint" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">Earned & redeemable</span>
-      <div class="row mt8" style="gap:12px"><b style="font-size:25px;font-family:var(--font-display)" class="num">${ptsEarned(myId)}<span class="small faint"> pts</span></b><span class="spacer"></span>
-      <button class="btn sm soft" style="--brand:var(--c-pay)" data-act="openRedeem">🛍️ Redeem</button></div>
-      <span class="tiny faint" style="margin-top:8px;display:block">Gift cards, donations, a half-day pass — your call.</span></div>
-    <div class="card pad"><span class="tiny faint" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">Most recognized · 90 days</span>
-      <div class="col mt8" style="gap:7px">${top.map((x,i)=>`<span class="row" style="gap:8px"><span style="font-size:13px">${['🥇','🥈','🥉'][i]}</span>${av(x.e,'xs')}<b class="tiny" style="font-size:12px;flex:1">${esc(x.e.name)}</b><span class="tiny num faint">+${x.p}</span></span>`).join('')||'<span class="tiny faint">No points given yet.</span>'}</div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">Cheers 🎉</h1>
+    <div class="page-sub">Peer recognition with real points — give, boost, redeem. Tagged cheers land on each person's profile automatically.</div></div>
+    ${parityBtn('cheers')}
+    <span class="chip" title="Your monthly giving allowance">🪙 <b>${ptsLeft(myId)}</b>&nbsp;to give</span>
+    <span class="chip" title="Earned — spend in Rewards">💰 <b>${ptsEarned(myId)}</b>&nbsp;earned</span></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setCheersTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${tab==='feed'?cheersFeed():tab==='boards'?cheersBoards():tab==='rewards'?cheersRewards():cheersAnalytics()}`;
+};
+ACT.setCheersTab=a=>{UIS.cheersTab=a;render();};
+function cheersFeed(){
+  const myId=DB.me.employeeId;
+  onMount(()=>{const i=$('#cheer-in');if(i&&window._cheerFocus){i.focus();window._cheerFocus=false;}});
+  /* derived celebration posts (birthdays + anniversaries this week) */
+  const cele=celebrations(7).map(c=>`
+    <div class="card pad" style="border-color:color-mix(in srgb,${CHEER_GREEN} 30%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,${CHEER_GREEN} 6%,var(--card)),var(--card))">
+      <div class="row" style="gap:10px">${av(c.emp,'md')}<span class="col" style="gap:1px;flex:1">
+        <b class="small">${c.kind==='birthday'?'🎂 It\'s '+esc(c.emp.name)+'\'s birthday '+(c.date===todayISO()?'today':fmtDshort(c.date))+'!':'🏅 '+esc(c.emp.name)+' hits '+c.label+' at Meridian '+(c.date===todayISO()?'today':fmtDshort(c.date))+'!'}</b>
+        <span class="tiny faint">auto-posted by Mosaic · ${esc(c.emp.title)}</span></span>
+      <button class="btn sm soft" style="--brand:${CHEER_GREEN}" data-act="openPraise" data-arg="${c.emp.id}">Send cheers</button></div></div>`).join('');
+  return `
+  <div class="cheer-composer mb8">
+    <input id="cheer-in" placeholder='Try the Bonusly way:  +25 @jordan @sara #craft for shipping the pipeline fix' oninput="cheerPreview()" onkeydown="if(event.key==='Enter')ACT.cheerSend()">
+    <div class="row mt8 between wrap" style="gap:8px"><span class="tiny faint cheer-hint" id="cheer-prev"><span class="tok" style="background:var(--ok-soft);color:#076b4c">+points</span> <span class="tok mention">@name</span> <span class="tok" style="background:var(--vio-soft);color:#6d3fd6">#value</span> — all parsed live, or use the full composer</span>
+    <span class="row" style="gap:7px"><button class="btn xs ghost" data-act="openPraise">Full composer</button>
+    <button class="btn sm primary" style="--brand:${CHEER_GREEN};--brand-deep:#16a34a" data-act="cheerSend">Give 🎉</button></span></div>
   </div>
+  <div class="col mb16" style="gap:10px">${cele}</div>
   <div class="grid g2">${DB.feedback.map(f=>{
     const from=emp(f.fromId);if(!from)return'';
     const recips=fbRecipients(f).map(emp).filter(Boolean);
     if(f.visibility==='private'&&![f.fromId,...fbRecipients(f)].includes(myId)&&!isAdmin())return'';
+    const boostTotal=sum((f.boosts||[]).map(b=>b.pts));
     return `<div class="card pad">
       <div class="row" style="gap:9px;align-items:flex-start">${av(from,'sm')}
-        <span class="tiny" style="color:var(--ink2);flex:1;line-height:1.5"><b>${esc(from.name)}</b> ${f.kind==='praise'?'recognized':'gave feedback to'} ${recips.map(r=>`<a href="#/people/${r.id}" style="font-weight:700">${esc(r.name)}</a>`).join(', ')}</span>
-        ${f.pts?`<span class="badge b-vio">+${f.pts} pts${recips.length>1?' each':''}</span>`:''}<span class="tiny faint" style="white-space:nowrap">${rel(f.at)}</span></div>
+        <span class="tiny" style="color:var(--ink2);flex:1;line-height:1.5"><b>${esc(from.name)}</b> ${f.kind==='praise'?'cheered':'gave feedback to'} ${recips.map(r=>`<a href="#/people/${r.id}" style="font-weight:700">${esc(r.name)}</a>`).join(', ')}</span>
+        ${f.pts?`<span class="badge b-ok">+${f.pts}${boostTotal?' (+'+boostTotal+' boosted)':''}${recips.length>1?' each':''}</span>`:''}<span class="tiny faint" style="white-space:nowrap">${rel(f.at)}</span></div>
       <p class="small mt12" style="line-height:1.6">“${esc(f.text)}”</p>
-      <div class="row wrap mt12" style="gap:6px">${(f.values||[]).map(v=>`<span class="chip" style="background:var(--vio-soft);border-color:transparent;color:var(--c-grow);font-weight:650">✦ ${v}</span>`).join('')}
+      <div class="row wrap mt12" style="gap:6px">${(f.values||[]).map(v=>`<span class="chip" style="background:var(--vio-soft);border-color:transparent;color:#6d3fd6;font-weight:650">#${v.toLowerCase().replace(/[^a-z]/g,'')}</span>`).join('')}
         ${f.visibility==='private'?'<span class="chip">🔒 private</span>':''}<span class="spacer"></span>
-        ${['👏','💜','🎉'].map(emo=>`<button class="chip" data-act="react" data-arg="${f.id}|${emo}" style="padding:2px 8px">${emo}${f.reactions&&f.reactions[emo]?' <b>'+f.reactions[emo]+'</b>':''}</button>`).join('')}</div>
+        ${['👏','💜','🎉'].map(emo=>`<button class="chip" data-act="react" data-arg="${f.id}|${emo}" style="padding:2px 8px">${emo}${f.reactions&&f.reactions[emo]?' <b>'+f.reactions[emo]+'</b>':''}</button>`).join('')}
+        ${f.pts&&f.fromId!==myId?`<button class="chip" data-act="boostPost" data-arg="${f.id}" title="Add your own points on top — Bonusly-style add-on" style="background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700">🚀 Boost</button>`:''}</div>
+      ${(f.boosts||[]).length?`<div class="tiny faint mt8">🚀 Boosted by ${f.boosts.map(b=>esc((emp(b.by)||{name:'?'}).name.split(' ')[0])+' (+'+b.pts+')').join(', ')}</div>`:''}
       ${(f.comments||[]).map(cm=>{const ce=emp(cm.fromId);return ce?`<div class="row mt8" style="gap:8px;padding-left:6px">${av(ce,'xs')}<span class="tiny" style="background:var(--card2);border-radius:9px;padding:5px 9px;flex:1"><b>${esc(ce.name.split(' ')[0])}</b> ${esc(cm.text)}</span></div>`:'';}).join('')}
       <div class="row mt8" style="gap:7px"><input id="fc-${f.id}" placeholder="Add a comment…" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;outline:none;font-size:12px" onkeydown="if(event.key==='Enter')ACT.commentFeedback('${f.id}')">
-        <button class="btn xs soft" style="--brand:var(--c-grow)" data-act="commentFeedback" data-arg="${f.id}">Reply</button></div></div>`;}).join('')}</div>`;
+        <button class="btn xs soft" style="--brand:${CHEER_GREEN}" data-act="commentFeedback" data-arg="${f.id}">Reply</button></div></div>`;}).join('')}</div>`;
 }
+window.cheerPreview=()=>{
+  const el=$('#cheer-prev');const v=($('#cheer-in')||{}).value||'';if(!el)return;
+  if(!v.trim()){el.innerHTML='<span class="tok" style="background:var(--ok-soft);color:#076b4c">+points</span> <span class="tok mention">@name</span> <span class="tok" style="background:var(--vio-soft);color:#6d3fd6">#value</span> — all parsed live, or use the full composer';return;}
+  const p=parseCheer(v);
+  el.innerHTML=`${p.pts?`<span class="tok" style="background:var(--ok-soft);color:#076b4c">+${p.pts} pts${p.recips.length>1?' each':''}</span> `:'<span class="tok" style="background:var(--bg2)">no points</span> '}→ ${p.recips.length?p.recips.map(id=>esc((emp(id)||{}).name)).join(', '):'<span style="color:var(--bad);font-weight:700">tag someone with @</span>'}${p.values.length?' · '+p.values.map(x=>'#'+x.toLowerCase().replace(/[^a-z]/g,'')).join(' '):''}${p.pts*Math.max(p.recips.length,1)>ptsLeft(DB.me.employeeId)?' · <span style="color:var(--bad);font-weight:700">over your allowance</span>':''}`;
+};
+ACT.cheerSend=()=>{
+  const inp=$('#cheer-in');if(!inp||!inp.value.trim())return;
+  const p=parseCheer(inp.value);
+  if(!p.recips.length){UI.toast('Tag at least one teammate with @firstname','🎉');return;}
+  const spend=p.pts*p.recips.length;
+  if(spend>ptsLeft(DB.me.employeeId)){UI.toast('That\'s over your monthly allowance — lower the points','🪙');return;}
+  DB.feedback.unshift({id:uid('F'),fromId:DB.me.employeeId,recipients:p.recips,kind:'praise',values:p.values.length?p.values:['Together'],at:todayISO(),text:p.text||'🎉',pts:p.pts,reactions:{},comments:[],boosts:[]});
+  p.recips.forEach(toId=>notify(toId,'🎉',`${me().name} cheered you${p.pts?' +'+p.pts+' pts':''}!`,'#/cheers'));
+  chatPost('c-people-updates','🎉 '+me().name+' cheered '+p.recips.map(id=>(emp(id)||{}).name.split(' ')[0]).join(', ')+(p.pts?' (+'+p.pts+')':'')+': “'+(p.text||'').slice(0,80)+'”');
+  audit('Cheer posted','→ '+p.recips.length+' recipient(s)'+(p.pts?' · +'+p.pts+' each':''));
+  window._cheerFocus=true;Store.save();render();
+};
+ACT.boostPost=fid=>{
+  const f=byId(DB.feedback,fid);if(!f)return;
+  const left=ptsLeft(DB.me.employeeId);
+  const n=fbRecipients(f).length||1;
+  UI.modal({title:'Boost this cheer 🚀',sub:`Add your own points on top — each of the ${n} recipient${n===1?'':'s'} gets them. You have ${left} to give.`,body:`
+    <div class="field"><label>Points to add (each)</label><input type="number" id="boost-pts" value="${Math.min(10,Math.floor(left/n))}" min="1" max="${Math.floor(left/n)||1}"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:${CHEER_GREEN};--brand-deep:#16a34a" data-act="boostSave" data-arg="${fid}">🚀 Boost</button>`});
+};
+ACT.boostSave=fid=>{
+  const f=byId(DB.feedback,fid);if(!f)return;
+  const pts=clamp(+$('#boost-pts').value||0,1,999);
+  const n=fbRecipients(f).length||1;
+  if(pts*n>ptsLeft(DB.me.employeeId)){UI.toast('Over your allowance','🪙');return;}
+  (f.boosts=f.boosts||[]).push({by:DB.me.employeeId,pts,at:todayISO()});
+  fbRecipients(f).forEach(toId=>notify(toId,'🚀',`${me().name} boosted your cheer +${pts} pts`,'#/cheers'));
+  Store.save();UI.closeModal();render();
+  UI.toast('Boosted 🚀 — points landed instantly','🎉');
+};
+function cheersBoards(){
+  const since=daysAgo(90);
+  const earned={},given={},valCount={};
+  DB.feedback.filter(f=>f.at>=since).forEach(f=>{
+    const total=(f.pts||0)+sum((f.boosts||[]).map(b=>b.pts));
+    fbRecipients(f).forEach(id=>earned[id]=(earned[id]||0)+total);
+    if(f.pts)given[f.fromId]=(given[f.fromId]||0)+(f.pts*(fbRecipients(f).length||1));
+    (f.boosts||[]).forEach(b=>given[b.by]=(given[b.by]||0)+b.pts*(fbRecipients(f).length||1));
+    (f.values||[]).forEach(v=>valCount[v]=(valCount[v]||0)+1);
+  });
+  const board=(obj,label,emoji)=>`<div class="card"><div class="card-head"><h3>${emoji} ${label} · 90 days</h3></div>
+    <div class="card-body" style="padding-top:8px">${Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([id,p],i)=>{const e=emp(id);if(!e)return'';
+      return `<div class="row mb8" style="gap:9px"><span style="width:22px;font-weight:800;color:var(--ink3)">${i<3?['🥇','🥈','🥉'][i]:i+1}</span>${av(e,'sm')}
+      <a href="#/people/${e.id}" class="small" style="font-weight:650;flex:1;color:inherit">${esc(e.name)}</a>
+      <span class="chip num">+${p}</span></div>`;}).join('')||'<span class="tiny faint">Nothing yet this quarter.</span>'}</div></div>`;
+  return `<div class="grid g3">
+    ${board(earned,'Most recognized','🏆')}
+    ${board(given,'Most generous','💝')}
+    <div class="card"><div class="card-head"><h3>✦ Values in action</h3></div><div class="card-body">
+      ${Chart.donut(Object.entries(valCount).map(([v,n],i)=>({label:v,v:n,color:['#22c55e','#6d28d9','#0ea5e9','#f59e0b','#ec4899'][i%5]})),160,0.62,'Recognition by company value')}
+      <div class="col mt12" style="gap:5px">${Object.entries(valCount).sort((a,b)=>b[1]-a[1]).map(([v,n],i)=>`<div class="row between"><span class="row tiny" style="gap:6px"><i style="width:9px;height:9px;border-radius:3px;background:${['#22c55e','#6d28d9','#0ea5e9','#f59e0b','#ec4899'][i%5]};display:inline-block"></i>${v}</span><b class="tiny num">${n}</b></div>`).join('')}</div></div></div>
+  </div>`;
+}
+function cheersRewards(){
+  const myId=DB.me.employeeId;
+  const hist=(DB.redemptions||[]).filter(r=>r.employeeId===myId);
+  return `<div class="grid g23">
+    <div class="grid g2" style="align-content:start">${allRewards().map(r=>{const bal=ptsEarned(myId);
+      return `<div class="card pad"><div class="row" style="gap:12px"><span style="font-size:26px">${r.icon}</span>
+      <span class="col" style="gap:1px;flex:1"><b class="small">${r.name}</b><span class="tiny faint">${r.pts} pts</span></span>
+      <button class="btn sm ${bal>=r.pts?'primary':'ghost'}" style="--brand:${CHEER_GREEN};--brand-deep:#16a34a" ${bal>=r.pts?'':'disabled'} data-act="redeem" data-arg="${r.id}">Redeem</button></div></div>`;}).join('')}
+      ${isAdmin()?`<button class="card pad tpl-card" data-act="addReward" style="border-style:dashed"><div class="row" style="gap:10px"><span style="font-size:22px">＋</span><span class="col" style="gap:1px"><b class="small">Add a reward</b><span class="tiny faint">admin · appears for everyone instantly</span></span></div></button>`:''}
+    </div>
+    <div class="col" style="gap:16px">
+      <div class="card pad"><b class="small">Your balance</b>
+        <b class="num" style="font-size:30px;font-family:var(--font-display);display:block;margin-top:6px">${ptsEarned(myId)} <span class="small faint">pts</span></b>
+        <span class="tiny faint">earned from ${DB.feedback.filter(f=>fbRecipients(f).includes(myId)).length} cheers</span></div>
+      <div class="card"><div class="card-head"><h3>Redemption history</h3></div><div class="card-body" style="padding-top:8px">
+        ${hist.length?hist.map(r=>`<div class="row mb8 between"><span class="small">${esc(r.item)}</span><span class="tiny faint num">−${r.pts} · ${rel(r.at||todayISO())}</span></div>`).join(''):'<span class="tiny faint">Nothing redeemed yet — treat yourself.</span>'}</div></div>
+    </div>
+  </div>`;
+}
+ACT.addReward=()=>{
+  UI.modal({title:'Add a reward',body:`
+    <div class="grid g3"><div class="field"><label>Emoji</label><input id="rw-icon" value="🎁" maxlength="4"></div>
+    <div class="field" style="grid-column:span 2"><label>Name</label><input id="rw-name" placeholder="e.g. $50 travel credit"></div></div>
+    <div class="field"><label>Cost (points)</label><input type="number" id="rw-pts" value="500"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:${CHEER_GREEN};--brand-deep:#16a34a" data-act="saveReward">Add reward</button>`});
+};
+ACT.saveReward=()=>{
+  (DB.customRewards=DB.customRewards||[]).push({id:uid('rw'),name:$('#rw-name').value.trim()||'New reward',pts:+$('#rw-pts').value||100,icon:$('#rw-icon').value||'🎁'});
+  audit('Reward added',$('#rw-name').value);Store.save();UI.closeModal();render();UI.toast('Reward live in the catalog — for everyone, persistently','🛍️');
+};
+function cheersAnalytics(){
+  const act=activeEmps();
+  const gave=uniq(DB.feedback.filter(f=>f.at>=monthStart()&&f.pts).flatMap(f=>[f.fromId,...(f.boosts||[]).map(b=>b.by)]));
+  const weeks=[3,2,1,0].map(w=>{const from=daysAgo((w+1)*7),to=daysAgo(w*7);
+    return {label:w===0?'This wk':w+'w ago',v:DB.feedback.filter(f=>f.at>=from&&f.at<to).length,color:CHEER_GREEN};});
+  return `<div class="grid g4 mb16">
+    ${statCard('Participation',pct(gave.length,act.length)+'%',gave.length+' of '+act.length+' gave this month',CHEER_GREEN)}
+    ${statCard('Cheers · 90d',DB.feedback.filter(f=>f.at>=daysAgo(90)).length,'posts + boosts on top','var(--c-grow)')}
+    ${statCard('Points circulating',sum(DB.feedback.filter(f=>f.at>=monthStart()).map(f=>((f.pts||0)+sum((f.boosts||[]).map(b=>b.pts)))*(fbRecipients(f).length||1))),'given this month','var(--c-time)')}
+    ${statCard('Redemptions',(DB.redemptions||[]).length,fmt$(sum((DB.redemptions||[]).map(r=>r.pts))/10)+' est. value','var(--c-engage)')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Recognition volume by week</h3></div><div class="card-body">${Chart.bars(weeks,{h:180,alt:'Recognition posts per week'})}</div></div>
+    <div class="card pad"><b class="small">Program health</b>
+      <div class="col mt12" style="gap:10px">${[['🔁','Allowance reset','1st of each month — unused points expire (use-it-or-lose-it drives habit)'],['📈','North star','% of employees giving monthly · target 60%'],['🧵','Connected','Cheers post to #people-updates, land on profiles, and feed flight-risk recognition signals']].map(x=>`
+      <span class="row" style="gap:10px;align-items:flex-start"><span>${x[0]}</span><span class="col" style="gap:1px"><b class="tiny" style="font-size:12.5px">${x[1]}</b><span class="tiny muted">${x[2]}</span></span></span>`).join('')}</div></div>
+  </div>`;
+}
+
+/* ============================================================
+   PARITY CHECKLISTS — auditable “all the functionality” claims
+   ============================================================ */
+const PARITY={
+  cheers:{name:'Bonusly',items:[
+    ['b','Smart composer — “+25 @name #value message” parsed live'],['b','Custom point amounts (any number, allowance-capped)'],
+    ['b','Multi-recipient cheers, points each'],['b','Add-on boosts on any post'],['b','Monthly give allowance, use-it-or-lose-it'],
+    ['b','Earned balance + rewards catalog + redemption history'],['b','Admin-managed rewards'],['b','Hashtag company values + value analytics'],
+    ['b','Reactions & threaded comments'],['b','Giver + receiver leaderboards'],['b','Auto birthday/anniversary celebration posts'],
+    ['b','Feeds person\'s profile automatically'],['b','Admin analytics (participation, volume, circulation)'],
+    ['s','Slack notifications (simulated via #people-updates)'],['s','Gift-card fulfillment (real vendor needs a server)'],
+    ['x','Mobile app & external integrations']]},
+  chat:{name:'Slack',items:[
+    ['b','Channels — public, department-locked, and user-created'],['b','Direct messages'],['b','Threads with reply counts'],
+    ['b','Edit & delete your own messages'],['b','Pinned messages bar'],['b','Saved items'],['b','@mentions with live notifications'],
+    ['b','Emoji reactions'],['b','Per-channel unread counts that clear on read'],['b','Message search'],['b','Per-channel drafts'],
+    ['b','File attachments (simulated upload)'],['b','Status emoji + text'],['b','Huddles (launches Meet)'],
+    ['s','Auto-posts from Mosaic (hires, cheers) — a real bot in production'],
+    ['x','Real-time multi-user sync (needs a server)'],['x','Voice/video transport, screen share'],['x','App marketplace & workflow builder']]},
+  workday:{name:'Workday HCM',items:[
+    ['b','Worker records — job, comp, personal, W-4, banking (masked), emergency'],['b','Supervisory org chart'],
+    ['b','Business processes with multi-step approvals that APPLY on completion: Job Change, Comp Change, One-Time Payment, Termination'],
+    ['b','Worker history — every event on one timeline per employee'],['b','Compensation: bands, compa-ratio, merit cycle worksheet'],
+    ['b','Absence: PTO, leave types, FMLA tracking'],['b','Talent: reviews, calibration, succession-style 9-box'],
+    ['b','Recruiting → onboarding → active lifecycle'],['b','Position plan: budgeted vs filled vs open by department'],
+    ['b','Security groups + capability-based access'],['b','Effective-dated comp history'],['b','Audit log, system-wide and per-worker'],
+    ['s','Payroll preview (real payroll engines are jurisdiction-specific services)'],['s','Open enrollment events'],
+    ['x','Payroll tax calculation & filing'],['x','Multi-country localization'],['x','Prism-style warehouse analytics']]},
+  mail:{name:'Gmail',items:[
+    ['b','Conversation threading — replies stack into one thread'],['b','Cross-persona delivery: send to a teammate, it\'s in their inbox'],
+    ['b','Labels — create, color, apply, filter'],['b','Full-text search'],['b','Snooze (1/3/7 days — returns to inbox unread)'],
+    ['b','Drafts — save, resume, send'],['b','Trash with undo + Spam folder with not-spam rescue'],
+    ['b','Multi-select bulk actions: archive, trash, mark read, label'],['b','Star / unstar, unread filter'],
+    ['b','Forward & reply'],['b','Signature appended automatically'],['b','Attachments (simulated)'],
+    ['b','Deep links into Mosaic modules from message bodies'],['b','Keyboard: e archive · s star · u back'],
+    ['s','Vacation auto-responder (tied to your PTO)'],['s','New-mail notifications'],
+    ['x','Real external email (SMTP/IMAP — phase-2 Gmail API)'],['x','ML spam filtering']]},
+  cal:{name:'Google Calendar',items:[
+    ['b','Day, week and month views'],['b','Click any empty slot to create an event there'],
+    ['b','RSVP yes/maybe/no with live attendee counts'],['b','Edit & delete events (organizer) with undo'],
+    ['b','Calendar layers — toggle meetings, 1:1s, interviews, PTO, focus'],['b','Weekend show/hide'],
+    ['b','Mini-month navigator with event dots'],['b','Weekly recurring events'],
+    ['b','.ics export — drop any event into a real calendar app'],['b','Conflict hints when inviting busy people'],
+    ['b','Auto-derived events: 1:1s, interviews, PTO, holidays, standups'],['b','Live now-line'],
+    ['s','Invites & reminders (in-app notifications)'],['s','Find-a-time (conflict counts, not full grid)'],
+    ['x','True two-way Google Calendar sync (phase-2 API)'],['x','Rooms & resource booking directory']]},
+  drive:{name:'Google Drive',items:[
+    ['b','My Drive with nested folders & breadcrumbs'],['b','Grid and list layouts'],['b','Recent, Starred, Shared-with-me, Trash views'],
+    ['b','Full-text search'],['b','Sort by name or modified'],['b','Per-file actions: rename, move, star, share, download, trash'],
+    ['b','Sharing dialog — everyone / department-locked / private'],['b','Trash with restore + delete forever'],
+    ['b','New folder & new doc'],['b','Department-scoped security on files and folders'],['b','Storage meter'],
+    ['b','Generated letters & Meet recordings auto-file themselves'],['s','Upload (simulated — no real file storage)'],
+    ['s','Preview (sheets/slides mocked; production uses Drive API previews)'],['s','Version history (display)'],
+    ['x','Real file storage & sync clients'],['x','Live multiplayer editing']]},
+  meet:{name:'Zoom / Google Meet',items:[
+    ['b','Instant meetings + personal room'],['b','One-click join from Calendar, 1:1s, interviews, chat huddles'],
+    ['b','Mute / camera toggles with tile indicators'],['b','Participants panel with host controls (mute-all etiquette ping)'],
+    ['b','In-call chat'],['b','Floating emoji reactions'],['b','Raise hand'],['b','Screen-share presentation layout with thumbnail strip'],
+    ['b','Recording with live REC badge — saved to Drive on leave'],['b','Live captions (simulated transcript)'],
+    ['b','Grid / speaker view toggle'],['b','Invite link copy'],['b','Schedule a meeting (opens Calendar pre-filled)'],
+    ['s','Virtual backgrounds (cosmetic)'],['s','Waiting room / lock (state only)'],
+    ['x','Real audio/video transport (WebRTC servers — phase-2 Zoom/Meet SDK)'],['x','Breakout rooms'],['x','Dial-in numbers']]},
+  askpeople:{name:'Zendesk-class ticketing',items:[
+    ['b','Queue with filters: status, priority, assignee, search'],['b','SLA timers with breach flags (configurable hours)'],
+    ['b','Inline assign & priority from the queue'],['b','Internal notes invisible to requesters'],['b','Canned replies — fully manageable'],
+    ['b','Round-robin auto-assignment toggle'],['b','KB deflection — suggests articles while the employee types'],
+    ['b','CSAT on resolution'],['b','Console analytics: volume by category, weekly trend, response medians'],
+    ['b','Security-group gated console'],['b','Cases feed the requester\'s Help Center view'],
+    ['s','Email-channel intake (production: forwarding address)'],['x','Live chat with real-time presence']]},
+};
+const parityBtn=mod=>`<button class="btn ghost" data-act="parity" data-arg="${mod}" title="The auditable feature checklist vs ${PARITY[mod]?PARITY[mod].name:''}">📋 Parity</button>`;
+ACT.parity=mod=>{
+  const p=PARITY[mod];if(!p)return;
+  const mark={b:['p-b','✅','Built — works end-to-end in this demo'],s:['p-s','🔁','Simulated — real counterpart needs a server/vendor'],x:['p-x','🚫','Not possible in a single-file demo — phase-2 stack territory']};
+  UI.drawer({head:`<span class="notif-ic" style="background:var(--bg2)">📋</span><div class="col" style="gap:1px"><b style="font-size:15px">Parity vs ${p.name}</b><span class="tiny muted">${p.items.filter(i=>i[0]==='b').length} built · ${p.items.filter(i=>i[0]==='s').length} simulated · ${p.items.filter(i=>i[0]==='x').length} need a server</span></div>`,
+    body:`<div class="mb12 tiny faint">Every claim auditable: ✅ built here · 🔁 simulated faithfully · 🚫 requires infrastructure a static file can't have.</div>
+    ${p.items.map(i=>`<div class="parity-row"><span class="${mark[i[0]][0]}" style="flex:none">${mark[i[0]][1]}</span><span>${i[1]}</span></div>`).join('')}
+    <p class="tiny faint mt16">🚫 items become real in the phase-2 stack (see Admin → Data & demo → blueprint).</p>`,
+    foot:'<button class="btn ghost" data-act="closeDrawer">Close</button>'});
+};
 ACT.openPraise=toId=>{
   window._prTo=toId?[toId]:[];window._prPts=25;window._prText='';window._prVals=[];
   praiseModal();
@@ -3380,13 +3751,18 @@ function praiseModal(){
       <div class="row" style="gap:7px"><select id="pr-to" style="flex:1">${DB.employees.filter(e=>e.status!=='terminated'&&e.id!==DB.me.employeeId&&!window._prTo.includes(e.id)).map(e=>`<option value="${e.id}">${esc(e.name)} — ${esc(e.title)}</option>`).join('')}</select>
       <button class="btn sm soft" style="--brand:var(--c-grow)" data-act="addPraiseTo" type="button">＋ Tag</button></div>
       <div class="row wrap mt8" style="gap:6px" id="pr-chips">${window._prTo.map(id=>{const e=emp(id);return e?`<span class="chip" style="background:var(--vio-soft);border-color:transparent;color:var(--c-grow);font-weight:650">${av(e,'xs')} ${esc(e.name)} <span style="cursor:pointer;margin-left:2px" data-act="removePraiseTo" data-arg="${id}">✕</span></span>`:'';}).join('')||'<span class="tiny faint">No one tagged yet — add at least one teammate.</span>'}</div></div>
-    <div class="field"><label>Points <span class="faint">(each tagged person receives this amount)</span></label>
-      <div class="row wrap" style="gap:6px">${[0,10,25,50,100].map(p=>`<button type="button" class="chip" data-act="setPraisePts" data-arg="${p}" style="${p===window._prPts?'background:var(--vio-soft);border-color:transparent;color:var(--c-grow);font-weight:700':''}">${p?'+'+p:'No points'}</button>`).join('')}</div>
-      <span class="hint" style="${spend>left?'color:var(--bad);font-weight:700':''}">Spending ${spend} of your ${left} remaining${spend>left?' — over budget, lower the points or untag someone':''}</span></div>
+    <div class="field"><label>Points <span class="faint">(each tagged person receives this amount — any number up to your allowance)</span></label>
+      <div class="row wrap" style="gap:6px">${[0,10,25,50,100].map(p=>`<button type="button" class="chip" data-act="setPraisePts" data-arg="${p}" style="${p===window._prPts?'background:var(--vio-soft);border-color:transparent;color:var(--c-grow);font-weight:700':''}">${p?'+'+p:'No points'}</button>`).join('')}
+        <input type="number" id="pr-custom" min="0" max="500" placeholder="custom…" value="${[0,10,25,50,100].includes(window._prPts)?'':window._prPts}" style="width:90px;background:var(--bg);border:1.5px solid var(--line);border-radius:99px;padding:4px 12px;outline:none;font-size:12.5px" oninput="window._prPts=Math.max(0,Math.min(500,Math.round(+this.value||0)));prSpendHint()"></div>
+      <span class="hint" id="pr-spend" style="${spend>left?'color:var(--bad);font-weight:700':''}">Spending ${spend} of your ${left} remaining${spend>left?' — over budget, lower the points or untag someone':''}</span></div>
     <div class="field"><label>Which values did they live?</label><div class="row wrap" style="gap:7px" id="pr-vals">${VALUES.map(v=>`<button type="button" class="chip ${window._prVals.includes(v)?'on':''}" data-val="${v}" style="${window._prVals.includes(v)?'background:var(--vio-soft);color:var(--c-grow)':''}" onclick="this.classList.toggle('on');this.style.background=this.classList.contains('on')?'var(--vio-soft)':'';this.style.color=this.classList.contains('on')?'var(--c-grow)':''">✦ ${v}</button>`).join('')}</div></div>
     <div class="field"><label>What did they do?</label><textarea id="pr-text" placeholder="Be specific — great recognition names the moment.">${esc(window._prText)}</textarea></div>`,
     foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:var(--c-grow);--brand-deep:#7c4ce0" data-act="submitPraise">Post recognition${spend?' · '+spend+' pts':''}</button>`});
 }
+window.prSpendHint=()=>{const el=$('#pr-spend');if(!el)return;
+  const left=ptsLeft(DB.me.employeeId);const spend=window._prPts*Math.max(window._prTo.length,1);
+  el.textContent=`Spending ${spend} of your ${left} remaining${spend>left?' — over budget, lower the points or untag someone':''}`;
+  el.style.color=spend>left?'var(--bad)':'';el.style.fontWeight=spend>left?'700':'';};
 ACT.addPraiseTo=()=>{praiseCapture();const v=$('#pr-to').value;if(v&&!window._prTo.includes(v))window._prTo.push(v);praiseModal();};
 ACT.removePraiseTo=id=>{praiseCapture();window._prTo=window._prTo.filter(x=>x!==id);praiseModal();};
 ACT.setPraisePts=p=>{praiseCapture();window._prPts=+p;praiseModal();};
@@ -3398,13 +3774,13 @@ ACT.submitPraise=()=>{
   if(spend>ptsLeft(DB.me.employeeId)){UI.toast('That spends more points than you have left this month','🪙');return;}
   const text=(window._prText||'').trim()||'Quietly excellent, as always.';
   const vals=window._prVals;
-  DB.feedback.unshift({id:uid('F'),fromId:DB.me.employeeId,recipients:[...window._prTo],kind:'praise',values:vals.length?vals:['Together'],at:todayISO(),text,pts:window._prPts,reactions:{},comments:[]});
+  DB.feedback.unshift({id:uid('F'),fromId:DB.me.employeeId,recipients:[...window._prTo],kind:'praise',values:vals.length?vals:['Together'],at:todayISO(),text,pts:window._prPts,reactions:{},comments:[],boosts:[]});
   window._prTo.forEach(toId=>notify(toId,'⭐',`${me().name} recognized you${window._prPts?' with +'+window._prPts+' pts':''}${vals.length?' for '+vals.join(' + '):''} 🎉`,'#/grow'));
   audit('Recognition posted','→ '+window._prTo.map(id=>(emp(id)||{}).name).join(', ')+(window._prPts?' · +'+window._prPts+' pts each':''));
   chatPost('c-people-updates','⭐ '+me().name+' recognized '+window._prTo.map(id=>(emp(id)||{}).name.split(' ')[0]).join(', ')+(window._prPts?' (+'+window._prPts+' pts)':'')+': “'+text.slice(0,90)+(text.length>90?'…':'')+'”');
-  Store.save();UI.closeModal();UIS.growTab='feedback';
-  UI.toast('Recognition posted — it\'s on the wall, their profile, and Slack','⭐');
-  if(ROUTE.mod==='grow')render();
+  Store.save();UI.closeModal();UIS.cheersTab='feed';
+  UI.toast('Cheered 🎉 — it\'s on the Cheers wall, their profile, and #people-updates','⭐');
+  render();
 };
 function growOnes(){
   const mine=DB.ones.filter(o=>o.managerId===DB.me.employeeId||o.reportId===DB.me.employeeId).sort((a,b)=>a.when.localeCompare(b.when));
@@ -3946,7 +4322,18 @@ function insightsPeople(){
     ${insightsPool().map(e=>({e,r:flightRisk(e)})).filter(x=>x.r.tier!=='low').sort((a,b)=>b.r.score-a.r.score).slice(0,6).map(x=>`
       <tr class="click" onclick="nav('#/people/${x.e.id}')"><td>${empCell(x.e)}</td><td>${riskPill(x.r)}</td>
       <td><span class="row wrap" style="gap:5px">${x.r.reasons.slice(0,3).map(rr=>`<span class="chip" style="font-size:10.5px">${esc(rr)}</span>`).join('')}</span></td>
-      <td class="r"><span class="tiny linklike">Open profile →</span></td></tr>`).join('')||'<tr><td colspan="4" class="faint">No elevated signals right now 🌿</td></tr>'}</tbody></table></div>`;
+      <td class="r"><span class="tiny linklike">Open profile →</span></td></tr>`).join('')||'<tr><td colspan="4" class="faint">No elevated signals right now 🌿</td></tr>'}</tbody></table></div>
+  <div class="card mt16"><div class="card-head"><h3>🪑 Position plan</h3><span class="spacer"></span><span class="tiny faint">Workday-style headcount: budgeted vs filled vs in-flight</span></div>
+    <table class="tbl"><thead><tr><th>Department</th><th class="r">Budgeted</th><th class="r">Filled</th><th class="r">Open reqs</th><th class="r">Variance</th></tr></thead><tbody>
+    ${DEPTS.filter(d=>d.id!=='exec').map(d=>{
+      const filled=activeEmps().filter(e=>e.dept===d.id).length;
+      const open=DB.reqs.filter(r=>r.status==='open'&&r.dept===d.id).length;
+      const budget=filled+open+(['eng','sales'].includes(d.id)?1:0);
+      const vari=budget-filled-open;
+      return `<tr><td><span class="row" style="gap:8px"><i style="width:9px;height:9px;border-radius:3px;background:${d.color}"></i><b class="small">${d.name}</b></span></td>
+      <td class="r num">${budget}</td><td class="r num">${filled}</td><td class="r num">${open}</td>
+      <td class="r num" style="${vari>0?'color:var(--warn);font-weight:700':''}">${vari>0?vari+' unopened':'—'}</td></tr>`;}).join('')}</tbody></table>
+    <p class="tiny faint" style="padding:10px 16px">“Unopened” seats are budget approved but not yet requisitioned — one click in Recruiting closes the gap.</p></div>`;
 }
 function insightsTalent(){
   const cands=DB.candidates;
@@ -4093,22 +4480,37 @@ function kbArticle(kid){
 }
 ACT.openNewCase=()=>{
   UI.modal({title:'Open a case 🎟️',sub:'Routed to People Ops — you\'ll get notified on every reply.',body:`
-    <div class="field"><label>Subject</label><input id="hc-subject" placeholder="One line — what do you need?"></div>
+    <div class="field"><label>Subject</label><input id="hc-subject" placeholder="One line — what do you need?" oninput="apDeflect(this.value)"><div id="ap-deflect"></div></div>
     <div class="grid g2">
       <div class="field"><label>Category</label><select id="hc-cat">${['Payroll','Benefits','Time Off','Verification','Equipment','Retirement','Policy question','Other'].map(c=>`<option>${c}</option>`).join('')}</select></div>
       <div class="field"><label>Priority</label><select id="hc-pri"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></div></div>
     <div class="field"><label>Details</label><textarea id="hc-body" placeholder="Context, dates, anything that helps us solve it in one touch."></textarea></div>`,
     foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:var(--c-help);--brand-deep:#e0506b" data-act="submitCase">Submit case</button>`});
 };
+window.apDeflect=q=>{
+  const el=$('#ap-deflect');if(!el)return;
+  const ql=(q||'').toLowerCase().split(/\s+/).filter(w=>w.length>3);
+  if(!ql.length){el.innerHTML='';return;}
+  const hits=DB.kb.map(k=>({k,s:ql.filter(w=>(k.title+' '+k.body).toLowerCase().includes(w)).length})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,2);
+  el.innerHTML=hits.length?`<div class="card pad mt8" style="box-shadow:none;background:var(--teal-soft);border-color:transparent;padding:10px 12px">
+    <b class="tiny" style="font-size:12px">💡 These might answer it instantly:</b>
+    ${hits.map(h=>`<a class="small linklike" style="display:block;margin-top:5px" href="#/help/${h.k.id}" data-act="closeModalSoft">${esc(h.k.title)}</a>`).join('')}</div>`:'';
+};
 ACT.submitCase=()=>{
   const subject=$('#hc-subject').value.trim()||'Quick question';
-  const c={id:'HD-'+rint(110,999),employeeId:DB.me.employeeId,subject,cat:$('#hc-cat').value,status:'open',priority:$('#hc-pri').value,assigneeId:'E021',createdAt:todayISO(),
+  let assigneeId=null;
+  if(DB.autoAssign){
+    const team=(byId(DB.groups,'g-people')||{members:[]}).members.filter(id=>id!==DB.me.employeeId);
+    if(team.length){DB.rrIdx=((DB.rrIdx||0)+1)%team.length;assigneeId=team[DB.rrIdx];}
+  }
+  const c={id:'HD-'+rint(110,999),employeeId:DB.me.employeeId,subject,cat:$('#hc-cat').value,status:'open',priority:$('#hc-pri').value,assigneeId,createdAt:todayISO(),
+    slaDue:iso(new Date(Date.now()+(DB.slaHours||24)*3600000)),firstResponseAt:null,tags:[$('#hc-cat').value],
     messages:[{at:todayISO(),fromId:DB.me.employeeId,text:$('#hc-body').value.trim()||subject}]};
   DB.cases.unshift(c);
-  notify('E021','🎟️',`New ${c.priority} case from ${me().name}: ${subject}`,'#/help');
-  audit('Case opened',c.id+' · '+subject);
+  notify(assigneeId||'E021','🎟️',`New ${c.priority} case${assigneeId?' assigned to you':''}: ${subject}`,canSee('askpeople')?'#/askpeople':'#/help');
+  audit('Case opened',c.id+' · '+subject+(assigneeId?' → '+(emp(assigneeId)||{}).name:' (unassigned)'));
   Store.save();UI.closeModal();render();
-  UI.toast('Case <b>'+c.id+'</b> created — Hannah\'s team is on it','🎟️');
+  UI.toast('Case <b>'+c.id+'</b> created — '+(assigneeId?esc((emp(assigneeId)||{}).name)+' has it (round-robin)':'it\'s in the People-team queue'),'🎟️');
 };
 ACT.openCase=cid=>{
   const c=byId(DB.cases,cid);if(!c)return;
@@ -4127,7 +4529,7 @@ ACT.openCase=cid=>{
           <div style="padding:11px 14px;border-radius:13px;background:${m.isInternal?'var(--warn-soft)':isReq?'var(--card2)':'var(--rose-soft)'};font-size:13px;line-height:1.6">${m.isInternal?'<span class="tiny" style="font-weight:700;display:block;margin-bottom:2px">🔒 Internal note</span>':''}${esc(m.text)}</div>
           <div class="tiny faint" style="margin-top:3px;${isReq?'':'text-align:right'}">${esc(from?from.name:'')} · ${rel(m.at)}</div></div>`;}).join('')}</div>
       ${c.status!=='solved'?`
-      ${isPeopleTeam?`<div class="row mt16" style="gap:8px"><select onchange="if(this.value){document.querySelector('#case-reply').value=this.value;this.selectedIndex=0;}" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;font-size:12px;color:var(--ink2)"><option value="">📋 Insert a canned reply…</option>${CANNED.map(cn=>`<option value="${esc(cn.text)}">${cn.label}</option>`).join('')}</select></div>`:''}
+      ${isPeopleTeam?`<div class="row mt16" style="gap:8px"><select onchange="if(this.value){document.querySelector('#case-reply').value=this.value;this.selectedIndex=0;}" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;font-size:12px;color:var(--ink2)"><option value="">📋 Insert a canned reply…</option>${(DB.canned||CANNED).map(cn=>`<option value="${esc(cn.text)}">${esc(cn.label)}</option>`).join('')}</select></div>`:''}
       <div class="field ${isPeopleTeam?'mt8':'mt16'}"><label>Reply</label><textarea id="case-reply" placeholder="${isPeopleTeam?'Answer with policy links where you can…':'Add more details…'}"></textarea>
       ${isPeopleTeam?`<label class="row tiny" style="gap:7px;cursor:pointer;margin-top:6px"><input type="checkbox" id="case-internal" style="width:14px;height:14px;accent-color:var(--warn)"> 🔒 Internal note — visible to the People team only</label>`:''}</div>`:
       `<div class="card pad mt16" style="background:var(--ok-soft);border-color:transparent;box-shadow:none"><b class="small" style="color:var(--ok)">✓ Solved${c.csat?' · rated '+c.csat+'/5 by '+esc(e.name.split(' ')[0]):''}</b></div>`}`,
@@ -4809,6 +5211,7 @@ ACT.exitProxy=()=>{
   Store.save();nav('#/home');render();UI.toast('Back to yourself 👋','🎭');
 };
 ACT.openTab=()=>{window.open(location.href,'_blank');UI.toast('Opened in a new browser tab — same data, multi-task away','↗️');};
+ACT.openModTab=mod=>{window.open(location.href.split('#')[0]+'#/'+mod,'_blank');UI.toast('Opened '+((modOf(mod)||{}).label||mod)+' in its own tab','↗️');};
 function renderProxyBar(){
   const pb=$('#proxy-bar');if(!pb)return;
   if(!DB.me.proxy){pb.style.display='none';document.body.classList.remove('proxying');return;}
@@ -4960,6 +5363,49 @@ ACT.saveBank=eid=>{
   audit('Banking info updated',e.name+' (sensitive — masked)');
   Store.save();UI.closeModal();render();UI.toast('Direct deposit updated — verify a test deposit next cycle','🏦');
 };
+/* ---- worker history: every event about one person, one timeline ---- */
+function workerHistory(e){
+  const ev=[];
+  const P=(at,cat,icon,title,detail)=>{if(at)ev.push({at,cat,icon,title,detail:detail||''});};
+  e.compHistory.forEach(h=>P(h.date,'job','💸',h.type+' — '+fmt$(h.base),h.note));
+  P(e.hireDate,'job','🪪','Hired','as '+e.title.split(',')[0]);
+  if(e.lastDay)P(todayISO(),'job','👋','Offboarding initiated','last day '+fmtD(e.lastDay));
+  DB.timeoff.filter(t=>t.employeeId===e.id&&t.decidedAt).forEach(t=>P(t.decidedAt,'time','🏖️',TO_TYPES[t.type].label+' '+t.status,t.days+'d · '+fmtDshort(t.start)+'–'+fmtDshort(t.end)));
+  (DB.leaves||[]).filter(l=>l.employeeId===e.id).forEach(l=>P(l.start,'time','🌿','Leave of absence ('+l.type+')','returns '+fmtDshort(l.expectedReturn)));
+  DB.enrollments.filter(en=>en.employeeId===e.id&&en.completedAt).forEach(en=>{const c=courseOf(en.courseId);if(c)P(en.completedAt,'learn','🎓','Completed: '+c.title,en.score?en.score+'%':'');});
+  DB.feedback.filter(f=>fbRecipients(f).includes(e.id)).forEach(f=>P(f.at,'cheer','🎉','Recognized by '+((emp(f.fromId)||{}).name||''),(f.pts?'+'+f.pts+' pts · ':'')+'“'+f.text.slice(0,60)+(f.text.length>60?'…':'')+'”'));
+  (DB.envelopes||[]).forEach(env=>{const s=env.signers.find(x=>x.empId===e.id&&x.signedAt);if(s)P(s.signedAt,'process','✍️','Signed: '+env.title,env.id);});
+  (DB.flows||[]).filter(f=>f.fields&&f.fields.workerId===e.id).forEach(f=>{const tpl=tplOf(f.templateId);P(f.createdAt,'process',tpl.icon,tpl.name+' — '+tpl.stages[f.stage],f.id+' · by '+((emp(f.requesterId)||{}).name||''));});
+  DB.reviews.filter(r=>r.employeeId===e.id&&r.type==='manager'&&r.submittedAt&&r.rating).forEach(r=>{const cy=byId(DB.cycles,r.cycleId);P(r.submittedAt,'perf','📝','Review — '+r.rating+'★',cy?cy.name:'');});
+  DB.audit.filter(a=>a.detail&&a.detail.includes(e.name)).slice(0,12).forEach(a=>P(a.at,'process','🧾',a.action,a.detail));
+  return ev.sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,60);
+}
+function historyTab(e){
+  const filt=UIS.histFilter||'all';
+  const cats=[['all','All'],['job','Job & Pay'],['time','Time'],['learn','Learning'],['cheer','Recognition'],['perf','Performance'],['process','Processes']];
+  const ev=workerHistory(e).filter(x=>filt==='all'||x.cat===filt);
+  return `
+  <div class="row mb12 wrap" style="gap:8px"><span class="badge b-vio">🔒 Worker history</span>
+    <span class="tiny faint">Every event on ${esc(e.name.split(' ')[0])}'s record — Workday-style, drawn live from every module.</span><span class="spacer"></span>
+    <div class="pill-tabs">${cats.map(c=>`<button class="${filt===c[0]?'on':''}" data-act="setHistFilter" data-arg="${c[0]}">${c[1]}</button>`).join('')}</div></div>
+  <div class="card pad">
+    <div class="timeline" style="--mod:var(--c-people)">${ev.map(x=>`
+      <div class="tl-item"><b class="small">${x.icon} ${esc(x.title)}</b>
+      <div class="tiny faint">${fmtD(x.at)}${x.detail?' · '+esc(x.detail):''}</div></div>`).join('')||'<div class="empty">No events recorded.</div>'}</div>
+  </div>`;
+}
+ACT.setHistFilter=a=>{UIS.histFilter=a;render();};
+ACT.startBP=eid=>{
+  window._bpWorker=eid;
+  const e=emp(eid);
+  UI.modal({title:'🧩 Start a business process',sub:'For '+esc(e.name)+' — pick a process; approvals route automatically and the record updates on completion.',body:`
+    <div class="col" style="gap:9px">${WF_TEMPLATES.filter(t=>t.bp).map(t=>`
+      <button class="card pad tpl-card" data-act="bpPick" data-arg="${t.id}"><div class="row" style="gap:12px"><span style="font-size:22px">${t.icon}</span>
+      <span class="col" style="gap:1px;flex:1;text-align:left"><b class="small">${t.name}</b><span class="tiny muted">${t.blurb}</span>
+      <span class="tiny faint" style="margin-top:3px">${t.stages.join(' → ')}</span></span>${I.chev}</div></button>`).join('')}</div>`,
+    foot:'<button class="btn ghost" data-act="closeModal">Cancel</button>'});
+};
+ACT.bpPick=tid=>{UI.closeModal();ACT.flowForm(tid);};
 /* admin: edit any job record (#3) */
 ACT.editJob=eid=>{
   const e=emp(eid);
@@ -4996,11 +5442,16 @@ ACT.saveJob=eid=>{
    ============================================================ */
 const PTS_ALLOWANCE=100;
 const REWARDS=[{id:'rw1',name:'$10 coffee card',pts:100,icon:'☕'},{id:'rw2',name:'$25 gift card',pts:250,icon:'🎁'},{id:'rw3',name:'Charity donation $25',pts:250,icon:'💝'},{id:'rw4',name:'Half-day Friday pass',pts:400,icon:'🌴'},{id:'rw5',name:'Meridian robot swag kit',pts:300,icon:'🤖'}];
+const allRewards=()=>REWARDS.concat((DB&&DB.customRewards)||[]);
 const fbRecipients=f=>f.recipients||(f.toId?[f.toId]:[]);
 const monthStart=()=>iso(new Date(now().getFullYear(),now().getMonth(),1));
-const ptsGiven=eid=>sum(DB.feedback.filter(f=>f.fromId===eid&&f.at>=monthStart()).map(f=>(f.pts||0)*fbRecipients(f).length));
+const ptsGiven=eid=>{let t=0;DB.feedback.forEach(f=>{const n=fbRecipients(f).length||1;
+  if(f.fromId===eid&&f.at>=monthStart())t+=(f.pts||0)*n;
+  (f.boosts||[]).forEach(b=>{if(b.by===eid&&b.at>=monthStart())t+=b.pts*n;});});return t;};
 const ptsLeft=eid=>Math.max(0,PTS_ALLOWANCE-ptsGiven(eid));
-const ptsEarned=eid=>sum(DB.feedback.filter(f=>fbRecipients(f).includes(eid)).map(f=>f.pts||0))-sum((DB.redemptions||[]).filter(r=>r.employeeId===eid).map(r=>r.pts));
+const ptsEarned=eid=>{let t=0;DB.feedback.forEach(f=>{if(!fbRecipients(f).includes(eid))return;
+  t+=(f.pts||0);(f.boosts||[]).forEach(b=>t+=b.pts);});
+  return t-sum((DB.redemptions||[]).filter(r=>r.employeeId===eid).map(r=>r.pts));};
 ACT.react=arg=>{
   const [fid,emo]=arg.split('|');
   const f=byId(DB.feedback,fid);if(!f)return;
@@ -5024,7 +5475,7 @@ ACT.openRedeem=()=>{
     foot:'<button class="btn ghost" data-act="closeModal">Close</button>'});
 };
 ACT.redeem=rid=>{
-  const r=byId(REWARDS,rid);if(!r)return;
+  const r=byId(allRewards(),rid);if(!r)return;
   if(ptsEarned(DB.me.employeeId)<r.pts){UI.toast('Not enough points yet — keep being excellent','🛍️');return;}
   DB.redemptions.push({employeeId:DB.me.employeeId,item:r.name,pts:r.pts,at:todayISO()});
   audit('Reward redeemed',r.name+' · '+r.pts+' pts');
@@ -5122,6 +5573,7 @@ const CANNED=[
 ];
 Views.askpeople=()=>{
   if(!canSee('askpeople'))return '<div class="card pad empty"><div class="big">🔒</div>The Ask People console is limited to the People Operations security group.</div>';
+  const tab=UIS.apTab||'queue';
   const all=DB.cases;
   const open=all.filter(c=>c.status==='open'),waiting=all.filter(c=>c.status==='waiting');
   const breach=open.filter(c=>c.slaDue&&c.slaDue<todayISO());
@@ -5129,12 +5581,15 @@ Views.askpeople=()=>{
   const solved=all.filter(c=>c.status==='solved');
   return `
   <div class="page-head"><div style="flex:1"><div class="row" style="gap:10px"><h1 class="page" style="color:#ff5e00">Ask People</h1><span class="badge" style="background:#fff0e6;color:#c2410c">🔒 People Operations group</span></div>
-    <div class="page-sub">Every employee question, one queue — SLAs, assignments, internal notes, canned answers</div></div>
+    <div class="page-sub">Every employee question, one queue — SLAs, assignments, internal notes, canned answers, deflection</div></div>
+    ${parityBtn('askpeople')}
     <button class="btn primary" style="--brand:#ff5e00;--brand-deep:#ea580c" data-act="openNewCase">${I.plus} Log a case</button></div>
+  <div class="tabs">${[['queue','Queue'],['apinsights','Insights'],['apsettings','Settings']].map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setApTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${tab==='queue'?`
   <div class="grid g4 mb16">
     ${statCard('Open',open.length,breach.length?`<span style="color:var(--bad);font-weight:700">${breach.length} past SLA</span>`:'all within SLA','#ff5e00')}
     ${statCard('Waiting on employee',waiting.length,'ball\'s in their court','var(--c-time)')}
-    ${statCard('First response','2.1h','median · target 4h','var(--c-grow)')}
+    ${statCard('First response','2.1h','median · target '+(DB.slaHours||24)+'h','var(--c-grow)')}
     ${statCard('CSAT',solved.length?(avg(solved.filter(c=>c.csat).map(c=>c.csat))).toFixed(1)+' / 5':'—','from '+solved.filter(c=>c.csat).length+' rated solves','var(--c-pay)')}
   </div>
   <div class="filterbar">
@@ -5145,8 +5600,74 @@ Views.askpeople=()=>{
   </div>
   <div class="card"><table class="tbl"><thead><tr><th>Case</th><th>Requester</th><th>Priority</th><th>Status</th><th>Assignee</th><th>SLA</th><th>Age</th></tr></thead>
   <tbody id="ap-rows">${apRows(all)}</tbody></table></div>
-  <p class="tiny faint mt8">Inline-edit priority and assignee right in the queue. SLA = first response due within 1 business day. This console is what the Help Center's "Open a case" feeds.</p>`;
+  <p class="tiny faint mt8">Inline-edit priority and assignee right in the queue. SLA target is configurable in Settings. This console is what the Help Center's "Open a case" feeds.</p>`
+  :tab==='apinsights'?apInsights():apSettings()}`;
 };
+ACT.setApTab=a=>{UIS.apTab=a;render();};
+function apInsights(){
+  const all=DB.cases;
+  const byCat={};all.forEach(c=>byCat[c.cat]=(byCat[c.cat]||0)+1);
+  const weeks=[3,2,1,0].map(w=>({label:w===0?'This wk':w+'w ago',v:all.filter(c=>c.createdAt>=daysAgo((w+1)*7)&&c.createdAt<daysAgo(w*7-(w===0?-1:0))).length,color:'#ff5e00'}));
+  const responded=all.filter(c=>c.firstResponseAt);
+  const medResp=responded.length?Math.round(avg(responded.map(c=>Math.max(between(c.createdAt,c.firstResponseAt),0)))*10)/10:0;
+  const byAssignee={};all.filter(c=>c.status!=='solved'&&c.assigneeId).forEach(c=>{const n=(emp(c.assigneeId)||{}).name;if(n)byAssignee[n]=(byAssignee[n]||0)+1;});
+  const solved=all.filter(c=>c.status==='solved');
+  return `<div class="grid g2 mb16">
+    <div class="card"><div class="card-head"><h3>Volume by category</h3></div><div class="card-body">
+      ${Chart.bars(Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({label:k,v,color:'#ff5e00'})),{h:200,alt:'Case volume by category'})}</div></div>
+    <div class="col" style="gap:16px">
+      <div class="card"><div class="card-head"><h3>Created per week</h3></div><div class="card-body">${Chart.bars(weeks,{h:150,alt:'Cases created per week'})}</div></div>
+      <div class="card pad"><div class="grid g3">
+        <span class="col"><span class="tiny faint">Avg first response</span><b style="font-size:19px" class="num">${medResp}d</b></span>
+        <span class="col"><span class="tiny faint">Solved all-time</span><b style="font-size:19px" class="num">${solved.length}</b></span>
+        <span class="col"><span class="tiny faint">CSAT</span><b style="font-size:19px" class="num">${solved.filter(c=>c.csat).length?avg(solved.filter(c=>c.csat).map(c=>c.csat)).toFixed(1):'—'}</b></span></div></div>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Open load by assignee</h3></div><div class="card-body" style="padding-top:8px">
+      ${Object.entries(byAssignee).map(([n,c])=>`<div class="row mb8 between"><span class="small">${esc(n)}</span><span class="chip num">${c} open</span></div>`).join('')||'<span class="tiny faint">Queue zero.</span>'}</div></div>
+    <div class="card pad"><b class="small">📉 Deflection</b>
+      <p class="tiny muted" style="margin-top:7px;line-height:1.7">When employees type a case subject, Mosaic suggests matching KB articles before they submit — the cheapest ticket is the one that never opens. Top deflectors this month: <b>PTO accrual</b>, <b>401(k) match</b>, <b>payroll calendar</b>.</p></div>
+  </div>`;
+}
+function apSettings(){
+  return `<div class="grid g23">
+    <div class="card"><div class="card-head"><h3>Canned replies</h3><span class="spacer"></span><button class="btn sm primary" style="--brand:#ff5e00;--brand-deep:#ea580c" data-act="cannedEdit" data-arg="new">${I.plus} New reply</button></div>
+      <div class="card-body" style="padding-top:8px">${(DB.canned||[]).map(cn=>`
+        <div class="row mb8" style="gap:10px;align-items:flex-start"><span class="col" style="gap:1px;flex:1"><b class="small">${esc(cn.label)}</b>
+        <span class="tiny faint">${esc(cn.text.slice(0,110))}${cn.text.length>110?'…':''}</span></span>
+        <button class="btn xs ghost" data-act="cannedEdit" data-arg="${cn.id}">${I.edit}</button>
+        <button class="btn xs danger" data-act="cannedDelete" data-arg="${cn.id}">✕</button></div>`).join('')||'<span class="tiny faint">No canned replies yet.</span>'}</div></div>
+    <div class="col" style="gap:16px">
+      <div class="card pad"><b class="small">Service levels</b>
+        <div class="field mt12" style="margin-bottom:8px"><label>First response due within (hours)</label><input type="number" id="sla-hours" value="${DB.slaHours||24}" min="1" max="120"></div>
+        <button class="btn ghost block" data-act="slaSave">Save SLA</button></div>
+      <div class="card pad"><div class="row between"><b class="small">Round-robin auto-assignment</b>
+        <button class="chip" data-act="toggleAutoAssign" style="${DB.autoAssign?'background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700':''}">${DB.autoAssign?'✓ On':'Off'}</button></div>
+        <p class="tiny muted" style="margin-top:7px">New cases distribute across the People Operations group automatically instead of landing unassigned.</p></div>
+    </div>
+  </div>`;
+}
+ACT.cannedEdit=id=>{
+  const cn=id==='new'?{id:'new',label:'',text:''}:byId(DB.canned,id);if(!cn)return;
+  UI.modal({title:id==='new'?'New canned reply':'Edit canned reply',body:`
+    <div class="field"><label>Label</label><input id="cn-label" value="${esc(cn.label)}" placeholder="e.g. Direct deposit timing"></div>
+    <div class="field"><label>Reply text</label><textarea id="cn-text" style="min-height:110px">${esc(cn.text)}</textarea></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#ff5e00;--brand-deep:#ea580c" data-act="cannedSave" data-arg="${id}">Save</button>`});
+};
+ACT.cannedSave=id=>{
+  const label=$('#cn-label').value.trim()||'Untitled',text=$('#cn-text').value.trim()||'';
+  if(id==='new')(DB.canned=DB.canned||[]).push({id:uid('CN'),label,text});
+  else{const cn=byId(DB.canned,id);if(cn){cn.label=label;cn.text=text;}}
+  audit('Canned reply saved',label);Store.save();UI.closeModal();render();UI.toast('Canned reply saved','📋');
+};
+ACT.cannedDelete=id=>{
+  const i=DB.canned.findIndex(c=>c.id===id);if(i<0)return;
+  const cn=DB.canned.splice(i,1)[0];Store.save();render();
+  UI.toast('Canned reply deleted','🗑️',{label:'Undo',fn:()=>{DB.canned.splice(i,0,cn);Store.save();render();}});
+};
+ACT.slaSave=()=>{DB.slaHours=clamp(+$('#sla-hours').value||24,1,120);audit('SLA updated',DB.slaHours+'h');Store.save();render();UI.toast('SLA target saved — applies to new cases','⏱️');};
+ACT.toggleAutoAssign=()=>{DB.autoAssign=!DB.autoAssign;audit('Auto-assignment '+(DB.autoAssign?'enabled':'disabled'),'round-robin');Store.save();render();};
 function apRows(cases){
   const peopleTeam=(byId(DB.groups,'g-people')||{members:[]}).members;
   return cases.map(c=>{
@@ -5254,119 +5775,421 @@ const nowTime=()=>{const d=now();let h=d.getHours();const m=String(d.getMinutes(
 const timeToMin=t=>{if(!t)return 9*60;const ap=/PM/i.test(t)&&!/^12/.test(t)?720:(/AM/i.test(t)&&/^12/.test(t)?-720:0);const[m1,m2]=t.replace(/\s?[AP]M/i,'').split(':');return (+m1)*60+(+m2||0)+ap;};
 const deptScopeOk=scope=>scope==='*'||me().dept===scope||isAdmin()||(scope==='people'&&hasCap('hr-admin'));
 
-/* ---------------- MESSAGES (chat) ---------------- */
+/* ---------------- MESSAGES (Slack tier) ---------------- */
 const chanVisible=c=>c.dm?c.dm.includes(DB.me.employeeId):deptScopeOk(c.scope);
 const dmOther=c=>emp(c.dm.find(id=>id!==DB.me.employeeId))||emp(c.dm[0]);
+const chMsgs=ch=>DB.chatMsgs.filter(m=>m.ch===ch&&!m.parentId);
+const threadOf=mid=>DB.chatMsgs.filter(m=>m.parentId===mid);
+const chUnread=ch=>{const seen=((DB.chatRead||{})[DB.me.employeeId]||{})[ch]||0;return Math.max(0,DB.chatMsgs.filter(m=>m.ch===ch).length-seen);};
+const statusOf=eid=>(DB.statuses||{})[eid];
+function renderMsgText(t){
+  let h=esc(t);
+  h=h.replace(/@([A-Za-z]+)/g,(full,name)=>{
+    const hit=DB.employees.find(e=>e.status!=='terminated'&&e.name.toLowerCase().split(' ').some(w=>w.startsWith(name.toLowerCase())));
+    return hit?`<span class="mention">@${esc(hit.name.split(' ')[0])}</span>`:full;});
+  return h;
+}
+function mentionNotify(text,ch){
+  uniq([...text.matchAll(/@([A-Za-z]+)/g)].map(x=>x[1].toLowerCase())).forEach(nm=>{
+    const hit=DB.employees.find(e=>e.status!=='terminated'&&e.id!==DB.me.employeeId&&e.name.toLowerCase().split(' ').some(w=>w.startsWith(nm)));
+    if(hit)notify(hit.id,'💬',`${me().name} mentioned you in ${ch.dm?'a DM':'#'+ch.name}`,'#/chat/'+ch.id);
+  });
+}
+function msgHtml(m,inThread){
+  const from=emp(m.fromId);if(!from)return'';
+  const st=statusOf(m.fromId);
+  const replies=inThread?[]:threadOf(m.id);
+  const cur=byId(DB.channels,m.ch)||{};
+  const saved=((DB.saved||{})[DB.me.employeeId]||[]).includes(m.id);
+  const pinned=(cur.pins||[]).includes(m.id);
+  return `<div class="msg">${av(from,'md')}<div class="m-body">
+    <div class="row" style="gap:6px"><div class="m-meta"><b style="color:var(--ink);font-size:13px">${esc(from.name)}</b>${st?' '+st.emoji:''} · ${m.time}${m.edited?' · <i>edited</i>':''}${pinned?' · 📌':''}</div>
+      <span class="m-acts">
+        <button class="iconbtn" style="width:22px;height:22px" title="${saved?'Unsave':'Save for later'}" data-act="chatSave" data-arg="${m.id}">${saved?'🔖':'⭐'}</button>
+        ${inThread?'':`<button class="iconbtn" style="width:22px;height:22px" title="Reply in thread" data-act="openThread" data-arg="${m.id}">💬</button>`}
+        ${cur.dm?'':`<button class="iconbtn" style="width:22px;height:22px" title="${pinned?'Unpin':'Pin to channel'}" data-act="chatPin" data-arg="${m.id}">📌</button>`}
+        ${m.fromId===DB.me.employeeId?`<button class="iconbtn" style="width:22px;height:22px" title="Edit" data-act="chatEdit" data-arg="${m.id}">✏️</button>
+        <button class="iconbtn" style="width:22px;height:22px" title="Delete" data-act="chatDelete" data-arg="${m.id}">🗑️</button>`:''}
+      </span></div>
+    <div class="m-text">${renderMsgText(m.text)}</div>
+    ${m.file?`<div class="chip mt8" style="cursor:pointer" onclick="UI.toast('Demo: file preview/download','📎')">📎 ${esc(m.file.name)} <span class="faint">· ${m.file.size}</span></div>`:''}
+    <div class="m-reacts">${Object.entries(m.reactions||{}).map(([emo,n])=>`<span class="chip" data-act="chatReact" data-arg="${m.id}|${emo}">${emo} ${n}</span>`).join('')}
+      <span class="chip" data-act="chatReact" data-arg="${m.id}|👍" style="opacity:.55">+ 👍</span></div>
+    ${replies.length?`<span class="thread-chip" data-act="openThread" data-arg="${m.id}">💬 ${replies.length} repl${replies.length===1?'y':'ies'} <span class="faint">· latest ${replies[replies.length-1].time}</span></span>`:''}
+  </div></div>`;
+}
 Views.chat=param=>{
+  const myId=DB.me.employeeId;
   const chans=DB.channels.filter(chanVisible);
   const channels=chans.filter(c=>!c.dm),dms=chans.filter(c=>c.dm);
-  let cur=chans.find(c=>c.id===param)||channels[0];
-  if(!cur)return '<div class="card empty"><div class="big">💬</div>No channels visible to this persona.</div>';
-  const msgs=DB.chatMsgs.filter(m=>m.ch===cur.id);
-  onMount(()=>{const b=$('#chat-scroll');if(b)b.scrollTop=b.scrollHeight;const i=$('#chat-in');if(i&&window._chatFocus){i.focus();window._chatFocus=false;}});
-  const canPost=!cur.locked||hasCap('hr-admin');
+  const savedIds=((DB.saved||{})[myId]||[]);
+  const savedMode=param==='saved';
+  let cur=savedMode?null:(chans.find(c=>c.id===param)||channels[0]);
+  if(!cur&&!savedMode)return '<div class="card empty"><div class="big">💬</div>No channels visible to this persona.</div>';
+  if(cur){(DB.chatRead=DB.chatRead||{});(DB.chatRead[myId]=DB.chatRead[myId]||{})[cur.id]=DB.chatMsgs.filter(m=>m.ch===cur.id).length;Store.save();}
+  const msgs=cur?chMsgs(cur.id):[];
+  onMount(()=>{const b=$('#chat-scroll');if(b)b.scrollTop=b.scrollHeight;
+    const i=$('#chat-in');if(i){i.value=(UIS.chatDrafts||{})[cur?cur.id:'']||'';if(window._chatFocus){i.focus();window._chatFocus=false;}}});
+  const canPost=cur&&(!cur.locked||hasCap('hr-admin'));
+  const pins=cur?(cur.pins||[]).map(id=>byId(DB.chatMsgs,id)).filter(Boolean):[];
+  const myStatus=statusOf(myId);
   let lastDay=null;
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">Messages</h1><div class="page-sub">Channels scoped to departments, DMs, and a feed Mosaic posts to automatically</div></div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">Messages</h1><div class="page-sub">Threads, pins, mentions, saved items, search — your team's pulse, scoped by department</div></div>
+    ${parityBtn('chat')}
+    <button class="btn ghost" data-act="myStatus">${myStatus?myStatus.emoji+' '+esc(myStatus.text||''):'😶 Set status'}</button></div>
   <div class="chat-wrap">
     <div class="chat-side">
-      <div class="nav-label">Channels</div>
-      ${channels.map(c=>{const un=DB.chatMsgs.filter(m=>m.ch===c.id&&m.at===todayISO()&&m.fromId!==DB.me.employeeId).length;
-        return `<button class="ch-item ${c.id===cur.id?'on':''}" data-act="nav" data-arg="#/chat/${c.id}"><span class="hash">#</span>${c.name}${c.scope!=='*'?' <span title="Department-scoped">🔒</span>':''}${c.locked?' 📣':''}${un&&c.id!==cur.id?`<span class="unread-dot">${un}</span>`:''}</button>`;}).join('')}
+      <input id="chat-q" placeholder="🔎 Search messages…" autocomplete="off" style="width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;outline:none;font-size:12.5px;margin-bottom:4px" oninput="chatDoSearch(this.value)">
+      <div id="chat-search-res"></div>
+      <div class="row between" style="padding:10px 10px 4px"><span class="nav-label" style="padding:0">Channels</span>
+        <button class="iconbtn" style="width:20px;height:20px" title="Create a channel" data-act="newChannel">＋</button></div>
+      ${channels.map(c=>{const un=c.id===(cur||{}).id?0:chUnread(c.id);
+        return `<button class="ch-item ${cur&&c.id===cur.id?'on':''}" data-act="nav" data-arg="#/chat/${c.id}"><span class="hash">#</span>${c.name}${c.scope!=='*'?' <span title="Department-scoped">🔒</span>':''}${c.locked?' 📣':''}${un?`<span class="unread-dot">${un}</span>`:''}</button>`;}).join('')}
       <div class="nav-label">Direct messages</div>
-      ${dms.map(c=>{const o=dmOther(c);return `<button class="ch-item ${c.id===cur.id?'on':''}" data-act="nav" data-arg="#/chat/${c.id}">${av(o,'xs')} ${esc(o.name.split(' ')[0])} ${esc(o.name.split(' ')[1]||'')}</button>`;}).join('')}
+      ${dms.map(c=>{const o=dmOther(c);const st=statusOf(o.id);const un=cur&&c.id===cur.id?0:chUnread(c.id);
+        return `<button class="ch-item ${cur&&c.id===cur.id?'on':''}" data-act="nav" data-arg="#/chat/${c.id}">${av(o,'xs')} ${esc(o.name.split(' ')[0])} ${esc(o.name.split(' ')[1]||'')}${st?' '+st.emoji:''}${un?`<span class="unread-dot">${un}</span>`:''}</button>`;}).join('')}
+      <div class="nav-label">Library</div>
+      <button class="ch-item ${savedMode?'on':''}" data-act="nav" data-arg="#/chat/saved">🔖 Saved items${savedIds.length?`<span class="unread-dot" style="background:var(--ink3)">${savedIds.length}</span>`:''}</button>
     </div>
     <div class="chat-main">
-      <div class="chat-head">${cur.dm?`${av(dmOther(cur),'sm')}<b>${esc(dmOther(cur).name)}</b><span class="tiny faint">${esc(dmOther(cur).title)}</span>`
+      ${savedMode?`
+        <div class="chat-head"><b style="font-size:15px">🔖 Saved items</b><span class="tiny faint">your private library — only you see this</span></div>
+        <div class="chat-msgs" id="chat-scroll">${savedIds.map(id=>{const m=byId(DB.chatMsgs,id);if(!m)return'';
+          const c=byId(DB.channels,m.ch);return `<div class="tiny faint" style="margin:8px 8px 0">${c?(c.dm?'DM':'#'+c.name):''} · <a class="linklike" href="#/chat/${m.ch}">jump</a></div>`+msgHtml(m,true);}).join('')||'<div class="empty"><div class="big">🔖</div>Hover any message → ⭐ to save it here.</div>'}</div>`
+      :`
+      <div class="chat-head">${cur.dm?`${av(dmOther(cur),'sm')}<b>${esc(dmOther(cur).name)}</b><span class="tiny faint">${esc(dmOther(cur).title)}${statusOf(dmOther(cur).id)?' · '+statusOf(dmOther(cur).id).emoji+' '+esc(statusOf(dmOther(cur).id).text||''):''}</span>`
         :`<b style="font-size:15px"><span class="faint">#</span>${esc(cur.name)}</b><span class="tiny faint">${esc(cur.desc||'')}</span>${cur.scope!=='*'?`<span class="badge b-vio">🔒 ${deptName(cur.scope)} only</span>`:''}`}
-        <span class="spacer"></span><span class="tiny faint">${cur.dm?'':uniq(DB.chatMsgs.filter(m=>m.ch===cur.id).map(m=>m.fromId)).length+' active'}</span></div>
+        <span class="spacer"></span>
+        <button class="btn xs ghost" data-act="meetJoin" data-arg="${cur.dm?'Huddle with '+esc(dmOther(cur).name.split(' ')[0]):'Huddle — #'+esc(cur.name)}">🎧 Huddle</button>
+        <span class="tiny faint">${cur.dm?'':uniq(DB.chatMsgs.filter(m=>m.ch===cur.id).map(m=>m.fromId)).length+' active'}</span></div>
+      ${pins.length?`<div class="pin-bar">📌 <b>${pins.length} pinned</b> — “${esc(pins[0].text.slice(0,70))}${pins[0].text.length>70?'…':''}”${pins.length>1?' +'+(pins.length-1)+' more':''}</div>`:''}
       <div class="chat-msgs" id="chat-scroll">
-        ${msgs.map(m=>{const from=emp(m.fromId);if(!from)return'';
-          const day=m.at===todayISO()?'Today':fmtD(m.at,{weekday:'long',month:'short',day:'numeric'});
+        ${msgs.map(m=>{const day=m.at===todayISO()?'Today':fmtD(m.at,{weekday:'long',month:'short',day:'numeric'});
           const div=day!==lastDay?`<div class="day-divider">${day}</div>`:'';lastDay=day;
-          return div+`<div class="msg">${av(from,'md')}<div class="m-body">
-            <div class="m-meta"><b style="color:var(--ink);font-size:13px">${esc(from.name)}</b> · ${m.time}</div>
-            <div class="m-text">${esc(m.text)}</div>
-            <div class="m-reacts">${Object.entries(m.reactions||{}).map(([emo,n])=>`<span class="chip" data-act="chatReact" data-arg="${m.id}|${emo}">${emo} ${n}</span>`).join('')}
-            <span class="chip" data-act="chatReact" data-arg="${m.id}|👍" style="opacity:.55">+ 👍</span></div></div></div>`;}).join('')||'<div class="empty"><div class="big">🌱</div>Quiet in here. Say something!</div>'}
+          return div+msgHtml(m);}).join('')||'<div class="empty"><div class="big">🌱</div>Quiet in here. Say something!</div>'}
       </div>
-      <div class="chat-foot">${canPost?`<div class="chat-input"><input id="chat-in" placeholder="Message ${cur.dm?esc(dmOther(cur).name.split(' ')[0]):'#'+esc(cur.name)}" onkeydown="if(event.key==='Enter')ACT.chatSend('${cur.id}')"><button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="chatSend" data-arg="${cur.id}">${I.send}</button></div>`
-        :`<div class="tiny faint" style="text-align:center">📣 Only the People team posts in #announcements — reply in #general instead.</div>`}</div>
+      <div class="chat-foot">${canPost?`<div class="chat-input">
+        <button class="iconbtn" title="Attach a file" data-act="chatAttach" data-arg="${cur.id}">📎</button>
+        <input id="chat-in" placeholder="Message ${cur.dm?esc(dmOther(cur).name.split(' ')[0]):'#'+esc(cur.name)} — @mention to notify" oninput="(UIS.chatDrafts=UIS.chatDrafts||{})['${cur.id}']=this.value" onkeydown="if(event.key==='Enter')ACT.chatSend('${cur.id}')">
+        <button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="chatSend" data-arg="${cur.id}">${I.send}</button></div>`
+        :`<div class="tiny faint" style="text-align:center">📣 Only the People team posts in #announcements — reply in #general instead.</div>`}</div>`}
     </div>
   </div>`;
 };
+window.chatDoSearch=q=>{
+  const el=$('#chat-search-res');if(!el)return;
+  UIS.chatQ=q;
+  if(!q.trim()){el.innerHTML='';return;}
+  const ql=q.toLowerCase();
+  const hits=DB.chatMsgs.filter(m=>{const c=byId(DB.channels,m.ch);return c&&chanVisible(c)&&m.text.toLowerCase().includes(ql);}).slice(-8).reverse();
+  el.innerHTML=hits.length?hits.map(m=>{const c=byId(DB.channels,m.ch);const from=emp(m.fromId);
+    return `<button class="ch-item" style="align-items:flex-start" data-act="nav" data-arg="#/chat/${m.ch}"><span class="col" style="gap:0;min-width:0"><span class="tiny" style="font-weight:700">${from?esc(from.name.split(' ')[0]):''} <span class="faint">in ${c.dm?'DM':'#'+c.name}</span></span><span class="tiny faint" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">${esc(m.text.slice(0,60))}</span></span></button>`;}).join('')
+    :'<div class="tiny faint" style="padding:6px 10px">No matches.</div>';
+};
 ACT.chatSend=ch=>{
   const inp=$('#chat-in');if(!inp||!inp.value.trim())return;
+  const c=byId(DB.channels,ch);
   DB.chatMsgs.push({id:uid('M'),ch,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text:inp.value.trim(),reactions:{}});
+  mentionNotify(inp.value,c);
+  if(UIS.chatDrafts)delete UIS.chatDrafts[ch];
   window._chatFocus=true;Store.save();render();
 };
 ACT.chatReact=arg=>{
   const [mid,emo]=arg.split('|');
   const m=byId(DB.chatMsgs,mid);if(!m)return;
   m.reactions=m.reactions||{};m.reactions[emo]=(m.reactions[emo]||0)+1;
+  Store.save();if($('#thread-body'))ACT.openThread(m.parentId||mid);else render();
+};
+ACT.openThread=mid=>{
+  const parent=byId(DB.chatMsgs,mid);if(!parent)return;
+  const c=byId(DB.channels,parent.ch);
+  const replies=threadOf(mid);
+  UI.drawer({head:`<span class="notif-ic" style="background:color-mix(in srgb,#6d28d9 12%,transparent)">💬</span><div class="col" style="gap:1px"><b style="font-size:15px">Thread</b><span class="tiny muted">${c?(c.dm?'Direct message':'#'+c.name):''} · ${replies.length} repl${replies.length===1?'y':'ies'}</span></div>`,
+    body:`<div id="thread-body">${msgHtml(parent,true)}<div class="divider"></div>
+      ${replies.map(r=>msgHtml(r,true)).join('')||'<div class="tiny faint" style="padding:8px">No replies yet — start the thread.</div>'}</div>
+      <div class="chat-input mt12"><input id="thread-in" placeholder="Reply in thread…" onkeydown="if(event.key==='Enter')ACT.threadReply('${mid}')">
+      <button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="threadReply" data-arg="${mid}">${I.send}</button></div>`,
+    foot:'<button class="btn ghost" data-act="closeDrawer">Close</button>'});
+  setTimeout(()=>{const i=$('#thread-in');if(i)i.focus();},150);
+};
+ACT.threadReply=mid=>{
+  const inp=$('#thread-in');if(!inp||!inp.value.trim())return;
+  const parent=byId(DB.chatMsgs,mid);if(!parent)return;
+  const c=byId(DB.channels,parent.ch);
+  DB.chatMsgs.push({id:uid('M'),ch:parent.ch,parentId:mid,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text:inp.value.trim(),reactions:{}});
+  if(parent.fromId!==DB.me.employeeId)notify(parent.fromId,'💬',`${me().name} replied to your thread in ${c.dm?'a DM':'#'+c.name}`,'#/chat/'+parent.ch);
+  mentionNotify(inp.value,c);
+  Store.save();ACT.openThread(mid);render();
+};
+ACT.chatSave=mid=>{
+  DB.saved=DB.saved||{};const list=DB.saved[DB.me.employeeId]=DB.saved[DB.me.employeeId]||[];
+  const i=list.indexOf(mid);
+  if(i>=0){list.splice(i,1);UI.toast('Removed from saved','🔖');}else{list.push(mid);UI.toast('Saved — find it under 🔖 Saved items','🔖');}
   Store.save();render();
 };
+ACT.chatPin=mid=>{
+  const m=byId(DB.chatMsgs,mid);if(!m)return;
+  const c=byId(DB.channels,m.ch);if(!c||c.dm)return;
+  c.pins=c.pins||[];const i=c.pins.indexOf(mid);
+  if(i>=0){c.pins.splice(i,1);UI.toast('Unpinned','📌');}else{c.pins.push(mid);UI.toast('Pinned to #'+c.name,'📌');}
+  Store.save();render();
+};
+ACT.chatEdit=mid=>{
+  const m=byId(DB.chatMsgs,mid);if(!m||m.fromId!==DB.me.employeeId)return;
+  UI.modal({title:'Edit message',body:`<div class="field"><textarea id="ce-text" style="min-height:90px">${esc(m.text)}</textarea></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="chatEditSave" data-arg="${mid}">Save edit</button>`});
+};
+ACT.chatEditSave=mid=>{
+  const m=byId(DB.chatMsgs,mid);if(!m)return;
+  m.text=$('#ce-text').value.trim()||m.text;m.edited=true;
+  Store.save();UI.closeModal();render();
+};
+ACT.chatDelete=mid=>{
+  const idx=DB.chatMsgs.findIndex(x=>x.id===mid);if(idx<0)return;
+  const m=DB.chatMsgs[idx];if(m.fromId!==DB.me.employeeId)return;
+  const removed=[m,...threadOf(mid)];
+  DB.chatMsgs=DB.chatMsgs.filter(x=>x.id!==mid&&x.parentId!==mid);
+  Store.save();render();
+  UI.toast('Message deleted','🗑️',{label:'Undo',fn:()=>{DB.chatMsgs.push(...removed);DB.chatMsgs.sort(()=>0);Store.save();render();}});
+};
+ACT.chatAttach=ch=>{
+  const names=['Q3-launch-checklist.pdf','rig-photos.zip','retro-notes.doc','fleet-dashboard.png'];
+  DB.chatMsgs.push({id:uid('M'),ch,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text:'Sharing a file 📎',file:{name:pick(names),size:rint(120,4200)+' KB'},reactions:{}});
+  Store.save();render();UI.toast('File shared (simulated upload — real storage in the phase-2 stack)','📎');
+};
+ACT.newChannel=()=>{
+  UI.modal({title:'Create a channel',sub:'Public to everyone, or locked to a department.',body:`
+    <div class="field"><label>Name</label><input id="nc-name" placeholder="e.g. launch-retro" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')"></div>
+    <div class="field"><label>Description</label><input id="nc-desc" placeholder="What's it for?"></div>
+    <div class="field"><label>Visibility</label><select id="nc-scope"><option value="*">🌐 Everyone</option>${(isAdmin()?DEPTS.filter(d=>d.id!=='exec'):DEPTS.filter(d=>d.id===me().dept)).map(d=>`<option value="${d.id}">🔒 ${d.name} only</option>`).join('')}</select></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="saveChannel">Create channel</button>`});
+};
+ACT.saveChannel=()=>{
+  const name=($('#nc-name').value.trim()||'new-channel').replace(/^-+|-+$/g,'');
+  const id='c-'+name+'-'+rint(10,99);
+  DB.channels.push({id,name,desc:$('#nc-desc').value.trim(),scope:$('#nc-scope').value});
+  audit('Channel created','#'+name);
+  Store.save();UI.closeModal();nav('#/chat/'+id);
+  UI.toast('#'+name+' is live','💬');
+};
+ACT.myStatus=()=>{
+  const st=statusOf(DB.me.employeeId)||{};
+  UI.modal({title:'Set your status',body:`
+    <div class="field"><label>Emoji</label><div class="row wrap" style="gap:6px">${['💻','🎧','🌴','🤒','🏠','🔥','☕','🤖'].map(e=>`<button type="button" class="chip" style="font-size:15px;${st.emoji===e?'border-color:#6d28d9':''}" onclick="$$('#modal .chip').forEach(c=>c.style.borderColor='');this.style.borderColor='#6d28d9';document.querySelector('#st-emoji').value='${e}'">${e}</button>`).join('')}
+      <input type="hidden" id="st-emoji" value="${st.emoji||'💻'}"></div></div>
+    <div class="field"><label>Status text</label><input id="st-text" value="${esc(st.text||'')}" placeholder="e.g. Deep work until 2pm"></div>`,
+    foot:`<button class="btn ghost" data-act="clearStatus">Clear status</button><button class="btn primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="saveStatus">Save</button>`});
+};
+ACT.saveStatus=()=>{
+  (DB.statuses=DB.statuses||{})[DB.me.employeeId]={emoji:$('#st-emoji').value||'💻',text:$('#st-text').value.trim()};
+  Store.save();UI.closeModal();render();UI.toast('Status set — teammates see it next to your name','😶‍🌫️');
+};
+ACT.clearStatus=()=>{if(DB.statuses)delete DB.statuses[DB.me.employeeId];Store.save();UI.closeModal();render();};
 function chatPost(ch,text){DB.chatMsgs.push({id:uid('M'),ch,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text,reactions:{}});}
 
-/* ---------------- MAIL ---------------- */
-Views.mail=param=>{
+/* ---------------- MAIL (Gmail tier) ---------------- */
+const mailMine=()=>{
   const mine=DB.mail.filter(m=>m.ownerId===DB.me.employeeId);
+  let woke=false;
+  mine.forEach(m=>{if(m.folder==='snoozed'&&m.snoozeUntil&&m.snoozeUntil<=todayISO()){m.folder='inbox';m.read=false;m.snoozeUntil=null;woke=true;}});
+  if(woke)Store.save();
+  return mine;
+};
+const threadMsgs=tid=>DB.mail.filter(m=>m.ownerId===DB.me.employeeId&&m.threadId===tid).sort((a,b)=>a.at.localeCompare(b.at));
+function mailThreads(folder){
+  const mine=mailMine().filter(m=>!m.draft);
+  const groups={};
+  mine.forEach(m=>{(groups[m.threadId]=groups[m.threadId]||[]).push(m);});
+  return Object.values(groups).map(msgs=>{
+    msgs.sort((a,b)=>a.at.localeCompare(b.at));
+    const latest=msgs[msgs.length-1];
+    return {tid:latest.threadId,msgs,latest,unread:msgs.some(m=>!m.read&&m.folder==='inbox'),starred:msgs.some(m=>m.starred),labels:uniq(msgs.flatMap(m=>m.labels||[])),attach:msgs.some(m=>m.attach&&m.attach.length)};
+  }).filter(t=>{
+    if(folder==='starred')return t.starred;
+    return t.msgs.some(m=>m.folder===folder);
+  }).sort((a,b)=>b.latest.at.localeCompare(a.latest.at));
+}
+Views.mail=param=>{
+  const mine=mailMine();
   const folder=UIS.mailFolder||'inbox';
-  const open=param?byId(DB.mail,param):null;
-  if(open&&!open.read){open.read=true;Store.save();}
-  const list=mine.filter(m=>folder==='starred'?m.starred:m.folder===folder);
+  const q=(UIS.mailQ||'').toLowerCase();
+  UIS.mailSel=UIS.mailSel||[];
   const unread=mine.filter(m=>m.folder==='inbox'&&!m.read).length;
-  const folders=[['inbox','📥 Inbox',unread],['starred','⭐ Starred',0],['sent','📤 Sent',0],['archive','🗄️ Archive',0]];
+  const drafts=mine.filter(m=>m.draft);
+  const folders=[['inbox','📥 Inbox',unread],['starred','⭐ Starred',0],['snoozed','⏰ Snoozed',mine.filter(m=>m.folder==='snoozed').length],['drafts','📝 Drafts',drafts.length],['sent','📤 Sent',0],['archive','🗄️ Archive',0],['spam','🚫 Spam',mine.filter(m=>m.folder==='spam').length],['trash','🗑️ Trash',0]];
+  const open=param&&param!=='root'?param:null;
+  if(open){threadMsgs(open).forEach(m=>m.read=true);Store.save();}
+  let threads=folder==='drafts'?[]:mailThreads(folder);
+  if(UIS.mailLabel)threads=mailThreads('inbox').concat(mailThreads('archive')).filter((t,i,arr)=>arr.findIndex(x=>x.tid===t.tid)===i).filter(t=>t.labels.includes(UIS.mailLabel));
+  if(q)threads=threads.filter(t=>t.msgs.some(m=>(m.subject+' '+m.body+' '+m.fromName).toLowerCase().includes(q)));
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">Mail</h1><div class="page-sub">Native-feeling inbox — offers, payroll and learning nudges land here with deep links back into Mosaic</div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">Mail</h1><div class="page-sub">Threads, labels, snooze, drafts, bulk triage — Gmail's daily surface, wired into Mosaic</div></div>
+    ${parityBtn('mail')}
     <button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="mailCompose">${I.edit} Compose</button></div>
   <div class="mail-wrap">
-    <div class="mail-side">${folders.map(f=>`<button class="ch-item ${folder===f[0]&&!open?'on':''}" data-act="mailFolder" data-arg="${f[0]}">${f[1]}${f[2]?`<span class="unread-dot" style="background:#e25141">${f[2]}</span>`:''}</button>`).join('')}
-      <div class="divider"></div><p class="tiny faint" style="padding:0 10px">In production this is the Gmail API behind the same UI — see API.md.</p></div>
-    ${open?`<div class="mail-open">
-      <div class="row mb12" style="gap:8px"><a class="chip" href="#/mail">← ${cap(folder)}</a><span class="spacer"></span>
-        <button class="iconbtn star ${open.starred?'on':''}" data-act="mailStar" data-arg="${open.id}" title="Star">★</button>
-        <button class="btn xs ghost" data-act="mailArchive" data-arg="${open.id}">Archive</button></div>
-      <h2 style="font-family:var(--font-display);font-size:19px;letter-spacing:-.01em">${esc(open.subject)}</h2>
-      <div class="row mt12 mb16" style="gap:10px"><span class="av md" style="background:linear-gradient(135deg,hsl(${hueOf(open.fromName)},70%,55%),hsl(${(hueOf(open.fromName)+40)%360},65%,45%))">${initials(open.fromName)}</span>
-        <span class="col" style="gap:0"><b class="small">${esc(open.fromName)}</b><span class="tiny faint">${esc(open.fromEmail)} · ${fmtD(open.at)}</span></span></div>
-      <div class="mail-body">${esc(open.body)}</div>
-      ${open.subject.includes('Offer')?`<a class="btn soft mt16" href="#/recruit/R-104">🧲 Open in Recruiting</a>`:''}
-      ${open.subject.includes('reviews due')||open.subject.includes('manager reviews')?`<a class="btn soft mt16" href="#/grow">📝 Open Performance</a>`:''}
-      ${open.subject.includes('Privacy')?`<a class="btn soft mt16" href="#/learn/L-103">📚 Open the course</a>`:''}
-      <div class="field mt20"><label>Reply</label><textarea id="mail-reply" placeholder="Reply to ${esc(open.fromName)}…"></textarea></div>
-      <button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="mailReply" data-arg="${open.id}">${I.send} Send reply</button>
-    </div>`
-    :`<div>${list.length?list.sort((a,b)=>b.at.localeCompare(a.at)).map(m=>`
-      <div class="mail-row ${!m.read&&m.folder==='inbox'?'unread':''}" data-act="nav" data-arg="#/mail/${m.id}">
-        <span class="star ${m.starred?'on':''}" data-act="mailStar" data-arg="${m.id}" onclick="event.stopPropagation()">★</span>
-        <span class="m-from">${esc(m.fromName)}</span>
-        <span class="m-prev"><b class="m-subj" style="color:var(--ink)">${esc(m.subject)}</b> — ${esc(m.body.split('\n')[0].slice(0,80))}</span>
-        <span class="tiny faint num">${rel(m.at)}</span></div>`).join('')
-      :`<div class="empty" style="padding:60px"><div class="big">📭</div>${mine.length?'Nothing in '+folder+'.':'No mail seeded for this persona — try Wes, Priya or Jordan.'}</div>`}</div>`}
+    <div class="mail-side">
+      ${folders.map(f=>`<button class="ch-item ${folder===f[0]&&!open?'on':''}" data-act="mailFolder" data-arg="${f[0]}">${f[1]}${f[2]?`<span class="unread-dot" style="background:#e25141">${f[2]}</span>`:''}</button>`).join('')}
+      <div class="row between" style="padding:10px 10px 4px"><span class="nav-label" style="padding:0">Labels</span>
+        <button class="iconbtn" style="width:20px;height:20px" title="New label" data-act="newLabel">＋</button></div>
+      ${(DB.mailLabels||[]).map(l=>`<button class="ch-item ${UIS.mailLabel===l.id?'on':''}" data-act="mailLabelFilter" data-arg="${l.id}"><span class="lbl-dot" style="background:${l.color}"></span>${esc(l.name)}</button>`).join('')}
+      <div class="divider"></div><p class="tiny faint" style="padding:0 10px">⌨️ In a thread: <b>e</b> archive · <b>s</b> star · <b>u</b> back</p></div>
+    ${open?mailThreadView(open):folder==='drafts'?`
+      <div>${drafts.length?drafts.map(d=>`<div class="mail-row" data-act="mailDraftOpen" data-arg="${d.id}">
+        <span></span><span class="star">📝</span><span class="m-from" style="color:var(--bad)">Draft</span>
+        <span class="m-prev"><b style="color:var(--ink)">${esc(d.subject||'(no subject)')}</b> — ${esc((d.body||'').slice(0,70))}</span>
+        <span class="tiny faint num">${rel(d.at)}</span></div>`).join(''):'<div class="empty" style="padding:60px"><div class="big">📝</div>No drafts.</div>'}</div>`
+    :`<div>
+      <div class="bulk-bar">
+        <input type="checkbox" ${UIS.mailSel.length&&UIS.mailSel.length===threads.length?'checked':''} onchange="ACT.mailSelAll()" title="Select all" style="width:15px;height:15px;accent-color:#e25141">
+        ${UIS.mailSel.length?`
+          <span class="tiny" style="font-weight:700">${UIS.mailSel.length} selected</span>
+          <button class="btn xs ghost" data-act="mailBulk" data-arg="archive">🗄️ Archive</button>
+          <button class="btn xs ghost" data-act="mailBulk" data-arg="trash">🗑️ Trash</button>
+          <button class="btn xs ghost" data-act="mailBulk" data-arg="read">✓ Mark read</button>
+          <select onchange="if(this.value)ACT.mailBulk('label|'+this.value);this.selectedIndex=0" style="background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:3px 6px;font-size:11px"><option value="">🏷️ Label…</option>${(DB.mailLabels||[]).map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('')}</select>`
+        :`<input type="search" placeholder="🔎 Search mail…" value="${esc(UIS.mailQ||'')}" oninput="UIS.mailQ=this.value;UIS.mailSel=[];render()" style="flex:1;max-width:340px;background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:6px 11px;outline:none;font-size:12.5px">`}
+        <span class="spacer"></span><span class="tiny faint">${threads.length} thread${threads.length===1?'':'s'}</span></div>
+      ${threads.length?threads.map(t=>{
+        const m=t.latest;
+        const froms=uniq(t.msgs.map(x=>x.fromName.split(' ')[0]));
+        return `<div class="mail-row ${t.unread?'unread':''}" data-act="nav" data-arg="#/mail/${t.tid}">
+        <input type="checkbox" ${UIS.mailSel.includes(t.tid)?'checked':''} data-act="mailSelToggle" data-arg="${t.tid}" onclick="event.stopPropagation()">
+        <span class="star ${t.starred?'on':''}" data-act="mailStar" data-arg="${t.tid}" onclick="event.stopPropagation()">★</span>
+        <span class="m-from">${esc(froms.slice(0,2).join(', '))}${t.msgs.length>1?` <span class="faint">(${t.msgs.length})</span>`:''}</span>
+        <span class="m-prev">${t.labels.map(lid=>{const l=byId(DB.mailLabels||[],lid);return l?`<span class="lbl-dot" style="background:${l.color};margin-right:4px"></span>`:'';}).join('')}<b class="m-subj" style="color:var(--ink)">${esc(m.subject)}</b> — ${esc(m.body.split('\n')[0].slice(0,70))}${t.attach?' 📎':''}</span>
+        <span class="tiny faint num">${rel(m.at)}</span></div>`;}).join('')
+      :`<div class="empty" style="padding:60px"><div class="big">📭</div>${q?'No matches for “'+esc(q)+'”.':mine.length?'Nothing in '+(UIS.mailLabel?'this label':folder)+'.':'No mail for this persona yet — compose something, or proxy as Wes/Priya/Jordan.'}</div>`}</div>`}
   </div>`;
 };
-ACT.mailFolder=f=>{UIS.mailFolder=f;nav('#/mail');if(location.hash==='#/mail')render();};
-ACT.mailStar=id=>{const m=byId(DB.mail,id);if(!m)return;m.starred=!m.starred;Store.save();render();};
-ACT.mailArchive=id=>{const m=byId(DB.mail,id);if(!m)return;m.folder='archive';Store.save();nav('#/mail');UI.toast('Archived','🗄️');};
-ACT.mailReply=id=>{
-  const m=byId(DB.mail,id);const t=$('#mail-reply');if(!m||!t||!t.value.trim())return;
-  DB.mail.push({id:uid('ML'),ownerId:DB.me.employeeId,folder:'sent',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:'Re: '+m.subject.replace(/^Re: /,''),body:t.value.trim(),read:true,starred:false});
-  Store.save();nav('#/mail');UI.toast('Reply sent to '+esc(m.fromName),'📤');
+function mailThreadView(tid){
+  const msgs=threadMsgs(tid);
+  if(!msgs.length)return '<div class="empty" style="padding:60px"><div class="big">📭</div>Thread not found.</div>';
+  const latest=msgs[msgs.length-1];
+  const isSpam=msgs.some(m=>m.folder==='spam');
+  const tl=uniq(msgs.flatMap(m=>m.labels||[]));
+  return `<div class="mail-open">
+    <div class="row mb12 wrap" style="gap:7px"><a class="chip" href="#/mail">← Back</a><span class="spacer"></span>
+      <button class="iconbtn star ${msgs.some(m=>m.starred)?'on':''}" data-act="mailStar" data-arg="${tid}" title="Star">★</button>
+      <select onchange="if(this.value)ACT.mailLabelToggle('${tid}|'+this.value);this.selectedIndex=0" style="background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:11px"><option value="">🏷️</option>${(DB.mailLabels||[]).map(l=>`<option value="${l.id}">${tl.includes(l.id)?'✓ ':''}${esc(l.name)}</option>`).join('')}</select>
+      <select onchange="if(this.value)ACT.mailSnooze('${tid}|'+this.value);this.selectedIndex=0" style="background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:11px"><option value="">⏰</option><option value="1">Tomorrow</option><option value="3">In 3 days</option><option value="7">Next week</option></select>
+      <button class="btn xs ghost" data-act="mailUnread" data-arg="${tid}">Mark unread</button>
+      <button class="btn xs ghost" data-act="mailForward" data-arg="${tid}">↪ Forward</button>
+      <button class="btn xs ghost" data-act="mailArchive" data-arg="${tid}">🗄️</button>
+      <button class="btn xs danger" data-act="mailTrash" data-arg="${tid}">🗑️</button></div>
+    ${isSpam?`<div class="card pad mb12" style="background:var(--bad-soft);border-color:transparent;box-shadow:none"><div class="row between"><b class="small">🚫 This landed in spam</b><button class="btn xs ghost" data-act="mailNotSpam" data-arg="${tid}">Not spam</button></div><span class="tiny muted">Never enter credentials or banking details from unexpected mail. (Ben's phishing drills are working on you right now.)</span></div>`:''}
+    <h2 style="font-family:var(--font-display);font-size:19px;letter-spacing:-.01em">${esc(latest.subject)}</h2>
+    <div class="row wrap mt8 mb12" style="gap:5px">${tl.map(lid=>{const l=byId(DB.mailLabels||[],lid);return l?`<span class="chip" style="font-size:10.5px"><span class="lbl-dot" style="background:${l.color}"></span>${esc(l.name)} <span style="cursor:pointer" data-act="mailLabelToggle" data-arg="${tid}|${l.id}">✕</span></span>`:'';}).join('')}</div>
+    ${msgs.map(m=>`<div class="thread-msg ${m.folder==='sent'?'mine':''}">
+      <div class="row" style="gap:9px"><span class="av sm" style="background:linear-gradient(135deg,hsl(${hueOf(m.fromName)},70%,55%),hsl(${(hueOf(m.fromName)+40)%360},65%,45%))">${initials(m.fromName)}</span>
+      <span class="col" style="gap:0;flex:1"><b class="small">${esc(m.fromName)}</b><span class="tiny faint">${esc(m.fromEmail)} · ${fmtD(m.at)}</span></span></div>
+      <div class="mail-body mt8" style="font-size:13px">${esc(m.body)}</div>
+      ${(m.attach||[]).map(a=>`<span class="chip mt8" style="cursor:pointer" onclick="UI.toast('Demo: attachment preview','📎')">📎 ${esc(a)}</span>`).join('')}
+      ${m.subject.includes('Offer')&&m.folder!=='sent'?`<a class="btn xs soft mt8" href="#/recruit/R-104">🧲 Open in Recruiting</a>`:''}
+      ${m.subject.includes('reviews due')?`<a class="btn xs soft mt8" href="#/grow">📝 Open Performance</a>`:''}
+      ${m.subject.includes('Privacy')?`<a class="btn xs soft mt8" href="#/learn/L-103">📚 Open the course</a>`:''}
+    </div>`).join('')}
+    <div class="field mt12"><label>Reply</label><textarea id="mail-reply" placeholder="Reply to ${esc(latest.fromName)}… (your signature is appended automatically)"></textarea></div>
+    <button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="mailReply" data-arg="${tid}">${I.send} Send reply</button>
+  </div>`;
+}
+ACT.mailFolder=f=>{UIS.mailFolder=f;UIS.mailLabel=null;UIS.mailSel=[];UIS.mailQ='';nav('#/mail');if(location.hash==='#/mail')render();};
+ACT.mailLabelFilter=lid=>{UIS.mailLabel=UIS.mailLabel===lid?null:lid;UIS.mailFolder='inbox';UIS.mailSel=[];nav('#/mail');render();};
+ACT.mailSelToggle=tid=>{UIS.mailSel=UIS.mailSel||[];const i=UIS.mailSel.indexOf(tid);if(i>=0)UIS.mailSel.splice(i,1);else UIS.mailSel.push(tid);render();};
+ACT.mailSelAll=()=>{const threads=mailThreads(UIS.mailFolder||'inbox');UIS.mailSel=UIS.mailSel&&UIS.mailSel.length===threads.length?[]:threads.map(t=>t.tid);render();};
+ACT.mailBulk=arg=>{
+  const [action,lid]=arg.split('|');
+  const sel=[...(UIS.mailSel||[])];if(!sel.length)return;
+  sel.forEach(tid=>{const msgs=threadMsgs(tid);
+    if(action==='archive')msgs.forEach(m=>{if(m.folder==='inbox')m.folder='archive';});
+    else if(action==='trash')msgs.forEach(m=>m.folder='trash');
+    else if(action==='read')msgs.forEach(m=>m.read=true);
+    else if(action==='label')msgs.forEach(m=>{m.labels=m.labels||[];if(!m.labels.includes(lid))m.labels.push(lid);});});
+  UIS.mailSel=[];Store.save();render();
+  UI.toast(sel.length+' thread'+(sel.length===1?'':'s')+' — '+(action==='label'?'labeled':action+'d'),'📨');
 };
+ACT.mailStar=tid=>{const msgs=threadMsgs(tid);if(!msgs.length)return;const on=msgs.some(m=>m.starred);msgs.forEach(m=>m.starred=false);if(!on)msgs[msgs.length-1].starred=true;Store.save();render();};
+ACT.mailArchive=tid=>{threadMsgs(tid).forEach(m=>{if(m.folder!=='sent')m.folder='archive';});Store.save();nav('#/mail');UI.toast('Archived','🗄️');};
+ACT.mailTrash=tid=>{
+  const prev=threadMsgs(tid).map(m=>({m,f:m.folder}));
+  prev.forEach(x=>x.m.folder='trash');
+  Store.save();nav('#/mail');
+  UI.toast('Thread moved to trash','🗑️',{label:'Undo',fn:()=>{prev.forEach(x=>x.m.folder=x.f);Store.save();render();}});
+};
+ACT.mailSnooze=arg=>{
+  const [tid,days]=arg.split('|');
+  threadMsgs(tid).forEach(m=>{if(m.folder==='inbox'){m.folder='snoozed';m.snoozeUntil=daysAhead(+days);}});
+  Store.save();nav('#/mail');
+  UI.toast('Snoozed — back in your inbox '+rel(daysAhead(+days)),'⏰');
+};
+ACT.mailUnread=tid=>{threadMsgs(tid).forEach(m=>{if(m.folder==='inbox'||m.folder==='archive')m.read=false;});Store.save();nav('#/mail');};
+ACT.mailNotSpam=tid=>{threadMsgs(tid).forEach(m=>{if(m.folder==='spam')m.folder='inbox';});Store.save();render();UI.toast('Moved to inbox — sender trusted','✅');};
+ACT.mailLabelToggle=arg=>{
+  const [tid,lid]=arg.split('|');
+  const msgs=threadMsgs(tid);const has=msgs.some(m=>(m.labels||[]).includes(lid));
+  msgs.forEach(m=>{m.labels=m.labels||[];const i=m.labels.indexOf(lid);if(has&&i>=0)m.labels.splice(i,1);else if(!has&&i<0)m.labels.push(lid);});
+  Store.save();render();
+};
+ACT.newLabel=()=>{
+  UI.modal({title:'New label',body:`<div class="grid g2"><div class="field"><label>Name</label><input id="lb-name" placeholder="e.g. Vendors"></div>
+    <div class="field"><label>Color</label><select id="lb-color">${['#10b981','#6d28d9','#f59e0b','#e25141','#0ea5e9','#ec4899'].map(c=>`<option value="${c}" style="background:${c}">${c}</option>`).join('')}</select></div></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="saveLabel">Create</button>`});
+};
+ACT.saveLabel=()=>{(DB.mailLabels=DB.mailLabels||[]).push({id:uid('lb'),name:$('#lb-name').value.trim()||'Label',color:$('#lb-color').value});Store.save();UI.closeModal();render();};
+ACT.mailReply=tid=>{
+  const msgs=threadMsgs(tid);const t=$('#mail-reply');if(!msgs.length||!t||!t.value.trim())return;
+  const latest=msgs[msgs.length-1];
+  const body=t.value.trim()+'\n\n—\n'+me().name+' · '+me().title+' · Meridian Labs';
+  const subj='Re: '+latest.subject.replace(/^(Re|Fwd): /,'');
+  DB.mail.push({id:uid('ML'),ownerId:DB.me.employeeId,threadId:tid,folder:'sent',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,read:true,starred:false,labels:[]});
+  const counterpart=DB.employees.find(e=>e.email===latest.fromEmail);
+  if(counterpart){
+    DB.mail.push({id:uid('ML'),ownerId:counterpart.id,threadId:tid,folder:'inbox',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,read:false,starred:false,labels:[]});
+    notify(counterpart.id,'✉️','Reply from '+me().name+': '+subj,'#/mail/'+tid);
+  }
+  Store.save();nav('#/mail');
+  UI.toast(counterpart?'Replied — it\'s threaded in their inbox too':'Replied (external delivery simulated)','📤');
+};
+ACT.mailForward=tid=>{
+  const msgs=threadMsgs(tid);if(!msgs.length)return;
+  const latest=msgs[msgs.length-1];
+  window._mcDraft=null;
+  ACT.mailCompose();
+  setTimeout(()=>{const s=$('#mc-subj'),b=$('#mc-body');
+    if(s)s.value='Fwd: '+latest.subject.replace(/^(Re|Fwd): /,'');
+    if(b)b.value='\n\n---------- Forwarded message ----------\nFrom: '+latest.fromName+' <'+latest.fromEmail+'>\n\n'+latest.body;},60);
+};
+ACT.mailDraftOpen=id=>{window._mcDraft=id;ACT.mailCompose();};
 ACT.mailCompose=()=>{
-  UI.modal({title:'New message ✉️',sub:'Send to a teammate and it lands in their Mosaic inbox — try it, then proxy as them.',body:`
-    <div class="field"><label>To</label><select id="mc-to">${DB.employees.filter(e=>e.status!=='terminated'&&e.id!==DB.me.employeeId).map(e=>`<option value="${e.id}">${esc(e.name)} — ${esc(e.email)}</option>`).join('')}</select></div>
-    <div class="field"><label>Subject</label><input id="mc-subj" placeholder="Subject"></div>
-    <div class="field"><label>Message</label><textarea id="mc-body" style="min-height:120px"></textarea></div>`,
-    foot:`<button class="btn ghost" data-act="closeModal">Discard</button><button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="mailSend">${I.send} Send</button>`});
+  const d=window._mcDraft?byId(DB.mail,window._mcDraft):null;
+  UI.modal({title:d?'Draft ✏️':'New message ✉️',sub:'Internal mail delivers instantly — proxy as the recipient to read it. Your signature is appended on send.',body:`
+    <div class="field"><label>To</label><select id="mc-to">${DB.employees.filter(e=>e.status!=='terminated'&&e.id!==DB.me.employeeId).map(e=>`<option value="${e.id}" ${d&&d.to===e.id?'selected':''}>${esc(e.name)} — ${esc(e.email)}</option>`).join('')}</select></div>
+    <div class="field"><label>Subject</label><input id="mc-subj" value="${d?esc(d.subject||''):''}" placeholder="Subject"></div>
+    <div class="field"><label>Message</label><textarea id="mc-body" style="min-height:130px">${d?esc(d.body||''):''}</textarea></div>
+    <div class="row" style="gap:6px"><button class="btn xs ghost" type="button" onclick="const c=document.querySelector('#mc-att');c.innerHTML+='<span class=chip>📎 '+['notes.pdf','deck.key','photo.png'][Math.floor(Math.random()*3)]+'</span>'">📎 Attach</button><span class="row" id="mc-att" style="gap:5px">${d&&d.attach?d.attach.map(a=>`<span class="chip">📎 ${esc(a)}</span>`).join(''):''}</span></div>`,
+    foot:`<button class="btn ghost" data-act="mailSaveDraft">Save draft</button><button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="mailSend">${I.send} Send</button>`});
+};
+function mcRead(){
+  return {to:$('#mc-to').value,subj:$('#mc-subj').value.trim(),body:$('#mc-body').value.trim(),
+    attach:[...document.querySelectorAll('#mc-att .chip')].map(c=>c.textContent.replace('📎 ','').trim())};
+}
+ACT.mailSaveDraft=()=>{
+  const v=mcRead();
+  if(window._mcDraft){const d=byId(DB.mail,window._mcDraft);if(d){d.to=v.to;d.subject=v.subj;d.body=v.body;d.attach=v.attach;d.at=todayISO();}}
+  else DB.mail.push({id:uid('ML'),ownerId:DB.me.employeeId,threadId:uid('TH'),folder:'drafts',draft:true,to:v.to,at:todayISO(),fromName:me().name,fromEmail:me().email,subject:v.subj,body:v.body,attach:v.attach,read:true,starred:false,labels:[]});
+  window._mcDraft=null;Store.save();UI.closeModal();UIS.mailFolder='drafts';render();
+  UI.toast('Draft saved','📝');
 };
 ACT.mailSend=()=>{
-  const to=$('#mc-to').value,subj=$('#mc-subj').value.trim()||'(no subject)',body=$('#mc-body').value.trim()||' ';
-  DB.mail.push({id:uid('ML'),ownerId:DB.me.employeeId,folder:'sent',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,read:true,starred:false});
-  DB.mail.push({id:uid('ML'),ownerId:to,folder:'inbox',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,read:false,starred:false});
-  notify(to,'✉️','New mail from '+me().name+': '+subj,'#/mail');
-  Store.save();UI.closeModal();render();UI.toast('Sent — it\'s in their inbox right now','📤');
+  const v=mcRead();
+  const subj=v.subj||'(no subject)';
+  const body=(v.body||' ')+'\n\n—\n'+me().name+' · '+me().title+' · Meridian Labs';
+  const tid=uid('TH');
+  DB.mail.push({id:uid('ML'),ownerId:DB.me.employeeId,threadId:tid,folder:'sent',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,attach:v.attach,read:true,starred:false,labels:[]});
+  DB.mail.push({id:uid('ML'),ownerId:v.to,threadId:tid,folder:'inbox',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,attach:v.attach,read:false,starred:false,labels:[]});
+  notify(v.to,'✉️','New mail from '+me().name+': '+subj,'#/mail/'+tid);
+  if(window._mcDraft){const i=DB.mail.findIndex(m=>m.id===window._mcDraft);if(i>=0)DB.mail.splice(i,1);window._mcDraft=null;}
+  Store.save();UI.closeModal();render();UI.toast('Sent — threaded in their inbox right now','📤');
 };
 
 /* ---------------- CALENDAR ---------------- */
@@ -5388,113 +6211,361 @@ function weekEventsFor(dayISO){
       if(dayISO===nextDow(3)&&(r.hmId===myId||isAdmin()))evs.push({id:'iv-'+c.id,title:'Interview · '+c.name,time:(13+i)+':00',durMin:50,color:'#f0648c',kind:'interview',meet:true,attendees:[r.hmId,'E022']});
     });
   }
-  /* stored events */
-  (DB.events||[]).filter(ev=>ev.date===dayISO).forEach(ev=>{
+  /* stored events (incl. weekly recurring) */
+  const dow2=new Date(dayISO+'T12:00:00').getDay();
+  (DB.events||[]).filter(ev=>ev.date===dayISO||(ev.weekly&&ev.date<=dayISO&&new Date(ev.date+'T12:00:00').getDay()===dow2)).forEach(ev=>{
     const att=ev.attendees;
     const mine=att==='*'||(typeof att==='string'?my.dept===att:att.includes(myId))||ev.organizer===myId||isAdmin();
     if(mine)evs.push(ev);
   });
   return evs.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
 }
+const CAL_LAYERS=[['meeting','Meetings','#2d7ff0'],['1:1','1:1s','#8b5cf6'],['interview','Interviews','#f0648c'],['focus','Focus','#0891b2']];
+const layerOn=k=>!(UIS.calOff||{})[k];
+const calAnchor=()=>UIS.calAnchor||todayISO();
+function calDays(){
+  const mode=UIS.calMode||'week';
+  const a=new Date(calAnchor()+'T12:00:00');
+  if(mode==='day')return [iso(a)];
+  const mon=new Date(a);mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+  const n=UIS.calWeekend?7:5;
+  return Array.from({length:n},(_,i)=>iso(new Date(mon.getTime()+i*DAY)));
+}
+function calAllDay(d){
+  const out=[];
+  const hol=DB.holidays.find(h=>h.date===d);if(hol)out.push({label:'🎉 '+hol.name,color:'var(--c-engage)'});
+  whosOut(60).filter(t=>t.start<=d&&t.end>=d).slice(0,2).forEach(t=>out.push({label:initials(t.emp.name)+' · '+(TO_TYPES[t.type]||{label:t.type}).label,color:(TO_TYPES[t.type]||{}).color||'#64748b'}));
+  return out;
+}
+function miniMonth(){
+  const a=new Date(calAnchor()+'T12:00:00');
+  const y=a.getFullYear(),mo=a.getMonth();
+  const first=new Date(y,mo,1);const start=(first.getDay()+6)%7;
+  const dim=new Date(y,mo+1,0).getDate();
+  const evDates=new Set((DB.events||[]).map(ev=>ev.date).concat(DB.holidays.map(h=>h.date)));
+  let cells='',day=1-start;
+  let html='<tr>';
+  for(let i=0;i<42;i++,day++){
+    if(i&&i%7===0)html+='</tr><tr>';
+    if(day<1||day>dim){html+='<td class="dim"></td>';continue;}
+    const d=iso(new Date(y,mo,day,12));
+    html+=`<td class="${d===todayISO()?'today':''} ${evDates.has(d)?'dot':''}" data-act="calGoto" data-arg="${d}">${day}</td>`;
+  }
+  html+='</tr>';
+  return `<div class="mini-month card pad" style="padding:12px">
+    <div class="row between mb8"><button class="iconbtn" style="width:20px;height:20px" data-act="calNav" data-arg="m-1">‹</button>
+    <b class="tiny" style="font-size:12px">${a.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b>
+    <button class="iconbtn" style="width:20px;height:20px" data-act="calNav" data-arg="m1">›</button></div>
+    <table><tr>${['M','T','W','T','F','S','S'].map(d=>`<td style="font-weight:800;color:var(--ink3);cursor:default">${d}</td>`).join('')}</tr>${html}</table></div>`;
+}
 Views.cal=()=>{
-  const off=UIS.calOffset||0;
-  const base=new Date();base.setDate(base.getDate()+off*7);
-  const mon=new Date(base);mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
-  const days=Array.from({length:5},(_,i)=>iso(new Date(mon.getTime()+i*DAY)));
+  const mode=UIS.calMode||'week';
+  const days=calDays();
   const H0=8,H1=18,ROW=44;
-  const allDay=d=>{
-    const out=[];
-    const hol=DB.holidays.find(h=>h.date===d);if(hol)out.push({label:'🎉 '+hol.name,color:'var(--c-engage)'});
-    whosOut(35).filter(t=>t.start<=d&&t.end>=d).slice(0,2).forEach(t=>out.push({label:initials(t.emp.name)+' · '+(TO_TYPES[t.type]||{label:t.type}).label,color:(TO_TYPES[t.type]||{}).color||'#64748b'}));
-    return out;
-  };
   const nowMin=now().getHours()*60+now().getMinutes();
+  const evFor=d=>weekEventsFor(d).filter(ev=>layerOn(ev.kind||'meeting'));
+  const a=new Date(calAnchor()+'T12:00:00');
+  let main='';
+  if(mode==='month'){
+    const y=a.getFullYear(),mo=a.getMonth();
+    const first=new Date(y,mo,1);const start=(first.getDay()+6)%7;
+    const cells=[];
+    for(let i=0;i<42;i++){const d=new Date(y,mo,1-start+i,12);cells.push({d:iso(d),dim:d.getMonth()!==mo});}
+    main=`<div class="grid" style="grid-template-columns:repeat(7,1fr);gap:6px">
+      ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="tiny faint" style="text-align:center;font-weight:800">${d}</div>`).join('')}
+      ${cells.map(c=>{const evs=c.dim?[]:evFor(c.d);const ad=c.dim?[]:calAllDay(c.d);
+        return `<div class="cal-month-day ${c.d===todayISO()?'today':''} ${c.dim?'dim':''}" data-act="calDayOpen" data-arg="${c.d}">
+        <b style="font-size:11px;color:var(--ink2)">${+c.d.slice(8)}</b>
+        ${ad.slice(0,1).map(x=>`<div class="cm-ev" style="background:${x.color}">${esc(x.label)}</div>`).join('')}
+        ${evs.slice(0,3).map(ev=>`<div class="cm-ev" style="background:${ev.color||'#2d7ff0'}">${ev.time} ${esc(ev.title)}</div>`).join('')}
+        ${evs.length>3?`<div class="tiny faint">+${evs.length-3} more</div>`:''}</div>`;}).join('')}</div>`;
+  }else{
+    main=`<div class="cal-week" style="grid-template-columns:46px repeat(${days.length},1fr)">
+    <div></div>
+    ${days.map(d=>{const dt=new Date(d+'T12:00:00');
+      return `<div class="cw-head ${d===todayISO()?'today':''}">${dt.toLocaleDateString('en-US',{weekday:'short'})}<br><span class="dnum">${dt.getDate()}</span>
+      <div class="col" style="gap:2px;margin-top:3px">${calAllDay(d).map(x=>`<span class="ev" style="background:${x.color};border-radius:5px;font-size:9px;color:#fff;padding:0 4px;white-space:nowrap;overflow:hidden">${esc(x.label)}</span>`).join('')}</div></div>`;}).join('')}
+    <div class="cw-times" style="border-top:1px solid var(--line)">${Array.from({length:H1-H0},(_,i)=>`<div>${H0+i>12?H0+i-12+'p':H0+i===12?'12p':H0+i+'a'}</div>`).join('')}</div>
+    ${days.map(d=>{
+      const evs=evFor(d);
+      return `<div class="cw-col" style="border-top:1px solid var(--line)">
+        ${Array.from({length:H1-H0},(_,hi)=>`<div class="cw-cell" data-act="newEventAt" data-arg="${d}|${H0+hi}" title="Create an event at ${H0+hi}:00"></div>`).join('')}
+        ${d===todayISO()&&nowMin>H0*60&&nowMin<H1*60?`<div class="cw-now" style="top:${(nowMin-H0*60)/60*ROW}px"></div>`:''}
+        ${evs.map(ev=>{const top=(timeToMin(ev.time)-H0*60)/60*ROW;const h=Math.max((ev.durMin||30)/60*ROW-3,18);
+          if(top<0||top>(H1-H0)*ROW)return'';
+          return `<div class="cw-ev" style="top:${top}px;height:${h}px;background:${ev.color||'#2d7ff0'}" data-act="openEvent" data-arg="${ev.id}|${d}" title="${esc(ev.title)}">${esc(ev.title)}${h>30?`<div style="opacity:.85;font-weight:500">${ev.time}${ev.meet?' · 🎥':''}${ev.weekly?' · 🔁':''}</div>`:''}</div>`;}).join('')}
+      </div>`;}).join('')}
+  </div>`;
+  }
+  const title=mode==='month'?a.toLocaleDateString('en-US',{month:'long',year:'numeric'})
+    :mode==='day'?fmtD(days[0],{weekday:'long',month:'long',day:'numeric'})
+    :fmtD(days[0],{month:'long',day:'numeric'})+' – '+fmtD(days[days.length-1],{month:'long',day:'numeric',year:'numeric'});
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">Calendar</h1><div class="page-sub">1:1s, interviews, PTO and holidays flow in from the rest of Mosaic — nothing double-entered</div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">Calendar</h1><div class="page-sub">1:1s, interviews, PTO and holidays flow in live — click any empty slot to create</div></div>
+    ${parityBtn('cal')}
+    <div class="seg">${['day','week','month'].map(mm=>`<button class="${mode===mm?'on':''}" data-act="calMode" data-arg="${mm}">${cap(mm)}</button>`).join('')}</div>
     <div class="row" style="gap:7px"><button class="btn sm ghost" data-act="calNav" data-arg="-1">‹</button>
     <button class="btn sm ghost" data-act="calNav" data-arg="0">Today</button>
     <button class="btn sm ghost" data-act="calNav" data-arg="1">›</button>
     <button class="btn primary" style="--brand:#2d7ff0;--brand-deep:#1d6ae0" data-act="openNewEvent">${I.plus} New event</button></div></div>
-  <div class="row mb8" style="gap:8px"><b class="small">${fmtD(days[0],{month:'long',day:'numeric'})} – ${fmtD(days[4],{month:'long',day:'numeric',year:'numeric'})}</b>${off===0?'<span class="badge b-info">This week</span>':''}</div>
-  <div class="cal-week">
-    <div></div>
-    ${days.map(d=>{const dt=new Date(d+'T12:00:00');
-      return `<div class="cw-head ${d===todayISO()?'today':''}">${dt.toLocaleDateString('en-US',{weekday:'short'})}<br><span class="dnum">${dt.getDate()}</span>
-      <div class="col" style="gap:2px;margin-top:3px">${allDay(d).map(a=>`<span class="ev" style="background:${a.color};border-radius:5px;font-size:9px;color:#fff;padding:0 4px;white-space:nowrap;overflow:hidden">${esc(a.label)}</span>`).join('')}</div></div>`;}).join('')}
-    <div class="cw-times" style="border-top:1px solid var(--line)">${Array.from({length:H1-H0},(_,i)=>`<div>${H0+i>12?H0+i-12+'p':H0+i===12?'12p':H0+i+'a'}</div>`).join('')}</div>
-    ${days.map(d=>{
-      const evs=weekEventsFor(d);
-      return `<div class="cw-col" style="border-top:1px solid var(--line)">
-        ${Array.from({length:H1-H0},()=>'<div class="cw-cell"></div>').join('')}
-        ${d===todayISO()&&nowMin>H0*60&&nowMin<H1*60?`<div class="cw-now" style="top:${(nowMin-H0*60)/60*ROW}px"></div>`:''}
-        ${evs.map(ev=>{const top=(timeToMin(ev.time)-H0*60)/60*ROW;const h=Math.max((ev.durMin||30)/60*ROW-3,18);
-          if(top<0||top>(H1-H0)*ROW)return'';
-          return `<div class="cw-ev" style="top:${top}px;height:${h}px;background:${ev.color||'#2d7ff0'}" data-act="openEvent" data-arg="${ev.id}|${d}" title="${esc(ev.title)}">${esc(ev.title)}${h>30?`<div style="opacity:.85;font-weight:500">${ev.time}${ev.meet?' · 🎥':''}</div>`:''}</div>`;}).join('')}
-      </div>`;}).join('')}
-  </div>
-  <p class="tiny faint mt8">Purple = 1:1s (from Performance) · pink = interviews (from Recruiting) · header chips = PTO & holidays (from Time Off). In production this syncs two-way with Google Calendar.</p>`;
+  <div class="row mb8 wrap" style="gap:8px"><b class="small">${title}</b>${days.includes(todayISO())||mode==='month'&&a.getMonth()===now().getMonth()?'<span class="badge b-info">Current</span>':''}
+    <span class="spacer"></span>
+    ${CAL_LAYERS.map(l=>`<span class="chip layer-chip ${layerOn(l[0])?'':'off'}" data-act="calLayer" data-arg="${l[0]}"><i class="lbl-dot" style="background:${l[2]}"></i>${l[1]}</span>`).join('')}
+    <span class="chip layer-chip ${UIS.calWeekend?'':'off'}" data-act="calWeekendToggle">Sat–Sun</span>
+    <span class="tiny faint">GMT-7</span></div>
+  <div class="grid" style="grid-template-columns:200px 1fr;gap:16px;align-items:start">
+    <div class="col" style="gap:12px">${miniMonth()}
+      <div class="card pad" style="padding:12px"><b class="tiny" style="font-size:12px">Up next</b>
+        <div class="col mt8" style="gap:7px">${(()=>{let out=[];for(let i=0;i<7&&out.length<4;i++){const d=daysAhead(i);evFor(d).forEach(ev=>{if(out.length<4)out.push({...ev,d});});}
+          return out.map(ev=>`<div class="row" style="gap:7px;cursor:pointer" data-act="openEvent" data-arg="${ev.id}|${ev.d}"><i class="lbl-dot" style="background:${ev.color||'#2d7ff0'}"></i><span class="col" style="gap:0"><b class="tiny" style="font-size:11.5px">${esc(ev.title)}</b><span class="tiny faint">${ev.d===todayISO()?'Today':fmtDshort(ev.d)} · ${ev.time}</span></span></div>`).join('')||'<span class="tiny faint">Clear week ahead.</span>';})()}</div></div>
+    </div>
+    <div>${main}</div>
+  </div>`;
 };
-ACT.calNav=a=>{UIS.calOffset=a==='0'?0:(UIS.calOffset||0)+(+a);render();};
+ACT.calMode=m=>{UIS.calMode=m;render();};
+ACT.calLayer=k=>{UIS.calOff=UIS.calOff||{};UIS.calOff[k]=!UIS.calOff[k];render();};
+ACT.calWeekendToggle=()=>{UIS.calWeekend=!UIS.calWeekend;render();};
+ACT.calGoto=d=>{UIS.calAnchor=d;if((UIS.calMode||'week')==='month')UIS.calMode='week';render();};
+ACT.calDayOpen=d=>{UIS.calAnchor=d;UIS.calMode='day';render();};
+ACT.calNav=arg=>{
+  if(arg==='0'){UIS.calAnchor=todayISO();render();return;}
+  const mode=arg.startsWith('m')?'month':(UIS.calMode||'week');
+  const dir=+(arg.replace('m',''));
+  const a=new Date(calAnchor()+'T12:00:00');
+  if(mode==='month')a.setMonth(a.getMonth()+dir);
+  else if(mode==='day')a.setDate(a.getDate()+dir);
+  else a.setDate(a.getDate()+dir*7);
+  UIS.calAnchor=iso(a);render();
+};
+ACT.newEventAt=arg=>{
+  const [d,h]=arg.split('|');
+  window._nePrefill={date:d,time:String(h).padStart(2,'0')+':00'};
+  ACT.openNewEvent();
+};
 ACT.openEvent=arg=>{
   const [id,d]=arg.split('|');
   const ev=weekEventsFor(d).find(e=>e.id===id);if(!ev)return;
+  const stored=byId(DB.events||[],id);
   const att=ev.attendees==='*'?activeEmps().slice(0,8):(typeof ev.attendees==='string'?activeEmps().filter(e=>e.dept===ev.attendees).slice(0,8):ev.attendees.map(emp).filter(Boolean));
-  UI.drawer({head:`<span class="notif-ic" style="background:${ev.color||'#2d7ff0'};color:#fff">📅</span><div class="col" style="gap:1px"><b style="font-size:15px">${esc(ev.title)}</b>
-    <span class="tiny muted">${fmtD(d,{weekday:'long',month:'long',day:'numeric'})} · ${ev.time} · ${ev.durMin||30} min</span></div>`,
+  const rsvp=(stored&&stored.rsvp)||{};
+  const counts={yes:0,maybe:0,no:0};Object.values(rsvp).forEach(v=>counts[v]=(counts[v]||0)+1);
+  const mine=rsvp[DB.me.employeeId];
+  const canEdit=stored&&(stored.organizer===DB.me.employeeId||isAdmin());
+  UI.drawer({head:`<span class="notif-ic" style="background:${ev.color||'#2d7ff0'};color:#fff">📅</span><div class="col" style="gap:1px"><b style="font-size:15px">${esc(ev.title)}${ev.weekly?' 🔁':''}</b>
+    <span class="tiny muted">${fmtD(d,{weekday:'long',month:'long',day:'numeric'})} · ${ev.time} · ${ev.durMin||30} min${ev.weekly?' · repeats weekly':''}</span></div>`,
     body:`${ev.organizer?`<div class="row mb12" style="gap:8px"><span class="tiny faint" style="width:70px">Organizer</span>${empLink(emp(ev.organizer),'')}</div>`:''}
-    <div class="row mb12" style="gap:8px;align-items:flex-start"><span class="tiny faint" style="width:70px;margin-top:4px">Going</span>
-      <span class="av-stack">${att.slice(0,7).map(a=>av(a,'sm')).join('')}</span><span class="tiny faint" style="align-self:center">${ev.attendees==='*'?'everyone':att.length}</span></div>
+    <div class="row mb12" style="gap:8px;align-items:flex-start"><span class="tiny faint" style="width:70px;margin-top:4px">Invited</span>
+      <span class="av-stack">${att.slice(0,7).map(x=>av(x,'sm')).join('')}</span><span class="tiny faint" style="align-self:center">${ev.attendees==='*'?'everyone':att.length}${stored?` · ✓ ${counts.yes} · ? ${counts.maybe} · ✗ ${counts.no}`:''}</span></div>
+    ${stored?`<div class="card pad mb12" style="box-shadow:none;background:var(--card2)"><b class="small">Going?</b>
+      <div class="row mt8" style="gap:7px">${[['yes','✓ Yes','var(--ok)'],['maybe','? Maybe','var(--warn)'],['no','✗ No','var(--bad)']].map(o=>`
+      <button class="btn sm ${mine===o[0]?'primary':'ghost'}" style="${mine===o[0]?'--brand:'+o[2]+';--brand-deep:'+o[2]:''}" data-act="rsvp" data-arg="${id}|${o[0]}">${o[1]}</button>`).join('')}</div></div>`
+    :`<p class="tiny faint mb12">🧵 Auto-derived from ${ev.kind==='1:1'?'Performance (1:1s)':ev.kind==='interview'?'Recruiting':'your team'} — manage it at the source.</p>`}
     ${ev.meet?`<div class="card pad" style="box-shadow:none;background:var(--card2)"><div class="row between"><span class="col" style="gap:1px"><b class="small">🎥 Meridian Meet</b><span class="tiny faint">meet.meridianlabs.com/${id.toLowerCase()}</span></span>
       <button class="btn sm primary" style="--brand:#2d8cff;--brand-deep:#1d7af0" data-act="meetJoin" data-arg="${esc(ev.title)}">Join</button></div></div>`:''}`,
-    foot:`<button class="btn ghost" data-act="closeDrawer">Close</button>`});
+    foot:`<button class="btn ghost" data-act="icsExport" data-arg="${id}|${d}">${I.download} .ics</button><span class="spacer"></span>
+      ${canEdit?`<button class="btn ghost" data-act="deleteEvent" data-arg="${id}">Delete</button>
+      <button class="btn soft" style="--brand:#2d7ff0" data-act="editEvent" data-arg="${id}">${I.edit} Edit</button>`:''}
+      <button class="btn ghost" data-act="closeDrawer">Close</button>`});
+};
+ACT.rsvp=arg=>{
+  const [id,status]=arg.split('|');
+  const ev=byId(DB.events||[],id);if(!ev)return;
+  (ev.rsvp=ev.rsvp||{})[DB.me.employeeId]=status;
+  if(ev.organizer&&ev.organizer!==DB.me.employeeId)notify(ev.organizer,'📅',`${me().name} responded ${status} — ${ev.title}`,'#/cal');
+  Store.save();ACT.openEvent(id+'|'+(ev.date));
+  UI.toast('RSVP: '+status+' — organizer can see it','📅');
+};
+ACT.editEvent=id=>{window._neEdit=id;UI.closeDrawer();ACT.openNewEvent();};
+ACT.deleteEvent=id=>{
+  const i=(DB.events||[]).findIndex(ev=>ev.id===id);if(i<0)return;
+  const ev=DB.events.splice(i,1)[0];
+  Store.save();UI.closeDrawer();render();
+  UI.toast('Event deleted — attendees notified','🗑️',{label:'Undo',fn:()=>{DB.events.splice(i,0,ev);Store.save();render();}});
+};
+ACT.icsExport=arg=>{
+  const [id,d]=arg.split('|');
+  const ev=weekEventsFor(d).find(x=>x.id===id);if(!ev)return;
+  const [h,m]=ev.time.split(':').map(Number);
+  const pad2=n=>String(n).padStart(2,'0');
+  const dt=d.replace(/-/g,'');
+  const endMin=h*60+m+(ev.durMin||30);
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mosaic//Meridian Labs//EN','BEGIN:VEVENT',
+    'UID:'+id+'@mosaic.meridianlabs.com','DTSTART:'+dt+'T'+pad2(h)+pad2(m)+'00','DTEND:'+dt+'T'+pad2(Math.floor(endMin/60))+pad2(endMin%60)+'00',
+    'SUMMARY:'+ev.title.replace(/[,;]/g,' '),'DESCRIPTION:Exported from Mosaic'+(ev.meet?' · meet.meridianlabs.com/'+id.toLowerCase():''),
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download=deslug(ev.title).replace(/ /g,'-')+'.ics';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  UI.toast('.ics downloaded — a real calendar file; drop it into Google/Apple Calendar','📅');
+};
+window.neConflicts=()=>{
+  const el=$('#ne-conf');if(!el)return;
+  const date=$('#ne-date').value,t=$('#ne-time').value,dur=+$('#ne-dur').value||30;
+  const who=[...$('#ne-who').selectedOptions].map(o=>o.value);
+  if(!who.length){el.innerHTML='';return;}
+  const start=timeToMin(t),end=start+dur;
+  let conflicted=[];
+  who.forEach(idw=>{
+    const busy=(DB.events||[]).some(ev=>{
+      if(ev.date!==date)return false;
+      const att=ev.attendees==='*'||(typeof ev.attendees==='string'?(emp(idw)||{}).dept===ev.attendees:ev.attendees.includes(idw));
+      if(!att)return false;
+      const s2=timeToMin(ev.time),e2=s2+(ev.durMin||30);
+      return s2<end&&e2>start;})
+      ||DB.ones.some(o=>(o.managerId===idw||o.reportId===idw)&&o.when===date&&Math.abs(timeToMin(o.time)-start)<dur);
+    if(busy)conflicted.push((emp(idw)||{}).name);
+  });
+  el.innerHTML=conflicted.length?`<span class="tiny" style="color:var(--warn);font-weight:700">⚠️ Busy then: ${conflicted.map(esc).join(', ')} — find-a-time suggests shifting an hour.</span>`:'<span class="tiny" style="color:var(--ok);font-weight:650">✓ Everyone looks free.</span>';
 };
 ACT.openNewEvent=()=>{
-  UI.modal({title:'New event 📅',body:`
-    <div class="field"><label>Title</label><input id="ne-title" placeholder="e.g. Launch retro"></div>
+  const ed=window._neEdit?byId(DB.events||[],window._neEdit):null;
+  const pre=window._nePrefill||{};window._nePrefill=null;
+  UI.modal({title:ed?'Edit event 📅':'New event 📅',body:`
+    <div class="field"><label>Title</label><input id="ne-title" value="${ed?esc(ed.title):''}" placeholder="e.g. Launch retro"></div>
     <div class="grid g3">
-      <div class="field"><label>Date</label><input type="date" id="ne-date" value="${todayISO()}"></div>
-      <div class="field"><label>Time</label><input type="time" id="ne-time" value="14:00"></div>
-      <div class="field"><label>Length</label><select id="ne-dur"><option value="30">30 min</option><option value="60">1 hour</option><option value="45">45 min</option></select></div>
+      <div class="field"><label>Date</label><input type="date" id="ne-date" value="${ed?ed.date:(pre.date||todayISO())}" onchange="neConflicts()"></div>
+      <div class="field"><label>Time</label><input type="time" id="ne-time" value="${ed?(ed.time.length===4?'0'+ed.time:ed.time):(pre.time||'14:00')}" onchange="neConflicts()"></div>
+      <div class="field"><label>Length</label><select id="ne-dur" onchange="neConflicts()"><option value="30" ${ed&&ed.durMin===30?'selected':''}>30 min</option><option value="45" ${ed&&ed.durMin===45?'selected':''}>45 min</option><option value="60" ${ed&&ed.durMin===60?'selected':''}>1 hour</option></select></div>
     </div>
-    <div class="field"><label>Invite</label><select id="ne-who" multiple size="5">${DB.employees.filter(e=>e.status==='active'&&e.id!==DB.me.employeeId).slice(0,40).map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('')}</select><span class="hint">⌘-click for multiple</span></div>
-    <label class="row small" style="gap:8px;cursor:pointer"><input type="checkbox" id="ne-meet" checked style="width:15px;height:15px;accent-color:#2d8cff"> Add a Meridian Meet link</label>`,
-    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#2d7ff0;--brand-deep:#1d6ae0" data-act="saveEvent">Create event</button>`});
+    <div class="field"><label>Invite</label><select id="ne-who" multiple size="5" onchange="neConflicts()">${DB.employees.filter(e=>e.status==='active'&&e.id!==DB.me.employeeId).slice(0,50).map(e=>`<option value="${e.id}" ${ed&&Array.isArray(ed.attendees)&&ed.attendees.includes(e.id)?'selected':''}>${esc(e.name)}</option>`).join('')}</select>
+    <span class="hint">⌘-click for multiple</span><div id="ne-conf" class="mt8"></div></div>
+    <div class="row" style="gap:16px">
+    <label class="row small" style="gap:8px;cursor:pointer"><input type="checkbox" id="ne-meet" ${!ed||ed.meet?'checked':''} style="width:15px;height:15px;accent-color:#2d8cff"> 🎥 Meet link</label>
+    <label class="row small" style="gap:8px;cursor:pointer"><input type="checkbox" id="ne-weekly" ${ed&&ed.weekly?'checked':''} style="width:15px;height:15px;accent-color:#2d7ff0"> 🔁 Repeat weekly</label></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#2d7ff0;--brand-deep:#1d6ae0" data-act="saveEvent">${ed?'Save changes':'Create event'}</button>`});
 };
 ACT.saveEvent=()=>{
   const who=[...$('#ne-who').selectedOptions].map(o=>o.value);
-  const ev={id:uid('EV'),title:$('#ne-title').value.trim()||'New event',date:$('#ne-date').value||todayISO(),time:$('#ne-time').value||'14:00',durMin:+$('#ne-dur').value,kind:'meeting',organizer:DB.me.employeeId,attendees:[DB.me.employeeId,...who],meet:$('#ne-meet').checked,color:'#2d7ff0'};
+  const ed=window._neEdit?byId(DB.events||[],window._neEdit):null;
+  const data={title:$('#ne-title').value.trim()||'New event',date:$('#ne-date').value||todayISO(),time:$('#ne-time').value||'14:00',durMin:+$('#ne-dur').value,kind:'meeting',attendees:[DB.me.employeeId,...who],meet:$('#ne-meet').checked,weekly:$('#ne-weekly').checked,color:'#2d7ff0'};
+  if(ed){Object.assign(ed,data);
+    who.forEach(idw=>notify(idw,'📅',`Updated: ${ed.title} · ${fmtDshort(ed.date)} ${ed.time}`,'#/cal'));
+    window._neEdit=null;
+    Store.save();UI.closeModal();render();UI.toast('Event updated — attendees re-notified','📅');return;}
+  const ev=Object.assign({id:uid('EV'),organizer:DB.me.employeeId,rsvp:{}},data);
   DB.events.push(ev);
-  who.forEach(id=>notify(id,'📅',`${me().name} invited you: ${ev.title} · ${fmtDshort(ev.date)} ${ev.time}`,'#/cal'));
+  who.forEach(idw=>notify(idw,'📅',`${me().name} invited you: ${ev.title} · ${fmtDshort(ev.date)} ${ev.time}`,'#/cal'));
   Store.save();UI.closeModal();nav('#/cal');render();
-  UI.toast('Event created — invites delivered in-app','📅');
+  UI.toast('Event created — invites delivered, RSVPs open','📅');
 };
 
-/* ---------------- DRIVE ---------------- */
-const FILE_ICON={folder:'📁',doc:'📄',sheet:'📊',slide:'📽️',pdf:'📕',img:'🖼️'};
-const fileVisible=f=>deptScopeOk(f.scope);
+/* ---------------- DRIVE (Google Drive tier) ---------------- */
+const FILE_ICON={folder:'📁',doc:'📄',sheet:'📊',slide:'📽️',pdf:'📕',img:'🖼️',video:'🎬'};
+const fileVisible=f=>!f.trashed&&(f.scope==='private'?(f.ownerId===DB.me.employeeId||isAdmin()):deptScopeOk(f.scope));
+const scopeLabel=s=>s==='*'?'🌐 Everyone':s==='private'?'🔒 Only owner':'🔒 '+deptName(s);
+function driveItems(view,cur,q){
+  const myId=DB.me.employeeId;
+  const all=DB.files;
+  if(q){const ql=q.toLowerCase();return all.filter(f=>fileVisible(f)&&f.name.toLowerCase().includes(ql));}
+  switch(view){
+    case 'recent':return all.filter(f=>fileVisible(f)&&f.kind!=='folder').sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)).slice(0,14);
+    case 'starred':return all.filter(f=>fileVisible(f)&&f.starred);
+    case 'shared':return all.filter(f=>fileVisible(f)&&f.ownerId!==myId&&f.scope!=='private');
+    case 'trash':return all.filter(f=>f.trashed&&(f.ownerId===myId||isAdmin()));
+    default:return all.filter(f=>f.parent===(cur?cur.id:null)&&fileVisible(f));
+  }
+}
+function driveSorted(items){
+  const s=UIS.driveSort||'modified';
+  return [...items].sort((a,b)=>(a.kind==='folder'?0:1)-(b.kind==='folder'?0:1)||(s==='name'?a.name.localeCompare(b.name):b.updatedAt.localeCompare(a.updatedAt)));
+}
 Views.drive=param=>{
   const cur=param&&param!=='root'?byId(DB.files,param):null;
   if(cur&&!fileVisible(cur))return '<div class="card pad empty"><div class="big">🔒</div>This folder is scoped to '+deptName(cur.scope)+'.</div>';
-  const here=DB.files.filter(f=>f.parent===(cur?cur.id:null)&&fileVisible(f));
+  const view=cur?'my':(UIS.driveView||'my');
+  const q=UIS.driveQ||'';
+  const items=driveSorted(driveItems(view,cur,q));
+  const layout=UIS.driveLayout||'list';
   const crumbs=[];let p=cur;while(p){crumbs.unshift(p);p=p.parent?byId(DB.files,p.parent):null;}
+  const usedMB=sum(DB.files.filter(f=>!f.trashed).map(f=>{const m=/([\d.]+)\s?MB/.exec(f.size||'');const k=/([\d.]+)\s?KB/.exec(f.size||'');return m?+m[1]:k?+k[1]/1024:0;}))+1400;
+  const views=[['my','🗂️ My Drive'],['recent','🕘 Recent'],['starred','⭐ Starred'],['shared','👥 Shared with me'],['trash','🗑️ Trash']];
+  const recent=driveItems('recent').slice(0,4);
+  const itemHtml=f=>{
+    const openAct=f.trashed?'fileActions':(f.kind==='folder'?'nav':'drivePreview');
+    const openArg=f.trashed?f.id:(f.kind==='folder'?'#/drive/'+f.id:f.id);
+    if(layout==='grid')return `<div class="dr-card" data-act="${openAct}" data-arg="${openArg}">
+      <button class="iconbtn dr-kebab" data-act="fileActions" data-arg="${f.id}" onclick="event.stopPropagation()">⋮</button>
+      <div class="big-ic">${FILE_ICON[f.kind]||'📄'}</div>
+      <b class="tiny" style="font-size:12px;display:block;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.starred?'⭐ ':''}${esc(f.name)}</b>
+      <span class="tiny faint">${f.kind==='folder'?DB.files.filter(x=>x.parent===f.id&&!x.trashed).length+' items':rel(f.updatedAt)}</span></div>`;
+    return `<div class="dr-row" data-act="${openAct}" data-arg="${openArg}">
+      <span class="dr-ic">${FILE_ICON[f.kind]||'📄'}</span>
+      <span><b class="small">${f.starred?'⭐ ':''}${esc(f.name)}</b>${f.scope!=='*'?` <span title="${scopeLabel(f.scope)}">🔒</span>`:''}</span>
+      <span class="muted dr-extra">${esc((emp(f.ownerId)||{}).name||'—')}</span>
+      <span class="muted dr-extra">${rel(f.updatedAt)}</span>
+      <span class="row" style="gap:4px;justify-content:flex-end"><span class="tiny faint num">${f.size||(f.kind==='folder'?DB.files.filter(x=>x.parent===f.id&&!x.trashed).length+' items':'')}</span>
+      <button class="iconbtn dr-kebab" data-act="fileActions" data-arg="${f.id}" onclick="event.stopPropagation()">⋮</button></span></div>`;
+  };
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">Drive</h1><div class="page-sub">Shared files with the same department-level security as everything else</div></div>
-    <button class="btn ghost" data-act="driveNew" data-arg="doc">${I.plus} New doc</button>
+  <div class="page-head"><div style="flex:1"><h1 class="page">Drive</h1><div class="page-sub">Folders, sharing, stars, trash — with the same department security as everything else</div></div>
+    ${parityBtn('drive')}
+    <button class="btn ghost" data-act="driveNewFolder">${I.plus} Folder</button>
+    <button class="btn ghost" data-act="driveNew" data-arg="doc">${I.plus} Doc</button>
     <button class="btn primary" style="--brand:#1fa463;--brand-deep:#178a52" data-act="driveNew" data-arg="upload">⬆️ Upload</button></div>
+  <div class="row wrap mb12" style="gap:8px">
+    ${views.map(v=>`<button class="space-pill ${view===v[0]&&!q?'on':''}" style="${view===v[0]&&!q?'border-color:#1fa463;color:#1fa463;background:color-mix(in srgb,#1fa463 8%,var(--card))':''}" data-act="driveView" data-arg="${v[0]}">${v[1]}</button>`).join('')}
+    <span class="spacer"></span>
+    <span class="col" style="gap:3px;min-width:150px"><span class="tiny faint num">${(usedMB/1024).toFixed(1)} GB of 15 GB</span><span class="storage-meter"><i style="width:${clamp(usedMB/15360*100,2,100)}%"></i></span></span></div>
+  ${view==='my'&&!cur&&!q&&recent.length?`<div class="row wrap mb12" style="gap:10px">${recent.map(f=>`
+    <button class="chip" style="padding:7px 12px" data-act="drivePreview" data-arg="${f.id}">${FILE_ICON[f.kind]} ${esc(f.name.length>26?f.name.slice(0,24)+'…':f.name)}</button>`).join('')}</div>`:''}
   <div class="card">
-    <div class="row" style="padding:13px 16px;border-bottom:1px solid var(--line);gap:10px">
-      <span class="crumbs"><a href="#/drive">My Drive</a>${crumbs.map(c=>`<span class="sep">›</span><a href="#/drive/${c.id}">${esc(c.name)}</a>`).join('')}</span>
-      <span class="spacer"></span>${cur&&cur.scope!=='*'?`<span class="badge b-vio">🔒 ${deptName(cur.scope)} only</span>`:''}</div>
-    ${here.length?here.sort((a,b)=>(a.kind==='folder'?0:1)-(b.kind==='folder'?0:1)||b.updatedAt.localeCompare(a.updatedAt)).map(f=>`
-      <div class="dr-row" data-act="${f.kind==='folder'?'nav':'drivePreview'}" data-arg="${f.kind==='folder'?'#/drive/'+f.id:f.id}">
-        <span class="dr-ic">${FILE_ICON[f.kind]||'📄'}</span>
-        <span><b class="small">${esc(f.name)}</b>${f.scope!=='*'?' <span title="Scoped to '+deptName(f.scope)+'">🔒</span>':''}</span>
-        <span class="muted dr-extra">${esc((emp(f.ownerId)||{}).name||'—')}</span>
-        <span class="muted dr-extra">${rel(f.updatedAt)}</span>
-        <span class="tiny faint num">${f.size||(f.kind==='folder'?DB.files.filter(x=>x.parent===f.id).length+' items':'')}</span></div>`).join('')
-    :'<div class="empty"><div class="big">🗂️</div>Empty folder.</div>'}
+    <div class="row" style="padding:11px 16px;border-bottom:1px solid var(--line);gap:10px;flex-wrap:wrap">
+      ${view==='my'?`<span class="crumbs"><a href="#/drive" onclick="UIS.driveView='my'">My Drive</a>${crumbs.map(c=>`<span class="sep">›</span><a href="#/drive/${c.id}">${esc(c.name)}</a>`).join('')}</span>`
+        :`<b class="small">${(views.find(v=>v[0]===view)||[])[1]||''}</b>`}
+      ${cur&&cur.scope!=='*'?`<span class="badge b-vio">${scopeLabel(cur.scope)}</span>`:''}
+      <span class="spacer"></span>
+      <input type="search" placeholder="🔎 Search Drive…" value="${esc(q)}" oninput="UIS.driveQ=this.value;render()" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:6px 11px;outline:none;font-size:12.5px;width:190px">
+      <select onchange="UIS.driveSort=this.value;render()" style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px"><option value="modified" ${(UIS.driveSort||'modified')==='modified'?'selected':''}>Modified</option><option value="name" ${UIS.driveSort==='name'?'selected':''}>Name</option></select>
+      <div class="seg"><button class="${layout==='list'?'on':''}" data-act="driveLayout" data-arg="list">☰</button><button class="${layout==='grid'?'on':''}" data-act="driveLayout" data-arg="grid">▦</button></div></div>
+    ${items.length?(layout==='grid'?`<div class="dr-grid">${items.map(itemHtml).join('')}</div>`:items.map(itemHtml).join(''))
+    :`<div class="empty"><div class="big">${view==='trash'?'🗑️':'🗂️'}</div>${q?'No matches.':view==='trash'?'Trash is empty.':view==='shared'?'Nothing shared with you yet.':'Empty here.'}</div>`}
   </div>
-  <p class="tiny faint mt8">Letters generated anywhere in Mosaic file themselves into <b>Generated letters</b> automatically. Production swap: Google Drive API behind the same UI.</p>`;
+  <p class="tiny faint mt8">Letters and Meet recordings file themselves here automatically. Production swap: Google Drive API behind this exact UI.</p>`;
+};
+ACT.driveView=v=>{UIS.driveView=v;UIS.driveQ='';nav('#/drive');render();};
+ACT.driveLayout=l=>{UIS.driveLayout=l;render();};
+ACT.fileActions=fid=>{
+  const f=byId(DB.files,fid);if(!f)return;
+  const folders=DB.files.filter(x=>x.kind==='folder'&&!x.trashed&&fileVisible(x)&&x.id!==fid);
+  UI.modal({title:FILE_ICON[f.kind]+' '+f.name,sub:`${esc((emp(f.ownerId)||{}).name||'')} · ${scopeLabel(f.scope)} · updated ${rel(f.updatedAt)}`,body:`
+    ${f.trashed?`<div class="card pad mb12" style="background:var(--warn-soft);border-color:transparent;box-shadow:none"><b class="small">In trash</b><span class="tiny muted"> — restore it or delete it forever.</span></div>`
+    :`<div class="field"><label>Rename</label><div class="row" style="gap:7px"><input id="fa-name" value="${esc(f.name)}" style="flex:1"><button class="btn sm soft" style="--brand:#1fa463" data-act="fileRename" data-arg="${fid}">Save</button></div></div>
+    <div class="field"><label>Move to</label><div class="row" style="gap:7px"><select id="fa-move" style="flex:1"><option value="">My Drive (root)</option>${folders.map(fo=>`<option value="${fo.id}" ${f.parent===fo.id?'selected':''}>📁 ${esc(fo.name)}</option>`).join('')}</select><button class="btn sm soft" style="--brand:#1fa463" data-act="fileMove" data-arg="${fid}">Move</button></div></div>
+    <div class="field"><label>Sharing</label><div class="row" style="gap:7px"><select id="fa-scope" style="flex:1">
+      <option value="*" ${f.scope==='*'?'selected':''}>🌐 Everyone at Meridian</option>
+      ${DEPTS.filter(d=>d.id!=='exec').map(d=>`<option value="${d.id}" ${f.scope===d.id?'selected':''}>🔒 ${d.name} only</option>`).join('')}
+      <option value="private" ${f.scope==='private'?'selected':''}>🔒 Only me</option></select>
+      <button class="btn sm soft" style="--brand:#1fa463" data-act="fileShare" data-arg="${fid}">Share</button></div>
+      <span class="hint">Department scoping is enforced by the same security engine as the rest of Mosaic.</span></div>`}`,
+    foot:`${f.trashed?`<button class="btn danger" data-act="fileDeleteForever" data-arg="${fid}">Delete forever</button><span class="spacer"></span><button class="btn primary" style="--brand:#1fa463;--brand-deep:#178a52" data-act="fileRestore" data-arg="${fid}">♻️ Restore</button>`
+    :`<button class="btn ghost" data-act="fileStar" data-arg="${fid}">${f.starred?'★ Unstar':'☆ Star'}</button>
+      <button class="btn ghost" onclick="UI.toast('Demo: download would start','⬇️')">${I.download}</button><span class="spacer"></span>
+      <button class="btn danger" data-act="fileTrash" data-arg="${fid}">🗑️ Trash</button>
+      ${f.kind!=='folder'?`<button class="btn primary" style="--brand:#1fa463;--brand-deep:#178a52" data-act="drivePreview" data-arg="${fid}">Open</button>`:''}`}`});
+};
+ACT.fileRename=fid=>{const f=byId(DB.files,fid);if(!f)return;f.name=$('#fa-name').value.trim()||f.name;f.updatedAt=todayISO();Store.save();UI.closeModal();render();UI.toast('Renamed','✏️');};
+ACT.fileMove=fid=>{const f=byId(DB.files,fid);if(!f)return;f.parent=$('#fa-move').value||null;f.updatedAt=todayISO();Store.save();UI.closeModal();render();UI.toast('Moved','📁');};
+ACT.fileShare=fid=>{const f=byId(DB.files,fid);if(!f)return;f.scope=$('#fa-scope').value;audit('File sharing changed',f.name+' → '+f.scope);Store.save();UI.closeModal();render();UI.toast('Sharing updated — '+scopeLabel(f.scope),'🔐');};
+ACT.fileStar=fid=>{const f=byId(DB.files,fid);if(!f)return;f.starred=!f.starred;Store.save();UI.closeModal();render();UI.toast(f.starred?'Starred':'Unstarred','⭐');};
+ACT.fileTrash=fid=>{const f=byId(DB.files,fid);if(!f)return;f.trashed=true;
+  const kids=DB.files.filter(x=>x.parent===fid);kids.forEach(k=>k.trashed=true);
+  Store.save();UI.closeModal();render();
+  UI.toast('Moved to trash'+(kids.length?' (with '+kids.length+' items inside)':''),'🗑️',{label:'Undo',fn:()=>{f.trashed=false;kids.forEach(k=>k.trashed=false);Store.save();render();}});};
+ACT.fileRestore=fid=>{const f=byId(DB.files,fid);if(!f)return;f.trashed=false;DB.files.filter(x=>x.parent===fid).forEach(k=>k.trashed=false);Store.save();UI.closeModal();render();UI.toast('Restored','♻️');};
+ACT.fileDeleteForever=fid=>{
+  const i=DB.files.findIndex(x=>x.id===fid);if(i<0)return;
+  const removed=DB.files.filter(x=>x.id===fid||x.parent===fid);
+  DB.files=DB.files.filter(x=>x.id!==fid&&x.parent!==fid);
+  Store.save();UI.closeModal();render();
+  UI.toast('Deleted forever','💥',{label:'Undo',fn:()=>{DB.files.push(...removed);Store.save();render();}});
+};
+ACT.driveNewFolder=()=>{
+  UI.modal({title:'New folder',body:`<div class="field"><label>Name</label><input id="nf-name" placeholder="e.g. Offsite 2026"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#1fa463;--brand-deep:#178a52" data-act="driveNewFolderSave">Create</button>`});
+};
+ACT.driveNewFolderSave=()=>{
+  const parent=ROUTE.mod==='drive'&&ROUTE.param&&ROUTE.param!=='root'?ROUTE.param:null;
+  DB.files.push({id:uid('FO'),name:$('#nf-name').value.trim()||'Untitled folder',kind:'folder',parent,ownerId:DB.me.employeeId,scope:parent?(byId(DB.files,parent)||{}).scope||'*':'*',updatedAt:todayISO(),size:'',starred:false});
+  Store.save();UI.closeModal();render();UI.toast('Folder created','📁');
 };
 ACT.drivePreview=fid=>{
   const f=byId(DB.files,fid);if(!f)return;
@@ -5513,19 +6584,22 @@ ACT.driveNew=kind=>{
   Store.save();render();UI.toast((kind==='upload'?'Uploaded':'Created')+' — inherits this folder\'s sharing','🗂️');
 };
 
-/* ---------------- MEET ---------------- */
+/* ---------------- MEET (Zoom tier) ---------------- */
+const CAPTIONS=['…so the OTA retry logic is fully rolled out as of this morning,','and the fleet dashboards are green across all three regions,','which means launch risk is basically down to the press cycle,','okay let\'s talk about the retail demo kits next —','Camille, do you want to walk us through Westfield?','sure — so the 240-door rollout starts with twelve flagship stores,'];
 Views.meet=()=>{
   if(UIS.meetActive)return meetStage();
   const todayMeets=[];
   [0,1].forEach(o=>{const d=daysAhead(o);weekEventsFor(d).filter(e=>e.meet).forEach(e=>todayMeets.push({...e,date:d}));});
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">Meet</h1><div class="page-sub">Video rooms wired into 1:1s, interviews and events — one click from anywhere in Mosaic</div></div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">Meet</h1><div class="page-sub">Video rooms wired into 1:1s, interviews and events — one click from anywhere in Mosaic</div></div>
+    ${parityBtn('meet')}
+    <button class="btn ghost" data-act="meetSchedule">📅 Schedule</button></div>
   <div class="grid g23">
     <div class="col" style="gap:16px">
       <div class="card pad" style="background:linear-gradient(135deg,color-mix(in srgb,#2d8cff 10%,var(--card)),var(--card));text-align:center;padding:38px">
         <div style="font-size:40px">🎥</div>
         <b style="font-size:17px;display:block;margin-top:8px">Start an instant meeting</b>
-        <p class="small muted" style="max-width:360px;margin:6px auto 0">Spin up a room and share the link — interviews, 1:1s and launch fire-drills all live here.</p>
+        <p class="small muted" style="max-width:360px;margin:6px auto 0">Reactions, chat, screen share, recording — the full call experience, simulated faithfully.</p>
         <button class="btn primary mt16" style="--brand:#2d8cff;--brand-deep:#1d7af0" data-act="meetJoin" data-arg="Instant meeting">Start meeting</button></div>
       <div class="card"><div class="card-head"><h3>Today & tomorrow</h3></div>
         <div class="card-body" style="padding-top:8px">${todayMeets.length?todayMeets.slice(0,6).map(m=>`
@@ -5536,38 +6610,108 @@ Views.meet=()=>{
     <div class="col" style="gap:16px">
       <div class="card pad"><b class="small">Your personal room</b>
         <div class="row mt12" style="gap:8px"><code class="chip" style="font-size:11px">meet.meridianlabs.com/${deslug(me().name).toLowerCase().replace(/ /g,'.')}</code></div>
-        <button class="btn ghost block mt12" onclick="UI.toast('Link copied to clipboard (demo)','🔗')">${I.link} Copy link</button></div>
+        <button class="btn ghost block mt12" onclick="UI.toast('Link copied to clipboard','🔗')">${I.link} Copy link</button></div>
       <div class="card pad" style="background:linear-gradient(135deg,color-mix(in srgb,#2d8cff 7%,var(--card)),var(--card))"><b class="small">🧵 Connected</b>
-        <p class="tiny muted" style="margin-top:7px;line-height:1.7">Every 1:1 in <b>Performance</b> and interview in <b>Recruiting</b> carries a Meet link automatically. Production swap: Zoom SDK or Google Meet behind this exact UI.</p></div>
+        <p class="tiny muted" style="margin-top:7px;line-height:1.7">1:1s and interviews carry Meet links automatically; <b>recordings save to Drive</b> when you leave. Production swap: Zoom SDK / Meet behind this exact UI.</p></div>
     </div>
   </div>`;
 };
 function meetStage(){
-  const m=UIS.meetActive;
-  const others=activeEmps().filter(e=>e.id!==DB.me.employeeId&&(me().dept===e.dept||e.managerId===me().managerId)).slice(0,m.title.includes('1:1')?1:4);
+  const M=UIS.meetActive;
+  const others=M.parts.map(emp).filter(Boolean);
   onMount(()=>{if(window._meetTimer)clearInterval(window._meetTimer);
     window._meetTimer=setInterval(()=>{const el=$('#meet-timer');if(!el){clearInterval(window._meetTimer);return;}
-      const s=Math.floor((Date.now()-m.started)/1000);el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},1000);});
+      const s=Math.floor((Date.now()-M.started)/1000);
+      el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+      if(M.captions&&s%4===0){const cap=$('#meet-cap');if(cap){M.capIdx=((M.capIdx||0)+1)%CAPTIONS.length;cap.textContent=(others[0]?others[0].name.split(' ')[0]:'Speaker')+': '+CAPTIONS[M.capIdx];}}
+    },1000);});
+  const tile=(p,big)=>{
+    const isMe=p.id===DB.me.employeeId;
+    const bgIdx=isMe?(M.bg||0):0;
+    const bgs=['','linear-gradient(135deg,#1e3a8a,#0e7490)','linear-gradient(135deg,#3b0764,#9d174d)','url() , linear-gradient(135deg,#14532d,#a16207)'];
+    return `<div class="meet-tile" style="${isMe?'outline:2px solid #2d8cff;':''}${bgIdx?'background:'+bgs[bgIdx]:''}${big?'min-height:100%':''}">
+      ${av(p,big?'xxl':'xl')}<span class="name-tag">${isMe?'You':esc(p.name)}${isMe&&M.muted?' (muted)':''}${statusOf(p.id)?' '+statusOf(p.id).emoji:''}</span>
+      ${(isMe&&M.muted)||(!isMe&&p.id===(others[1]||{}).id)?'<span class="mic-off">🔇</span>':''}
+      ${M.raised[p.id]?'<span class="hand-badge">✋</span>':''}</div>`;
+  };
+  const allP=[me(),...others];
+  const stageInner=M.sharing?`
+    <div class="meet-present">
+      <div class="present-stage"><div class="col" style="align-items:center;gap:8px"><span style="font-size:38px">🖥️</span><b>You're presenting</b><span class="tiny" style="opacity:.7">launch-dashboard.meridianlabs.com — fleet at 84% · all regions green</span></div></div>
+      <div class="meet-thumbs">${allP.map(p=>tile(p)).join('')}</div></div>`
+    :M.layout==='speaker'?`<div class="meet-present"><div class="present-stage" style="display:grid;place-items:center">${tile(others[0]||me(),true)}</div><div class="meet-thumbs">${allP.filter(p=>p.id!==(others[0]||me()).id).map(p=>tile(p)).join('')}</div></div>`
+    :`<div class="meet-grid">${allP.map(p=>tile(p)).join('')}</div>`;
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(m.title)}</h1><div class="page-sub">🔴 <span id="meet-timer">00:00</span> · ${others.length+1} participants · meet.meridianlabs.com/${m.code}</div></div></div>
-  <div class="meet-stage">
-    <div class="meet-grid">
-      <div class="meet-tile" style="outline:2px solid #2d8cff">${av(me(),'xl')}<span class="name-tag">You${m.muted?' (muted)':''}</span>${m.muted?'<span class="mic-off">🔇</span>':''}</div>
-      ${others.map((o,i)=>`<div class="meet-tile">${av(o,'xl')}<span class="name-tag">${esc(o.name)}</span>${i===1?'<span class="mic-off">🔇</span>':''}</div>`).join('')}
+  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(M.title)}</h1><div class="page-sub">🔴 <span id="meet-timer">00:00</span> · ${allP.length} participants · meet.meridianlabs.com/${M.code} <button class="chip" style="font-size:10px" onclick="UI.toast('Invite link copied','🔗')">copy invite</button></div></div></div>
+  <div class="meet-wrap">
+    <div class="meet-stage" id="meet-stage" style="position:relative">
+      ${M.rec?'<span class="rec-badge">REC</span>':''}
+      ${M.captions?`<div class="caption-bar" id="meet-cap">Live captions on…</div>`:''}
+      ${stageInner}
+      <div class="meet-bar">
+        <button class="meet-btn ${M.muted?'off':''}" data-act="meetMute" title="Mute">${M.muted?'🔇':'🎙️'}</button>
+        <button class="meet-btn ${M.cam===false?'off':''}" data-act="meetCam" title="Camera">${M.cam===false?'🚫':'📷'}</button>
+        <button class="meet-btn ${M.sharing?'off':''}" data-act="meetShare" title="Share screen">🖥️</button>
+        <button class="meet-btn ${M.rec?'off':''}" data-act="meetRec" title="Record">⏺️</button>
+        <button class="meet-btn ${M.raised[DB.me.employeeId]?'off':''}" data-act="meetHand" title="Raise hand">✋</button>
+        ${['👏','❤️','😂','🎉'].map(e2=>`<button class="meet-btn" data-act="meetReact" data-arg="${e2}" title="React" style="width:40px;font-size:15px">${e2}</button>`).join('')}
+        <button class="meet-btn" data-act="meetBg" title="Background">🪄</button>
+        <button class="meet-btn ${M.captions?'':'off'}" data-act="meetCaptions" title="Captions" style="font-size:11px;font-weight:800">CC</button>
+        <button class="meet-btn ${M.layout==='speaker'?'':'off'}" data-act="meetLayout" title="Layout">▦</button>
+        <button class="meet-btn leave" data-act="meetLeave">Leave</button>
+      </div>
     </div>
-    <div class="meet-bar">
-      <button class="meet-btn ${m.muted?'off':''}" data-act="meetMute" title="Mute">${m.muted?'🔇':'🎙️'}</button>
-      <button class="meet-btn ${m.cam===false?'off':''}" data-act="meetCam" title="Camera">${m.cam===false?'🚫':'📷'}</button>
-      <button class="meet-btn" onclick="UI.toast('Screen sharing (demo)','🖥️')" title="Share">🖥️</button>
-      <button class="meet-btn" onclick="UI.toast('Recording with consent banner (demo)','⏺️')" title="Record">⏺️</button>
-      <button class="meet-btn leave" data-act="meetLeave">Leave</button>
+    <div class="meet-panel">
+      <div class="mp-head"><button class="${M.panel!=='chat'?'on':''}" data-act="meetPanel" data-arg="parts">👥 People (${allP.length})</button>
+      <button class="${M.panel==='chat'?'on':''}" data-act="meetPanel" data-arg="chat">💬 Chat${M.chat.length?' ('+M.chat.length+')':''}</button></div>
+      <div class="mp-body" id="mp-body">${M.panel==='chat'?
+        (M.chat.map(c2=>`<div style="margin-bottom:9px"><b style="font-size:11.5px">${esc(c2.from)}</b> <span style="opacity:.55;font-size:10px">${c2.t}</span><br>${esc(c2.text)}</div>`).join('')||'<span style="opacity:.5">Say hi — chat is call-only.</span>')
+        :allP.map(p=>`<div class="row" style="gap:8px;margin-bottom:9px">${av(p,'sm')}<span class="col" style="gap:0;flex:1"><b style="font-size:12px">${p.id===DB.me.employeeId?'You':esc(p.name)}</b><span style="opacity:.55;font-size:10.5px">${p.id===DB.me.employeeId?(M.muted?'muted':'unmuted'):p.id===(others[1]||{}).id?'muted':'unmuted'}${M.raised[p.id]?' · ✋':''}</span></span>
+        ${p.id!==DB.me.employeeId?`<button style="opacity:.6;font-size:10.5px" onclick="UI.toast('Asked ${esc(p.name.split(' ')[0])} to unmute (host control)','🎙️')">🎙️ ask</button>`:''}</div>`).join('')}</div>
+      ${M.panel==='chat'?`<div class="mp-foot"><div class="row" style="gap:6px"><input id="meet-chat-in" placeholder="Message everyone…" style="flex:1;background:#0c0e1a;border:1px solid #262b42;border-radius:9px;padding:7px 10px;color:#eef0fa;outline:none;font-size:12px" onkeydown="if(event.key==='Enter')ACT.meetChatSend()">
+      <button class="btn sm primary" style="--brand:#2d8cff;--brand-deep:#1d7af0" data-act="meetChatSend">${I.send}</button></div></div>`:''}
     </div>
   </div>`;
 }
-ACT.meetJoin=title=>{UIS.meetActive={title:title||'Meeting',started:Date.now(),muted:false,cam:true,code:Math.random().toString(36).slice(2,8)};UI.closeDrawer();nav('#/meet');render();};
+ACT.meetSchedule=()=>{window._nePrefill={date:todayISO(),time:'15:00'};ACT.openNewEvent();};
+ACT.meetJoin=title=>{
+  const others=activeEmps().filter(e=>e.id!==DB.me.employeeId&&(me().dept===e.dept||e.managerId===me().managerId||me().id===e.managerId)).slice(0,String(title).includes('1:1')||String(title).includes('Huddle with')?1:4);
+  UIS.meetActive={title:title||'Meeting',started:Date.now(),muted:false,cam:true,code:Math.random().toString(36).slice(2,8),parts:others.map(o=>o.id),chat:[],raised:{},sharing:false,rec:false,layout:'grid',bg:0,captions:false,panel:'parts'};
+  UI.closeDrawer();nav('#/meet');render();
+};
 ACT.meetMute=()=>{UIS.meetActive.muted=!UIS.meetActive.muted;render();};
 ACT.meetCam=()=>{UIS.meetActive.cam=UIS.meetActive.cam===false?true:false;render();};
-ACT.meetLeave=()=>{const s=Math.floor((Date.now()-UIS.meetActive.started)/60000);if(window._meetTimer)clearInterval(window._meetTimer);UIS.meetActive=null;render();UI.toast('Left the meeting after '+(s||'<1')+' min','👋');};
+ACT.meetShare=()=>{const M=UIS.meetActive;M.sharing=!M.sharing;render();UI.toast(M.sharing?'Presenting to everyone':'Stopped presenting','🖥️');};
+ACT.meetRec=()=>{const M=UIS.meetActive;M.rec=!M.rec;render();UI.toast(M.rec?'Recording — participants see the consent banner':'Recording stopped','⏺️');};
+ACT.meetHand=()=>{const M=UIS.meetActive;M.raised[DB.me.employeeId]=!M.raised[DB.me.employeeId];render();};
+ACT.meetReact=emo=>{
+  const stage=$('#meet-stage');if(!stage)return;
+  const el=document.createElement('span');el.className='float-emoji';el.textContent=emo;
+  el.style.left=(15+Math.random()*70)+'%';el.style.bottom='90px';
+  stage.appendChild(el);setTimeout(()=>el.remove(),2400);
+};
+ACT.meetBg=()=>{const M=UIS.meetActive;M.bg=((M.bg||0)+1)%4;render();UI.toast(['Background off','Deep-sea blue','Galaxy purple','Forest gold'][M.bg],'🪄');};
+ACT.meetCaptions=()=>{const M=UIS.meetActive;M.captions=!M.captions;M.capIdx=0;render();};
+ACT.meetLayout=()=>{const M=UIS.meetActive;M.layout=M.layout==='speaker'?'grid':'speaker';render();};
+ACT.meetPanel=p=>{UIS.meetActive.panel=p;render();setTimeout(()=>{const i=$('#meet-chat-in');if(i)i.focus();},80);};
+ACT.meetChatSend=()=>{
+  const i=$('#meet-chat-in');if(!i||!i.value.trim())return;
+  const M=UIS.meetActive;
+  M.chat.push({from:'You',t:nowTime(),text:i.value.trim()});
+  if(M.chat.length===1&&M.parts.length){const o=emp(M.parts[0]);if(o)setTimeout(()=>{if(UIS.meetActive){UIS.meetActive.chat.push({from:o.name.split(' ')[0],t:nowTime(),text:'👍 noted!'});render();}},1800);}
+  render();setTimeout(()=>{const x=$('#meet-chat-in');if(x)x.focus();},60);
+};
+ACT.meetLeave=()=>{
+  const M=UIS.meetActive;
+  const mins=Math.floor((Date.now()-M.started)/60000);
+  if(window._meetTimer)clearInterval(window._meetTimer);
+  if(M.rec){
+    DB.files.push({id:uid('FI'),name:'Recording — '+M.title+' ('+fmtDshort(todayISO())+').mp4',kind:'video',parent:null,ownerId:DB.me.employeeId,scope:'private',updatedAt:todayISO(),size:rint(40,300)+' MB',starred:false});
+    Store.save();
+  }
+  UIS.meetActive=null;render();
+  UI.toast('Left after '+(mins||'<1')+' min'+(M.rec?' — 🎬 recording saved to Drive (private to you)':''),'👋');
+};
 
 /* ---------------- HUB (intranet + knowledge base) ---------------- */
 Views.intranet=param=>{
@@ -5808,11 +6952,11 @@ const tplOf=id=>WF_TEMPLATES.find(t=>t.id===id);
 const flowNeedsMe=f=>{
   const tpl=tplOf(f.templateId);if(!tpl)return false;
   if(f.stage>=tpl.stages.length-1)return false;
-  if(f.templateId==='purchase'){
-    const req=emp(f.requesterId);
-    if(tpl.stages[f.stage]==='Manager approval')return req&&req.managerId===DB.me.employeeId||isAdmin();
-    if(tpl.stages[f.stage]==='Finance approval')return groupsOf(DB.me.employeeId).some(g=>g.id==='g-finance')||isAdmin();
-  }
+  const st=tpl.stages[f.stage];
+  const subjId=(f.fields&&f.fields.workerId)||f.requesterId;
+  if(st==='Manager approval'){const subj=emp(subjId);return (subj&&subj.managerId===DB.me.employeeId)||isAdmin();}
+  if(st==='Finance approval')return groupsOf(DB.me.employeeId).some(g=>g.id==='g-finance')||isAdmin();
+  if(st==='HR approval')return hasCap('hr-admin');
   return f.assigneeId===DB.me.employeeId;
 };
 const flowCanAdvance=f=>{
@@ -5824,7 +6968,7 @@ Views.flows=()=>{
   const tabs=[['mine','My work'],['boards','Boards'],['new','New request']];
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Workflows</h1>
-    <div class="page-sub">Contracts, purchasing, People and IT requests — each with its own pipeline, approvers and automations</div></div></div>
+    <div class="page-sub">Department pipelines + Workday-style business processes that apply themselves on final approval</div></div>${parityBtn('workday')}</div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setFlowTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
   ${tab==='mine'?flowsMine():tab==='boards'?flowsBoard():flowsNew()}`;
 };
@@ -5885,17 +7029,23 @@ ACT.flowForm=tid=>{
     `<div class="field"><label>Title</label><input id="wf-title" placeholder="One line — what is this?"></div>`+
     tpl.form.map(f=>`<div class="field"><label>${f[1]}</label>${
       f[2]==='select'?`<select id="wf-${f[0]}">${f[3].map(o=>`<option>${o}</option>`).join('')}</select>`
+      :f[2]==='worker'?`<select id="wf-${f[0]}">${f[0]==='newManager'?'<option value="">— Keep current —</option>':''}${DB.employees.filter(x=>x.status==='active').map(x=>`<option value="${x.id}" ${window._bpWorker===x.id&&f[0]==='workerId'?'selected':''}>${esc(x.name)} — ${esc(x.title)}</option>`).join('')}</select>`
       :f[2]==='textarea'?`<textarea id="wf-${f[0]}"></textarea>`
-      :`<input id="wf-${f[0]}" type="${f[2]}">`}</div>`).join(''),
+      :`<input id="wf-${f[0]}" type="${f[2]}" ${f[2]==='date'?`value="${daysAhead(14)}"`:''}>`}</div>`).join('')+(tpl.bp?'<div class="esign-box">🧩 <b>Workday-style business process:</b> when the final approval lands, Mosaic applies the change to the worker record automatically — no re-entry.</div>':''),
     foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#e0457b;--brand-deep:#c2255c" data-act="flowSubmit" data-arg="${tid}">Submit request</button>`});
 };
 ACT.flowSubmit=tid=>{
   const tpl=tplOf(tid);if(!tpl)return;
   const fields={};tpl.form.forEach(f=>{const el=$('#wf-'+f[0]);fields[f[0]]=f[2]==='number'?(+el.value||0):el.value;});
-  const f={id:'WF-'+rint(110,999),templateId:tid,title:$('#wf-title').value.trim()||tpl.name,requesterId:DB.me.employeeId,assigneeId:tpl.ownerIds[0],createdAt:todayISO(),stage:tid==='purchase'?1:1,priority:'medium',fields,
+  const subj=fields.workerId?emp(fields.workerId):null;
+  const autoTitle=tpl.bp&&subj?tpl.name+' — '+subj.name:tpl.name;
+  const f={id:'WF-'+rint(110,999),templateId:tid,title:$('#wf-title').value.trim()||autoTitle,requesterId:DB.me.employeeId,assigneeId:tpl.ownerIds[0],createdAt:todayISO(),stage:1,priority:tpl.bp?'high':'medium',fields,
     activity:[{at:todayISO(),by:me().name,text:'Submitted via '+tpl.name+' intake'}]};
   DB.flows.unshift(f);
-  if(tid==='purchase'&&me().managerId)notify(me().managerId,'🧾',`Purchase approval needed: ${f.title} (${fmt$(fields.amount)})`,'#/flows');
+  window._bpWorker=null;
+  const st1=tpl.stages[1];
+  if(st1==='Manager approval'){const m=subj?emp(subj.managerId):emp(me().managerId);if(m)notify(m.id,tpl.icon,`${tpl.name} approval needed: ${f.title}`,'#/flows');}
+  else if(st1==='HR approval')notify('E021',tpl.icon,`${tpl.name} needs HR approval: ${f.title}`,'#/flows');
   else notify(tpl.ownerIds[0],tpl.icon,`New ${tpl.name.toLowerCase()}: ${f.title}`,'#/flows');
   audit('Workflow submitted',f.id+' · '+f.title);
   Store.save();UI.closeModal();UIS.flowTab='mine';render();
@@ -5941,6 +7091,7 @@ ACT.flowMove=arg=>{
     env.hash=envHash(env);DB.envelopes.unshift(env);f.envelopeId=env.id;
     f.activity.push({at:todayISO(),by:'Workflows',text:'Envelope '+env.id+' created in MosaicSign'});
   }else f.activity.push({at:todayISO(),by:me().name,text:(+dir>0?'Advanced to ':'Sent back to ')+st});
+  if(f.stage===last&&tpl.bp&&+dir>0)applyBP(f);
   if(f.stage===last)notify(f.requesterId,tpl.icon,`${f.title} is done 🎉`,'#/flows');
   audit('Workflow '+(+dir>0?'advanced':'sent back'),f.id+' → '+st);
   Store.save();ACT.flowOpen(fid);render();

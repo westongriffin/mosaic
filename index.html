@@ -314,6 +314,15 @@ html.dark .toast{background:#262b42;color:#eef0fa}
 /* ---------- notifications panel ---------- */
 #notif-pop{position:fixed;top:58px;right:88px;width:390px;max-width:92vw;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);z-index:105;overflow:hidden;display:none}
 #notif-pop.open{display:block;animation:viewIn .18s ease}
+#emoji-pop{position:fixed;z-index:160;width:296px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:8px;display:none}
+#emoji-pop.open{display:block;animation:viewIn .13s ease}
+#emoji-pop .emoji-cat{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:6px 4px 3px}
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.emoji-b{font-size:19px;line-height:1;padding:5px 0;border-radius:8px;background:none;cursor:pointer;transition:transform .1s,background .1s}
+.emoji-b:hover{background:var(--bg2);transform:scale(1.22)}
+.emoji-trigger{flex:none}
+.react-add{opacity:.5;transition:opacity .12s}
+.msg:hover .react-add,.react-add:hover{opacity:1}
 .notif-item{display:flex;gap:11px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;align-items:flex-start}
 .notif-item:hover{background:var(--bg)}
 .notif-item:last-child{border-bottom:none}
@@ -404,6 +413,10 @@ html.dark .toast{background:#262b42;color:#eef0fa}
 .nb-cell{border-radius:12px;padding:11px;min-height:104px;border:1px solid var(--line)}
 .nb-cell h5{font-size:11px;font-weight:700;margin-bottom:7px;color:var(--ink2)}
 .nb-cell .row{flex-wrap:wrap;gap:5px}
+.nb-grid-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.nb-mini{aspect-ratio:1;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;font-size:9px;color:var(--ink3);text-align:center;line-height:1.1;padding:2px;position:relative;overflow:hidden}
+.nb-mini.here{outline:2.5px solid var(--c-grow);box-shadow:0 0 0 3px color-mix(in srgb,var(--c-grow) 20%,transparent);z-index:1}
+.nb-mini.here .nb-dot{position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--c-grow)}
 
 /* ---------- misc ---------- */
 .empty{text-align:center;padding:42px 20px;color:var(--ink3)}
@@ -610,9 +623,9 @@ html.dark .letter{background:#f4f4f6}
 .sp-stats b{display:block;font-size:25px;font-family:var(--font-display);letter-spacing:-.02em}
 .sp-stats span{font-size:11px;color:#8b90ad;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
 .sp-mods{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:16px auto 4px;max-width:500px}
-.sp-mod{display:flex;flex-direction:column;align-items:center;gap:5px;width:74px;padding:9px 3px 7px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);color:#dfe3f6;cursor:pointer;transition:transform .16s,background .16s,border-color .16s,box-shadow .16s}
+.sp-mod{display:flex;flex-direction:column;align-items:center;gap:5px;width:74px;padding:9px 3px 7px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);color:#dfe3f6;cursor:pointer;overflow:hidden;box-sizing:border-box;transition:transform .16s,background .16s,border-color .16s,box-shadow .16s}
 .sp-mod svg{width:19px;height:19px;color:var(--c)}
-.sp-mod span{font-size:9px;font-weight:700;letter-spacing:.01em;white-space:nowrap;max-width:68px;overflow:hidden;text-overflow:ellipsis}
+.sp-mod span{font-size:9px;font-weight:700;letter-spacing:.01em;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .sp-mod:hover,.sp-mod:focus-visible{transform:translateY(-4px) scale(1.05);background:rgba(255,255,255,.1);border-color:var(--c);box-shadow:0 8px 22px -8px var(--c)}
 .sp-enter{position:relative}
 .sp-hint{color:#6e7390;font-size:11px;margin-top:22px}
@@ -640,7 +653,7 @@ html.dark .letter{background:#f4f4f6}
   .sp-rot i{animation:spWord 2s ease-in-out .9s infinite}
   @keyframes spWord{0%,7%{opacity:0;transform:translateY(13px)}15%,85%{opacity:1;transform:translateY(0)}93%,100%{opacity:0;transform:translateY(-13px)}}
 }
-@media(max-width:640px){#splash h1{font-size:30px}.sp-tag{font-size:16px}.sp-tag .sp-rot{min-width:118px}.sp-stats{gap:18px}.sp-mods{gap:7px}.sp-mod{width:58px}}
+@media(max-width:640px){#splash h1{font-size:30px}.sp-tag{font-size:16px}.sp-tag .sp-rot{min-width:118px}.sp-stats{gap:18px}.sp-mods{gap:7px;max-width:340px}.sp-mod{width:auto;min-width:56px;max-width:30vw;padding-left:10px;padding-right:10px}}
 .confetti{position:fixed;top:-12px;z-index:400;width:9px;height:14px;border-radius:2px;animation:confFall 2.6s ease-in forwards;pointer-events:none}
 @keyframes confFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(105vh) rotate(540deg);opacity:.7}}
 .qa-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px;align-items:center}
@@ -806,11 +819,24 @@ body.proxying #topbar{top:34px}
   .card:has(.tbl){overflow-x:auto;-webkit-overflow-scrolling:touch}
   .kanban{grid-auto-columns:minmax(200px,72vw)}
   .page-head .btn{padding:7px 11px;font-size:12px}
+  /* the title+subheader block claims the full first row; actions/chips wrap below it
+     (inline flex:1 collapses its basis to 0, so !important is needed to beat it) */
+  .page-head>div:first-child{flex:1 1 100%!important}
+  .page-sub{font-size:13px}
   #drawer{width:100vw;max-width:100vw}
   .role-switch{display:none}
   #persona-btn{display:grid}
   #persona-pop{right:10px}
-  .crumb{max-width:32vw;overflow:hidden;text-overflow:ellipsis}
+  /* mobile topbar: keep buttons as real tap targets, drop the two least-useful
+     controls (open-in-tab, theme) and the /param suffix so the module title is
+     always fully visible and uniform across every page */
+  #topbar{padding:0 12px;gap:8px}
+  #topbar .topbtn,#topbar .topnew,#topbar .me-chip{flex:none}
+  #topbar>.iconbtn{display:none}
+  #topbar [data-act="toggleTheme"]{display:none}
+  .crumb{font-size:15px;max-width:54vw;overflow:hidden;text-overflow:ellipsis}
+  .crumb-name{overflow:hidden;text-overflow:ellipsis}
+  .crumb-sub{display:none}
   input,select,textarea,.field input,.field select,.field textarea,.as-foot input,.filterbar input[type=search]{font-size:16px}
 }
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -834,6 +860,7 @@ body.proxying #topbar{top:34px}
 <div id="modal" role="dialog" aria-modal="true"></div>
 <div id="palette"><div class="pal-box"></div></div>
 <div id="notif-pop"></div>
+<div id="emoji-pop"></div>
 <div id="toasts" role="status" aria-live="polite"></div>
 <div id="tour-veil"></div>
 <div id="tour-pop"></div>
@@ -2023,7 +2050,7 @@ function buildSeed(){
   const chat=buildChat(employees);
   const mail=buildMail(employees);
   mail.forEach(m=>{m.threadId=m.thread==='offer-alex'||/Offer — Senior Robotics/.test(m.subject)?'th-offer-alex':uid('TH');m.labels=m.labels||[];});
-  return {v:14,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
+  return {v:15,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
     mailLabels:[{id:'lb1',name:'Benefits',color:'#10b981'},{id:'lb2',name:'Launch',color:'#6d28d9'},{id:'lb3',name:'Board',color:'#f59e0b'}],
     channels:chat.channels,chatMsgs:chat.msgs,mail,events:buildEvents(employees),
     files:buildDrive(employees),posts:buildPosts(employees),
@@ -2038,7 +2065,7 @@ function buildSeed(){
     groups:buildGroups(employees),leaves:buildLeaves(employees),redemptions:[],
     chatRead:{},saved:{},statuses:{},canned:CANNED.map(c=>({...c,id:uid('CN')})),slaHours:24,autoAssign:false,
     pages:buildPages(employees),courseQA:{'L-101':[{id:'QA-1',fromId:(employees.find(e=>e.name==='Owen Gallagher')||{}).id,at:daysAgo(4),text:'If a new hire\'s document is expired but they have a receipt for a renewal, does the 3-day clock still apply?',answer:'Great question — yes, a valid receipt works for 90 days, then the actual document must be presented. The course\'s scenario 3 walks the exact flow.',answeredBy:(employees.find(e=>e.name==='Maya Castillo')||{}).id}]},
-    courseRatings:{},actionPlans:[],cheersAllowance:100,cheersAutoCele:true,
+    courseRatings:{},actionPlans:[],cheersAllowance:100,cheersMgrBonus:25,cheersAutoCele:true,
     spend:buildSpend(employees),brand:null,
     notifications:buildNotifs(employees),audit:buildAudit(employees),
     delegations:[],savedReports:[],accessReviews:[],opsEvents:[],
@@ -2049,7 +2076,7 @@ function buildSeed(){
     integrations:INTEGRATIONS.map(i=>({...i}))};
 }
 const Store={
-  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===14){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save();},
+  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===15){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save();},
   save(){DB.savedAt=Date.now();try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){console.warn('Persist failed (private mode?)',e);}},
   reset(){try{localStorage.removeItem(LS_KEY);}catch(e){}location.hash='#/home';location.reload();}
 };
@@ -2423,7 +2450,7 @@ function moduleBadge(mod){
 function renderSidebar(){
   const groups=groupBy(MODULES.filter(m=>canSee(m.id)),'group');
   $('#sidebar').innerHTML=`
-    <div class="logo-row">${logoSVG(30)}<div><div class="logo-name">${esc(DB.brand&&DB.brand.name&&DB.brand.name!==COMPANY.name?DB.brand.name:'Mosaic')}</div><div class="logo-sub">${esc(COMPANY.name)}</div></div></div>
+    <div class="logo-row">${logoSVG(30)}<div><div class="logo-name">Mosaic</div><div class="logo-sub">${esc(brandName())}</div></div></div>
     <nav class="nav-scroll">
       ${Object.entries(groups).map(([g,mods])=>`<div class="nav-label">${g}</div>`+mods.map(m=>{
         const n=moduleBadge(m.id);
@@ -2442,7 +2469,7 @@ function renderTopbar(){
   const unread=DB.notifications.filter(n=>n.forId===DB.me.employeeId&&!n.read).length;
   $('#topbar').innerHTML=`
     <button class="topbtn" id="menu-btn" data-act="toggleSidebar">${I.menu}</button>
-    <div class="crumb" style="--mod:${m.color}"><span class="dot"></span>${m.label}${ROUTE.param?` <span class="faint" style="font-weight:500">/ ${esc(ROUTE.param)}</span>`:''}</div>
+    <div class="crumb" style="--mod:${m.color}"><span class="dot"></span><span class="crumb-name">${m.label}</span>${ROUTE.param?` <span class="crumb-sub faint" style="font-weight:500">/ ${esc(ROUTE.param)}</span>`:''}</div>
     <button class="iconbtn" data-act="openTab" title="Open this view in its own browser tab — multi-task across modules" aria-label="Open in new browser tab">${I.link}</button>
     <button class="topnew" data-act="taskNew" title="New task — assign it to anyone, track it in Workflows" aria-label="New task">${I.plus}<span>New task</span></button>
     <div class="searchpill" data-act="openPalette" role="button" aria-label="Search Mosaic">${I.search}<span>Search people, candidates, courses…</span><kbd>⌘K</kbd></div>
@@ -2483,7 +2510,7 @@ function render(){
       if(keepFocus.val!=null&&('value' in el2)&&el2.value!==keepFocus.val)el2.value=keepFocus.val;
       if(keepFocus.pos!=null&&el2.setSelectionRange)el2.setSelectionRange(keepFocus.pos,keepFocus.pos);}catch(e){}}}
 }
-function closePopovers(){$('#notif-pop').classList.remove('open');const pp=$('#persona-pop');if(pp)pp.classList.remove('open');}
+function closePopovers(){$('#notif-pop').classList.remove('open');const pp=$('#persona-pop');if(pp)pp.classList.remove('open');const ep=$('#emoji-pop');if(ep)ep.classList.remove('open');}
 
 /* ---------------- notifications popover ---------------- */
 function renderNotifs(){
@@ -2587,6 +2614,8 @@ document.addEventListener('click',ev=>{
   if(notifPop.classList.contains('open')&&!ev.target.closest('#notif-pop')&&(!t||t.dataset.act!=='toggleNotifs'))notifPop.classList.remove('open');
   const pp=$('#persona-pop');
   if(pp.classList.contains('open')&&!ev.target.closest('#persona-pop')&&(!t||t.dataset.act!=='togglePersonas'))pp.classList.remove('open');
+  const ep=$('#emoji-pop');
+  if(ep&&ep.classList.contains('open')&&!ev.target.closest('#emoji-pop')&&(!t||t.dataset.act!=='emojiFor'))ep.classList.remove('open');
   if(!t)return;
   const act=t.dataset.act,arg=t.dataset.arg;
   if(ACT[act])ACT[act](arg,t,ev);
@@ -2653,7 +2682,7 @@ const ACT={
   toggleTheme(){
     const dark=document.documentElement.classList.toggle('dark');
     try{localStorage.setItem('mosaic-theme',dark?'dark':'light');}catch(e){}
-    renderTopbar();
+    applyBrand();renderTopbar();
   },
   toggleNotifs(){const p=$('#notif-pop');if(p.classList.contains('open')){p.classList.remove('open');return;}renderNotifs();p.classList.add('open');},
   readAllNotifs(){DB.notifications.forEach(n=>{if(n.forId===DB.me.employeeId)n.read=true;});Store.save();renderNotifs();renderTopbar();},
@@ -2757,7 +2786,7 @@ Views.home=()=>{
   return `
   <div class="page-head">
     <div style="flex:1"><h1 class="page">${greet}, ${esc(my.name.split(' ')[0])} 👋</h1>
-    <div class="page-sub">${now().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · ${esc(COMPANY.name)} · ${esc(COMPANY.tagline)}</div></div>
+    <div class="page-sub">${now().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · ${esc(brandName())} · ${esc(COMPANY.tagline)}</div></div>
     <button class="btn soft" data-act="tourPick">${I.spark} Guided tours</button>
     <button class="btn ghost" data-act="resetDemo">${I.refresh} Reset demo</button>
   </div>
@@ -2792,7 +2821,7 @@ Views.home=()=>{
           ${progressBar(g.progress,'var(--c-grow)')}</div>`).join('')||'<div class="faint small">No goals yet — set them with your manager.</div>'}</div>
       </div>`}
       <div class="card">
-        <div class="card-head"><h3>🛰️ Today at ${esc(COMPANY.name.split(' ')[0])}</h3><span class="spacer"></span><span class="tiny faint">live from every module</span></div>
+        <div class="card-head"><h3>🛰️ Today at ${esc(brandName().split(' ')[0])}</h3><span class="spacer"></span><span class="tiny faint">live from every module</span></div>
         <div class="card-body" style="padding-top:10px">${activityFeed().map(a=>`
           <div class="row mb12 ${a.link?'hovercard':''}" style="gap:11px;align-items:flex-start;${a.link?'cursor:pointer;padding:4px 6px;border-radius:9px;':''}" ${a.link?`data-act="nav" data-arg="${a.link}" onclick="if(event.target.closest('a'))event.stopPropagation()"`:''}>
             <span class="notif-ic" style="background:var(--bg2);font-size:14px">${a.icon}</span>
@@ -2870,7 +2899,7 @@ function directoryView(){
   const avgTen=avg(emps.map(e=>between(e.hireDate,todayISO())))/365;
   return `
   <div class="page-head">
-    <div style="flex:1"><h1 class="page">People</h1><div class="page-sub">${emps.length} Meridians across ${uniq(emps.map(e=>e.location)).length} locations</div></div>
+    <div style="flex:1"><h1 class="page">People</h1><div class="page-sub">${emps.length} people across ${uniq(emps.map(e=>e.location)).length} locations</div></div>
     <div class="seg"><button class="on">Directory</button><button data-act="nav" data-arg="#/people/org">Org chart</button></div>
   </div>
   <div class="grid g4 mb16">
@@ -2900,6 +2929,50 @@ window._bulkSel=window._bulkSel||new Set();
 window.bulkTick=function(id,on){on?_bulkSel.add(id):_bulkSel.delete(id);bulkBar();};
 window.bulkAll=function(on){$$('#people-rows input[type=checkbox]').forEach(cb=>{cb.checked=on;on?_bulkSel.add(cb.dataset.eid):_bulkSel.delete(cb.dataset.eid);});bulkBar();};
 window.bulkBar=function(){const b=$('#bulk-bar');if(!b)return;b.style.display=_bulkSel.size?'flex':'none';const n=$('#bulk-n');if(n)n.textContent=_bulkSel.size+' selected';};
+/* ============================================================
+   EMOJI PICKER — one keyboard everywhere (insert + react)
+   ============================================================ */
+const EMOJI_SET=[
+  ['Smileys','😀 😄 😁 😆 😅 🤣 😂 🙂 😊 😍 🥰 😘 😎 🤩 🥳 🤔 😴 🤗 😏 😬 🫠 🙃 😢 😭 😤 😡 🥺 😱 🤯 😳 🤫 🤐'],
+  ['Gestures','👍 👎 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤙 👏 🙌 🫶 🙏 💪 🫡 👀 🧠 ✍️ 🤝 👋 🤚'],
+  ['Hearts','❤️ 🧡 💛 💚 💙 💜 🖤 🤍 💖 💗 💓 💞 💕 ❣️ 💔'],
+  ['Work','🔥 ✨ ⭐ 🌟 💯 🎉 🎊 🚀 💡 ✅ ☑️ ❌ ⚡ 📈 📉 📌 📎 🏆 🥇 🎯 ⏰ 📅 🧾 💰 ☕'],
+  ['Fun','🍕 🍔 🌮 🍩 🎂 🥂 🍻 🌴 🏝️ 🤖 🐙 🦾 🎸 🎮 🎧 🌈 ⚙️ 🧩 🙈 💩'],
+];
+function openEmoji(anchor,onPick){
+  window._emojiPick=onPick;
+  const ep=$('#emoji-pop');
+  ep.innerHTML=EMOJI_SET.map(([cat,row])=>`<div class="emoji-cat">${cat}</div><div class="emoji-grid">${row.split(' ').map(e=>`<button class="emoji-b" data-act="emojiPick" data-arg="${e}" aria-label="${e}">${e}</button>`).join('')}</div>`).join('');
+  /* cap height first, then measure the REAL rendered box, then place + clamp so it's always fully on-screen */
+  ep.style.maxHeight=Math.min(320,innerHeight-16)+'px';ep.style.overflowY='auto';
+  ep.classList.add('open');
+  const r=anchor.getBoundingClientRect();
+  const W=ep.offsetWidth||296,H=ep.offsetHeight||300;
+  const left=clamp(r.left,8,innerWidth-W-8);
+  let top=r.bottom+6; if(top+H>innerHeight-8)top=r.top-H-6;   /* flip above the trigger */
+  top=clamp(top,8,innerHeight-H-8);                            /* final on-screen guarantee */
+  ep.style.left=left+'px';ep.style.top=top+'px';
+}
+ACT.emojiFor=(arg,t)=>{
+  const i=String(arg).indexOf(':');const mode=arg.slice(0,i),id=arg.slice(i+1);
+  openEmoji(t,emo=>{
+    if(mode==='ins'){
+      const inp=document.getElementById(id);if(!inp)return;
+      const s=inp.selectionStart!=null?inp.selectionStart:inp.value.length;
+      const e2=inp.selectionEnd!=null?inp.selectionEnd:s;
+      inp.value=inp.value.slice(0,s)+emo+inp.value.slice(e2);
+      const pos=s+emo.length;inp.focus();try{inp.setSelectionRange(pos,pos);}catch(e){}
+      inp.dispatchEvent(new Event('input',{bubbles:true}));  /* keep drafts in sync */
+    }
+    else if(mode==='react')ACT.chatReact(id+'|'+emo);
+    else if(mode==='postreact')ACT.postReact(id+'|'+emo);
+    else if(mode==='cheerreact')ACT.react(id+'|'+emo);
+    else if(mode==='meetreact')ACT.meetReact(emo);
+  });
+};
+ACT.emojiPick=emo=>{const fn=window._emojiPick;$('#emoji-pop').classList.remove('open');window._emojiPick=null;if(fn)fn(emo);};
+/* a tiny reusable trigger button: emojiBtn('ins:chat-in') etc. */
+const emojiBtn=(arg,title)=>`<button class="iconbtn emoji-trigger" data-act="emojiFor" data-arg="${arg}" title="${title||'Emoji'}" aria-label="${title||'Emoji'}" type="button">😊</button>`;
 ACT.bulkClear=()=>{_bulkSel.clear();$$('#people-rows input[type=checkbox]').forEach(cb=>cb.checked=false);bulkBar();};
 ACT.bulkApply=()=>{
   const ids=[..._bulkSel];if(!ids.length)return;
@@ -3061,7 +3134,7 @@ function dataTransparencyCard(e){
   const benGroup=byId(DB.groups,'g-benefits')||{name:'Benefits Administration'};
   const peopleGroup=byId(DB.groups,'g-people')||{name:'People Operations'};
   const rows=[
-    {who:'Everyone at '+COMPANY.name,can:'Your name, title, team, location, work email, and start date',icon:'🌐'},
+    {who:'Everyone at '+brandName(),can:'Your name, title, team, location, work email, and start date',icon:'🌐'},
     {who:(mgr?mgr.name:'Your manager')+' & your management chain',can:'The above, plus your goals, reviews, time off, and compensation',icon:'👤'},
     {who:peopleGroup.name+' group',can:'Your full worker record — personal info, documents, cases, leave',icon:'🛡️'},
     {who:benGroup.name+' group',can:'Your benefit elections, dependents and life events',icon:'🏥'},
@@ -3260,6 +3333,7 @@ function profileTab(e,tab,mgr,team){
           ${revs.length?revs.map(r=>{const cy=byId(DB.cycles,r.cycleId);
             return `<div class="row mt12 between"><span class="small muted">${cy?cy.name:r.cycleId}</span><span class="row" style="gap:6px">${stars(r.rating)}<b class="num">${r.rating}.0</b></span></div>`;}).join(''):'<div class="faint small mt12">No completed reviews yet.</div>'}
         </div>
+        ${canSeeTalent(e)?miniNineBox(e):''}
         <div class="card pad"><div class="row between"><b class="small">Recognition received</b><span class="badge b-vio">+${ptsEarned(e.id)} pts earned</span></div>
           <div class="col mt12" style="gap:10px">${DB.feedback.filter(f=>fbRecipients(f).includes(e.id)).slice(0,5).map(f=>{const from=emp(f.fromId);if(!from)return'';
             return `<div class="row" style="gap:9px;align-items:flex-start">${av(from,'xs')}<span class="col" style="gap:1px;flex:1"><span class="tiny" style="line-height:1.5">“${esc(f.text.length>110?f.text.slice(0,108)+'…':f.text)}”</span>
@@ -3304,7 +3378,7 @@ Views.recruit=param=>{
   const offers=DB.candidates.filter(c=>c.stage==='offer'&&(!mineOnly||open.concat(filled).some(r=>r.id===c.reqId&&r.hmId===myId))).length;
   return `
   <div class="page-head">
-    <div style="flex:1"><h1 class="page">Recruiting</h1><div class="page-sub">${mineOnly?'Requisitions where you\'re the hiring manager':'Every open search at '+COMPANY.name}</div></div>
+    <div style="flex:1"><h1 class="page">Recruiting</h1><div class="page-sub">${mineOnly?'Requisitions where you\'re the hiring manager':'Every open search at '+brandName()}</div></div>
     ${parityBtn('greenhouse')}
     <a class="btn ghost" href="#/careers" title="The public careers site — applications land back in this pipeline">🌐 Careers site</a>
     <button class="btn primary" style="--brand:var(--c-recruit);--brand-deep:#e04a77" data-act="openNewReq">${I.plus} New requisition</button>
@@ -3753,7 +3827,7 @@ Views.onboard=param=>{
     <button class="${tab==='off'?'on':''}" data-act="setJourneyTab" data-arg="off">👋 Offboarding (${exits.length})</button></div>
   </div>
   <div class="grid g4 mb16">
-    ${statCard('Onboarding',journeys.length,'new Meridians ramping','var(--c-onboard)')}
+    ${statCard('Onboarding',journeys.length,'new teammates ramping','var(--c-onboard)')}
     ${statCard('Offboarding',exits.length,'exits in motion','var(--c-recruit)')}
     ${statCard('Tasks complete',allTasks.filter(t=>t.done).length+'/'+allTasks.length,'across all journeys','var(--c-pay)')}
     ${statCard('Overdue tasks',allTasks.filter(t=>!t.done&&t.due<todayISO()).length,'need a nudge','var(--c-time)')}
@@ -3954,7 +4028,7 @@ function courseView(cid){
         :`<button class="btn primary" style="--brand:var(--c-learn);--brand-deep:#0f9486" data-act="enrollCourse" data-arg="${c.id}">Enroll me</button>`}
       </div>
       <div class="card pad"><b class="small">What you'll cover</b>
-        <div class="col mt12" style="gap:9px">${['Why it matters at Meridian','Core concepts with real scenarios','Knowledge checks as you go','Scored final assessment (80% to pass)'].map((m,i)=>`
+        <div class="col mt12" style="gap:9px">${['Why it matters at '+brandName().split(' ')[0],'Core concepts with real scenarios','Knowledge checks as you go','Scored final assessment (80% to pass)'].map((m,i)=>`
         <span class="row" style="gap:9px"><span style="width:20px;height:20px;border-radius:99px;background:var(--teal-soft);color:var(--c-learn);display:grid;place-items:center;font-size:10px;font-weight:800">${i+1}</span><span class="small">${m}</span></span>`).join('')}</div></div>
       <div class="card pad"><div class="row between"><b class="small">💬 Course Q&A</b><span class="tiny faint">answered by Learning Admins</span></div>
         ${((DB.courseQA||{})[c.id]||[]).map(qa=>{const from=emp(qa.fromId);return `<div class="mt12" style="border-left:3px solid var(--teal-soft);padding-left:11px">
@@ -4183,7 +4257,9 @@ Views.cheers=param=>{
   <div class="page-head"><div style="flex:1"><h1 class="page">Cheers 🎉</h1>
     <div class="page-sub">Peer recognition with real points — give, boost, redeem. Tagged cheers land on each person's profile automatically.</div></div>
     ${parityBtn('cheers')}
-    <span class="chip" title="Your monthly giving allowance">🪙 <b>${ptsLeft(myId)}</b>&nbsp;to give</span>
+    ${(()=>{const nr=reportsOf(myId).length,bonus=nr*cheersMgrBonus();
+      const tip=bonus?`${allowanceFor(myId)} pts/mo — base ${allowance()} + ${nr}×${cheersMgrBonus()} manager bonus for your ${nr} direct report${nr===1?'':'s'} · ${ptsGiven(myId)} given so far`:`${allowance()} pts/mo · ${ptsGiven(myId)} given so far`;
+      return `<span class="chip" title="${tip}">🪙 <b>${ptsLeft(myId)}</b>&nbsp;to give${bonus?` <span class="tiny" style="color:var(--c-grow);font-weight:700">+${bonus} mgr</span>`:''}</span>`;})()}
     <span class="chip" title="Earned — spend in Rewards">💰 <b>${ptsEarned(myId)}</b>&nbsp;earned</span></div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setCheersTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
   ${tab==='feed'?cheersFeed():tab==='boards'?cheersBoards():tab==='rewards'?cheersRewards():tab==='cadmin'?cheersAdmin():cheersAnalytics()}`;
@@ -4196,7 +4272,7 @@ function cheersFeed(){
   const cele=(DB.cheersAutoCele===false?[]:celebrations(7)).map(c=>`
     <div class="card pad" style="border-color:color-mix(in srgb,${CHEER_GREEN} 30%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,${CHEER_GREEN} 6%,var(--card)),var(--card))">
       <div class="row" style="gap:10px">${av(c.emp,'md')}<span class="col" style="gap:1px;flex:1">
-        <b class="small">${c.kind==='birthday'?'🎂 It\'s '+esc(c.emp.name)+'\'s birthday '+(c.date===todayISO()?'today':fmtDshort(c.date))+'!':'🏅 '+esc(c.emp.name)+' hits '+c.label+' at Meridian '+(c.date===todayISO()?'today':fmtDshort(c.date))+'!'}</b>
+        <b class="small">${c.kind==='birthday'?'🎂 It\'s '+esc(c.emp.name)+'\'s birthday '+(c.date===todayISO()?'today':fmtDshort(c.date))+'!':'🏅 '+esc(c.emp.name)+' hits '+c.label+' at '+esc(brandName().split(' ')[0])+' '+(c.date===todayISO()?'today':fmtDshort(c.date))+'!'}</b>
         <span class="tiny faint">auto-posted by Mosaic · ${esc(c.emp.title)}</span></span>
       <button class="btn sm soft" style="--brand:${CHEER_GREEN}" data-act="openPraise" data-arg="${c.emp.id}">Send cheers</button></div></div>`).join('');
   return `
@@ -4220,6 +4296,8 @@ function cheersFeed(){
       <div class="row wrap mt12" style="gap:6px">${(f.values||[]).map(v=>`<span class="chip" style="background:var(--vio-soft);border-color:transparent;color:#6d3fd6;font-weight:650">#${v.toLowerCase().replace(/[^a-z]/g,'')}</span>`).join('')}
         ${f.visibility==='private'?'<span class="chip">🔒 private</span>':''}<span class="spacer"></span>
         ${['👏','💜','🎉'].map(emo=>`<button class="chip" data-act="react" data-arg="${f.id}|${emo}" style="padding:2px 8px">${emo}${f.reactions&&f.reactions[emo]?' <b>'+f.reactions[emo]+'</b>':''}</button>`).join('')}
+        ${(()=>{const extra=Object.entries(f.reactions||{}).filter(([emo])=>!['👏','💜','🎉'].includes(emo));return extra.map(([emo,n])=>`<button class="chip" data-act="react" data-arg="${f.id}|${emo}" style="padding:2px 8px">${emo} <b>${n}</b></button>`).join('');})()}
+        <button class="chip react-add" data-act="emojiFor" data-arg="cheerreact:${f.id}" style="padding:2px 8px" title="Add a reaction" aria-label="Add a reaction">😊 +</button>
         ${f.pts&&f.fromId!==myId?`<button class="chip" data-act="boostPost" data-arg="${f.id}" title="Add your own points on top — Bonusly-style add-on" style="background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700">🚀 Boost</button>`:''}</div>
       ${(f.boosts||[]).length?`<div class="tiny faint mt8">🚀 Boosted by ${f.boosts.map(b=>esc((emp(b.by)||{name:'?'}).name.split(' ')[0])+' (+'+b.pts+')').join(', ')}</div>`:''}
       ${(f.comments||[]).map(cm=>{const ce=emp(cm.fromId);return ce?`<div class="row mt8" style="gap:8px;padding-left:6px">${av(ce,'xs')}<span class="tiny" style="background:var(--card2);border-radius:9px;padding:5px 9px;flex:1"><b>${esc(ce.name.split(' ')[0])}</b> ${esc(cm.text)}</span></div>`:'';}).join('')}
@@ -4321,8 +4399,13 @@ function cheersAdmin(){
   <div class="grid g2">
     <div class="col" style="gap:16px">
       <div class="card pad"><b class="small">Monthly giving allowance</b>
-        <div class="row mt12" style="gap:8px"><input type="number" id="ca-allow" value="${allowance()}" min="0" max="2000" style="width:120px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:8px 11px;outline:none"><span class="tiny faint">points per person, resets the 1st · use-it-or-lose-it</span></div>
+        <div class="row mt12" style="gap:8px"><input type="number" id="ca-allow" value="${allowance()}" min="0" max="2000" style="width:120px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:8px 11px;outline:none"><span class="tiny faint">base points per person, resets the 1st · use-it-or-lose-it</span></div>
         <button class="btn ghost mt12" data-act="cheersAllowSave">Save allowance</button></div>
+      <div class="card pad"><b class="small">👥 Manager bonus</b>
+        <div class="row mt12" style="gap:8px"><input type="number" id="ca-mgrbonus" value="${cheersMgrBonus()}" min="0" max="500" style="width:120px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:8px 11px;outline:none"><span class="tiny faint">extra points per <b>direct report</b>, on top of the base — so people leaders can recognize bigger teams</span></div>
+        <button class="btn ghost mt12" data-act="cheersMgrBonusSave">Save bonus</button>
+        ${(()=>{const mgrs=DB.employees.filter(e=>e.status==='active'&&reportsOf(e.id).length);const ex=mgrs.sort((a,b)=>reportsOf(b.id).length-reportsOf(a.id).length)[0];
+          return ex?`<p class="tiny faint mt12">e.g. <b>${esc(ex.name.split(' ')[0])}</b> (${reportsOf(ex.id).length} direct report${reportsOf(ex.id).length===1?'':'s'}) gets ${allowance()} + ${reportsOf(ex.id).length}×${cheersMgrBonus()} = <b>${allowanceFor(ex.id)}</b> pts/mo.</p>`:'';})()}</div>
       <div class="card pad"><div class="row between"><b class="small">Auto-celebrations</b>
         <button class="chip" data-act="cheersCeleToggle" style="${DB.cheersAutoCele!==false?'background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700':''}">${DB.cheersAutoCele!==false?'✓ On':'Off'}</button></div>
         <p class="tiny muted" style="margin-top:7px">Mosaic posts birthdays and work anniversaries to the feed automatically, with a one-click “Send cheers”.</p></div>
@@ -4338,6 +4421,7 @@ function cheersAdmin(){
   </div>`;
 }
 ACT.cheersAllowSave=()=>{DB.cheersAllowance=clamp(+$('#ca-allow').value||100,0,2000);audit('Cheers allowance set',DB.cheersAllowance+' pts/mo');Store.save();render();UI.toast('Allowance updated for everyone — effective immediately','🪙');};
+ACT.cheersMgrBonusSave=()=>{DB.cheersMgrBonus=clamp(+$('#ca-mgrbonus').value||0,0,500);audit('Cheers manager bonus set',DB.cheersMgrBonus+' pts/report');Store.save();render();UI.toast(DB.cheersMgrBonus?'Manager bonus set — leaders\' allowances recalculated by team size':'Manager bonus off — everyone\'s back to the base','🪙');};
 ACT.cheersCeleToggle=()=>{DB.cheersAutoCele=DB.cheersAutoCele===false?true:false;Store.save();render();};
 ACT.rewardDelete=rid=>{
   const i=(DB.customRewards||[]).findIndex(r=>r.id===rid);if(i<0)return;
@@ -4574,6 +4658,33 @@ ACT.addAgenda=oid=>{
   const o=byId(DB.ones,oid);o.agenda.push(inp.value.trim());
   Store.save();render();UI.toast('Added to the shared agenda','🤝');
 };
+/* talent-map (9-box) placement for a single person — shared by the map and the profile */
+const NB_NAMES=[['Enigma','Growth talent','Future star'],['Inconsistent','Core talent','High performer'],['Risk','Solid pro','Trusted expert']];
+const NB_TONES=[['var(--warn-soft)','var(--teal-soft)','var(--ok-soft)'],['var(--bad-soft)','var(--bg2)','var(--teal-soft)'],['var(--bad-soft)','var(--bg2)','var(--ok-soft)']];
+function talentBoxOf(e){
+  const past=DB.cycles.find(c=>c.stage==='done');if(!past)return null;
+  const r=DB.reviews.find(x=>x.cycleId===past.id&&x.employeeId===e.id&&x.type==='manager');
+  if(!r||!r.rating)return null;
+  const perf=r.rating<=2?0:r.rating===3?1:2;
+  const pot=r.potential==='High'?2:r.potential==='Medium'?1:0;
+  return {perf,pot,rating:r.rating,potential:r.potential||'Medium',label:NB_NAMES[2-pot][perf],cycle:past.name};
+}
+/* talent data is calibration-private: managers see their org, HR & admins see everyone — not the subject themselves */
+const canSeeTalent=e=>isAdmin()||hasCap('hr-admin')||(isManager()&&mgrChainHas(e,DB.me.employeeId));
+function miniNineBox(e){
+  const box=talentBoxOf(e);
+  let grid='';
+  for(let pot=2;pot>=0;pot--){for(let perf=0;perf<3;perf++){
+    const here=box&&box.pot===pot&&box.perf===perf;
+    grid+=`<div class="nb-mini${here?' here':''}" style="background:${NB_TONES[2-pot][perf]}" title="${NB_NAMES[2-pot][perf]}">${here?av(e,'xs')+'<span class="nb-dot"></span>':`<span style="opacity:.7">${NB_NAMES[2-pot][perf]}</span>`}</div>`;
+  }}
+  return `<div class="card pad"><div class="row between" style="flex-wrap:wrap;gap:6px"><b class="small">🎯 Talent map placement</b>${box?`<span class="badge b-vio">${box.label}</span>`:'<span class="tiny faint">not placed</span>'}</div>
+    ${box?`<div class="nb-grid-mini mt12">${grid}</div>
+    <div class="row between mt8 tiny faint"><span>↑ higher potential</span><span>higher performance →</span></div>
+    <p class="tiny muted mt12">Placed from <b>${esc(box.cycle)}</b> calibration — performance <b>${box.rating}/5</b>, <b>${box.potential.toLowerCase()}</b> potential. <a class="linklike" href="#" onclick="event.preventDefault();ACT.talentPacket('${e.id}')">Open calibration packet →</a></p>`
+    :`<p class="tiny faint mt12">No completed manager review in the last calibrated cycle, so ${esc(e.name.split(' ')[0])} isn't placed on the talent map yet.</p>`}
+    <p class="tiny faint" style="opacity:.7">🔒 Calibration view — managers, People Ops & admins only.</p></div>`;
+}
 function growTalent(){
   const past=DB.cycles.find(c=>c.stage==='done');
   const pool=myRole()==='manager'?allReportsOf(DB.me.employeeId):DB.employees.filter(e=>e.status==='active');
@@ -5278,7 +5389,7 @@ ACT.pulseLaunch=()=>{
 ACT.openSurvey=sid=>{
   const sv=byId(DB.surveys,sid);if(!sv)return;
   UI.modal({title:sv.name+' 📊',sub:'Anonymous — your name is never attached to answers.',body:`
-    <div class="field"><label>How likely are you to recommend ${esc(COMPANY.name)} as a place to work? <span class="faint">(0–10)</span></label>
+    <div class="field"><label>How likely are you to recommend ${esc(brandName())} as a place to work? <span class="faint">(0–10)</span></label>
       <div class="row wrap" style="gap:5px" id="sv-nps">${Array.from({length:11},(_,i)=>`<button type="button" class="chip" data-n="${i}" onclick="$$('#sv-nps .chip').forEach(c=>{c.classList.remove('on');c.style.background='';c.style.color=''});this.classList.add('on');this.style.background='var(--rose-soft)';this.style.color='var(--c-engage)'" style="width:34px;justify-content:center">${i}</button>`).join('')}</div></div>
     <div class="field"><label>I feel supported by my manager</label><select id="sv-q1"><option>Strongly agree</option><option selected>Agree</option><option>Neutral</option><option>Disagree</option><option>Strongly disagree</option></select></div>
     <div class="field"><label>I can see a path to grow here</label><select id="sv-q2"><option>Strongly agree</option><option selected>Agree</option><option>Neutral</option><option>Disagree</option><option>Strongly disagree</option></select></div>
@@ -5567,7 +5678,7 @@ ACT.openCase=cid=>{
           <div class="tiny faint" style="margin-top:3px;${isReq?'':'text-align:right'}">${esc(from?from.name:'')} · ${rel(m.at)}</div></div>`;}).join('')}</div>
       ${c.status!=='solved'?`
       ${isPeopleTeam?`<div class="row mt16" style="gap:8px"><select onchange="if(this.value){document.querySelector('#case-reply').value=this.value;this.selectedIndex=0;}" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;font-size:12px;color:var(--ink2)"><option value="">📋 Insert a canned reply…</option>${(DB.canned||CANNED).map(cn=>`<option value="${esc(cn.text)}">${esc(cn.label)}</option>`).join('')}</select></div>`:''}
-      <div class="field ${isPeopleTeam?'mt8':'mt16'}"><label class="row" style="gap:8px">Reply${isPeopleTeam?`<button class="btn xs soft" style="--brand:#ff5e00" data-act="aiCaseReply" data-arg="${c.id}">✨ Draft from the KB${AI.enabled()?'':' (template)'}</button>`:''}</label><textarea id="case-reply" placeholder="${isPeopleTeam?'Answer with policy links where you can…':'Add more details…'}"></textarea>
+      <div class="field ${isPeopleTeam?'mt8':'mt16'}"><label class="row" style="gap:8px">Reply${emojiBtn('ins:case-reply','Emoji')}${isPeopleTeam?`<button class="btn xs soft" style="--brand:#ff5e00" data-act="aiCaseReply" data-arg="${c.id}">✨ Draft from the KB${AI.enabled()?'':' (template)'}</button>`:''}</label><textarea id="case-reply" placeholder="${isPeopleTeam?'Answer with policy links where you can…':'Add more details…'}"></textarea>
       ${isPeopleTeam?`<label class="row tiny" style="gap:7px;cursor:pointer;margin-top:6px"><input type="checkbox" id="case-internal" style="width:14px;height:14px;accent-color:var(--warn)"> 🔒 Internal note — visible to the People team only</label>`:''}</div>`:
       `<div class="card pad mt16" style="background:var(--ok-soft);border-color:transparent;box-shadow:none"><b class="small" style="color:var(--ok)">✓ Solved${c.csat?' · rated '+c.csat+'/5':''}</b>
       ${c.employeeId===DB.me.employeeId&&!c.csat?`<div class="mt12"><span class="small">How did we do? Rate this resolution:</span>
@@ -5628,7 +5739,7 @@ function adminCompany(){
   return `<div class="grid g23">
     <div class="col" style="gap:16px">
       <div class="card pad"><div class="row" style="gap:14px">${logoSVG(44)}
-        <div class="col" style="gap:2px"><b style="font-size:17px">${esc(COMPANY.name)}</b><span class="small muted">${esc(COMPANY.tagline)}</span>
+        <div class="col" style="gap:2px"><b style="font-size:17px">${esc(brandName())}</b><span class="small muted">${esc(COMPANY.tagline)}</span>
         <span class="tiny faint">Founded ${COMPANY.founded} · HQ ${COMPANY.hq} · ${esc(COMPANY.domain)}</span></div></div>
         <div class="divider"></div>
         <b class="small">Company values</b>
@@ -5644,14 +5755,14 @@ function adminCompany(){
     </div>
     <div class="col" style="gap:16px">
       <div class="card pad"><b class="small">🎨 Branding</b>
-        <p class="tiny muted" style="margin-top:6px;line-height:1.6">White-label the whole app — brand color and display name apply everywhere, live.</p>
+        <p class="tiny muted" style="margin-top:6px;line-height:1.6">White-label the workspace, live. <b>Mosaic</b> stays the product name; the display name renames <b>the company</b> (currently ${esc(brandName())}) everywhere it appears — sidebar, headers, careers site, letters and paystubs. The accent color flows through buttons, links, highlights and the active state across every module.</p>
         <div class="row mt12" style="gap:10px;align-items:center">
-          <input type="color" id="br-color" value="${(DB.brand&&DB.brand.color)||'#6366f1'}" style="width:46px;height:34px;padding:2px;border:1px solid var(--line);border-radius:9px;background:var(--card)">
-          <input id="br-name" placeholder="Company display name" value="${esc((DB.brand&&DB.brand.name)||'')}" style="flex:1">
+          <input type="color" id="br-color" value="${(DB.brand&&DB.brand.color)||'#6366f1'}" aria-label="Accent color" style="width:46px;height:34px;padding:2px;border:1px solid var(--line);border-radius:9px;background:var(--card)">
+          <input id="br-name" placeholder="Company display name (e.g. ${esc(brandName())})" value="${esc((DB.brand&&DB.brand.name&&DB.brand.name!==COMPANY.name)?DB.brand.name:'')}" style="flex:1">
         </div>
         <div class="row mt12" style="gap:8px">
           <button class="btn sm primary" data-act="brandSave">Apply</button>
-          <button class="btn sm ghost" data-act="brandReset">Reset to Mosaic</button></div></div>
+          <button class="btn sm ghost" data-act="brandReset">Reset</button></div></div>
       <div class="card pad"><b class="small">Locations</b>
         <div class="col mt12" style="gap:10px">${LOCS.map(l=>`<div class="row between"><span class="row small" style="gap:8px">${I.pin}${l}</span><b class="num small">${activeEmps().filter(e=>e.location===l).length}</b></div>`).join('')}</div></div>
       <div class="card pad"><b class="small">Policies</b>
@@ -5793,7 +5904,7 @@ function makePDF(blocks){
   [[0.39,0.40,0.95],[0.94,0.39,0.55],[0.08,0.72,0.65],[0.96,0.62,0.04]].forEach((c,i)=>{
     ops+=`${c[0]} ${c[1]} ${c[2]} rg ${72+(i%2)*11} ${i<2?751:740} 9 9 re f\n`;});
   ops+=`BT /F2 14 Tf 0.07 0.09 0.17 rg 98 747 Td (Mosaic) Tj ET\n`;
-  ops+=`BT /F1 8 Tf 0.54 0.56 0.65 rg 98 737 Td (${pdfSan(COMPANY.name+' | '+COMPANY.hq+' | '+COMPANY.domain)}) Tj ET\n`;
+  ops+=`BT /F1 8 Tf 0.54 0.56 0.65 rg 98 737 Td (${pdfSan(brandName()+' | '+COMPANY.hq+' | '+COMPANY.domain)}) Tj ET\n`;
   ops+=`0.85 0.86 0.93 RG 1.2 w 72 726 m 540 726 l S\n`;
   blocks.forEach(b=>{
     const size=b.size||10.5,lh=size*1.5;
@@ -5803,7 +5914,7 @@ function makePDF(blocks){
       y-=lh;});
     y-=(b.gap!=null?b.gap:5);
   });
-  ops+=`BT /F1 7.5 Tf 0.6 0.62 0.7 rg 72 48 Td (${pdfSan('Generated by Mosaic for '+COMPANY.name+' on '+fmtD(todayISO())+' - demo document, fictional data')}) Tj ET\n`;
+  ops+=`BT /F1 7.5 Tf 0.6 0.62 0.7 rg 72 48 Td (${pdfSan('Generated by Mosaic for '+brandName()+' on '+fmtD(todayISO())+' - demo document, fictional data')}) Tj ET\n`;
   const objs=[];
   objs[1]='<</Type/Catalog/Pages 2 0 R>>';
   objs[2]='<</Type/Pages/Kids[3 0 R]/Count 1>>';
@@ -5846,12 +5957,12 @@ ACT.genVerifyLetter=eid=>{
   const blocks=[
     {t:fmtD(todayISO()),gap:14},
     {t:'To Whom It May Concern,',gap:10},
-    {t:`This letter confirms that ${e.name} is employed by ${COMPANY.name} as ${e.title} in our ${deptName(e.dept)} organization. ${e.name.split(' ')[0]} has been continuously employed since ${fmtD(e.hireDate)} on a full-time basis.`,gap:8},
+    {t:`This letter confirms that ${e.name} is employed by ${brandName()} as ${e.title} in our ${deptName(e.dept)} organization. ${e.name.split(' ')[0]} has been continuously employed since ${fmtD(e.hireDate)} on a full-time basis.`,gap:8},
     ...(showComp?[{t:`Current annual base compensation is ${fmt$(e.comp.base)}, with a target bonus of ${e.comp.bonusPct}% of base salary.`,gap:8}]:[]),
     {t:'This verification is provided at the employee\'s request. Should you require any additional information, please contact our People Operations team at people@'+COMPANY.domain+'.',gap:16},
     {t:'Sincerely,',gap:18},
     {t:'Wes Griffin',bold:true,gap:0},
-    {t:'Chief People Officer, '+COMPANY.name,size:9.5,color:[0.4,0.42,0.52]},
+    {t:'Chief People Officer, '+brandName(),size:9.5,color:[0.4,0.42,0.52]},
   ];
   letterPreview('Employment verification — '+e.name,blocks,deslug(e.name).replace(/ /g,'-')+'-verification.pdf',()=>{
     e.docs.unshift({name:'Employment Verification Letter.pdf',date:todayISO(),kind:'Letter'});
@@ -5864,7 +5975,7 @@ ACT.genOfferLetter=cid=>{
   const blocks=[
     {t:fmtD(todayISO()),gap:14},
     {t:'Dear '+c.name+',',gap:10},
-    {t:`On behalf of the whole team — we are thrilled to offer you the position of ${r.title} at ${COMPANY.name}, reporting to ${hm?hm.name:'your manager'} in ${r.loc}. We think you're going to do the best work of your career here.`,gap:8},
+    {t:`On behalf of the whole team — we are thrilled to offer you the position of ${r.title} at ${brandName()}, reporting to ${hm?hm.name:'your manager'} in ${r.loc}. We think you're going to do the best work of your career here.`,gap:8},
     {t:'THE OFFER',bold:true,size:9.5,gap:4},
     {t:`Annual base salary: ${fmt$(c.offer.base)}`,gap:2},
     {t:`Annual target bonus: ${c.offer.bonusPct}% of base`,gap:2},
@@ -5875,7 +5986,7 @@ ACT.genOfferLetter=cid=>{
     {t:'We can\'t wait to build friendly robots with you.',gap:16},
     {t:'Warmly,',gap:18},
     {t:'Sam Torres',bold:true,gap:0},
-    {t:'Senior Recruiter, '+COMPANY.name,size:9.5,color:[0.4,0.42,0.52]},
+    {t:'Senior Recruiter, '+brandName(),size:9.5,color:[0.4,0.42,0.52]},
   ];
   letterPreview('Offer letter — '+c.name,blocks,deslug(c.name).replace(/ /g,'-')+'-offer.pdf',()=>{
     c.activity.push({at:todayISO(),by:me().name,text:'Offer letter PDF generated'});audit('Offer letter generated',c.name);Store.save();
@@ -5892,7 +6003,7 @@ ACT.genPromoLetter=arg=>{
     {t:'Promotions here are earned, never given. Thank you for the way you work — it raises the bar for all of us.',gap:16},
     {t:'With congratulations,',gap:18},
     {t:'Wes Griffin',bold:true,gap:0},
-    {t:'Chief People Officer, '+COMPANY.name,size:9.5,color:[0.4,0.42,0.52]},
+    {t:'Chief People Officer, '+brandName(),size:9.5,color:[0.4,0.42,0.52]},
   ];
   letterPreview('Promotion letter — '+e.name,blocks,deslug(e.name).replace(/ /g,'-')+'-promotion.pdf',()=>{
     e.docs.unshift({name:'Promotion Letter.pdf',date:todayISO(),kind:'Letter'});Store.save();
@@ -6196,7 +6307,7 @@ function aiToolExec(name,input){
 }
 async function aiAnswer(raw){
   const my=me();
-  const system=`You are Ask Mosaic, the assistant inside Mosaic — the technology that powers work at ${COMPANY.name} (a fictional demo company; all data is fictional). The current user is ${my.name}, ${my.title}, persona role: ${myRole()}. Today is ${fmtD(todayISO())}. Answer from the live data via tools — never invent records. Keep answers under 120 words, friendly and direct. Use the tools for ANY factual question about people, metrics or records. Respect the permission notes tools return.`;
+  const system=`You are Ask Mosaic, the assistant inside Mosaic — the technology that powers work at ${brandName()} (a fictional demo company; all data is fictional). The current user is ${my.name}, ${my.title}, persona role: ${myRole()}. Today is ${fmtD(todayISO())}. Answer from the live data via tools — never invent records. Keep answers under 120 words, friendly and direct. Use the tools for ANY factual question about people, metrics or records. Respect the permission notes tools return.`;
   let messages=[{role:'user',content:raw}];
   for(let i=0;i<5;i++){
     const resp=await AI.call(messages,{system,tools:AI_TOOLS,max_tokens:1024});
@@ -6237,7 +6348,7 @@ ACT.aiJD=async rid=>{
   const r=byId(DB.reqs,rid);if(!r)return;
   const fallback=`${r.title} — ${deptName(r.dept)} · ${r.loc}\n\nAbout Meridian Labs\n${COMPANY.tagline}. We're ${activeEmps().length} people building robots families actually love.\n\nWhat you'll do\n• Own meaningful pieces of the ${deptName(r.dept).toLowerCase()} roadmap end-to-end\n• Partner across Product, Design and Engineering on the Home Hub platform\n• Raise the bar through reviews, docs and mentorship\n\nWhat you'll bring\n• Depth appropriate to a ${r.level} role\n• Collaboration instincts and customer curiosity\n\nPay & benefits\n${fmtK(r.salary[0])}–${fmtK(r.salary[1])} base + bonus + equity · full medical/dental/vision · 4% 401(k) match · 20 vacation days · 16 weeks paid parental leave.`;
   UI.toast(AI.enabled()?'✨ Drafting with '+AI.model()+'…':'Using the built-in template','✨');
-  const txt=await aiDraft(`Write a compelling, concise job description for this role at ${COMPANY.name} (consumer robotics, tagline: "${COMPANY.tagline}"). Role: ${r.title}, ${deptName(r.dept)}, ${r.loc}, level ${r.level}, salary ${fmtK(r.salary[0])}–${fmtK(r.salary[1])} + bonus + equity. Company values: ${VALUES.join(', ')}. Sections: hook paragraph, What you'll do (4 bullets), What you'll bring (3 bullets), Pay & benefits (one paragraph, include 16 weeks parental leave and 4% 401k match). Plain text, no markdown symbols.`,fallback);
+  const txt=await aiDraft(`Write a compelling, concise job description for this role at ${brandName()} (consumer robotics, tagline: "${COMPANY.tagline}"). Role: ${r.title}, ${deptName(r.dept)}, ${r.loc}, level ${r.level}, salary ${fmtK(r.salary[0])}–${fmtK(r.salary[1])} + bonus + equity. Company values: ${VALUES.join(', ')}. Sections: hook paragraph, What you'll do (4 bullets), What you'll bring (3 bullets), Pay & benefits (one paragraph, include 16 weeks parental leave and 4% 401k match). Plain text, no markdown symbols.`,fallback);
   UI.modal({title:'✨ Drafted JD — '+esc(r.title),sub:AI.enabled()?'Generated by '+AI.model()+' from the live req':'Built-in template (add a key in Admin → Integrations for real drafting)',
     body:`<textarea id="jd-out" style="min-height:320px;font-size:12.5px;line-height:1.7">${esc(txt)}</textarea>`,
     foot:`<button class="btn ghost" data-act="closeModal">Close</button><button class="btn primary" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.querySelector('#jd-out').value);UI.toast('Copied','📋')">📋 Copy</button>`});
@@ -6352,7 +6463,7 @@ const Assist={
       return {html:items.length?`<b>${items.length} thing${items.length===1?'':'s'} waiting on you:</b><br>${items.slice(0,5).map(i=>`${i.icon} ${esc(i.text)}`).join('<br>')}`:'Inbox zero — nothing needs you right now 🌤️',actions:[{label:'Go to Home',act:'nav',arg:'#/home'}]};}
     /* headcount */
     if(/headcount|how many (people|employees|staff)/.test(q))
-      return {html:`<b>${activeEmps().length} people</b> at ${esc(COMPANY.name)} right now — ${DB.employees.filter(e=>e.status==='onboarding').length} onboarding, ${DB.reqs.filter(r=>r.status==='open').length} open requisitions.`,actions:canSee('insights')?[{label:'Open Insights',act:'nav',arg:'#/insights'}]:[]};
+      return {html:`<b>${activeEmps().length} people</b> at ${esc(brandName())} right now — ${DB.employees.filter(e=>e.status==='onboarding').length} onboarding, ${DB.reqs.filter(r=>r.status==='open').length} open requisitions.`,actions:canSee('insights')?[{label:'Open Insights',act:'nav',arg:'#/insights'}]:[]};
     /* flight risk */
     if(/flight risk|attrition risk|retention|who might leave/.test(q)){
       if(!isAdmin())return {html:'Retention signals are visible to People admins only — switch to the Admin persona to see them.'};
@@ -6371,7 +6482,7 @@ const Assist={
       const role=cap(m[1].replace(/[?.!]/g,'').trim());
       const dept=/engineer|developer|firmware|robotic/.test(m[1])?'eng':/design/.test(m[1])?'design':/market/.test(m[1])?'mktg':/sale|account/.test(m[1])?'sales':/data|analyst/.test(m[1])?'data':/people|hr|recruit/.test(m[1])?'people':'ops';
       const band=bandFor('IC4',dept);
-      return {html:`<b>${esc(role)} — ${esc(COMPANY.name)}</b><br><br><b>About us:</b> ${esc(COMPANY.tagline)}. We're ${activeEmps().length} people making home robotics genuinely useful.<br><br><b>What you'll do:</b><br>• Own meaningful pieces of the ${deptName(dept).toLowerCase()} roadmap end-to-end<br>• Partner across Product, Design and Engineering on the Home Hub platform<br>• Raise the bar on craft through reviews, docs and mentorship<br>• Talk to customers; let reality shape the work<br><br><b>What you'll bring:</b> 4+ years of relevant experience, strong collaboration instincts, and curiosity (it's our first company value).<br><br><b>Range:</b> ${fmtK(band[0])}–${fmtK(band[2])} + bonus + equity. ${esc(COMPANY.name)} is an equal-opportunity employer.<br><br><i>Copy it, tweak it, post it.</i>`,actions:canSee('recruit')?[{label:'Open a req',act:'openNewReq'}]:[]};}
+      return {html:`<b>${esc(role)} — ${esc(brandName())}</b><br><br><b>About us:</b> ${esc(COMPANY.tagline)}. We're ${activeEmps().length} people making home robotics genuinely useful.<br><br><b>What you'll do:</b><br>• Own meaningful pieces of the ${deptName(dept).toLowerCase()} roadmap end-to-end<br>• Partner across Product, Design and Engineering on the Home Hub platform<br>• Raise the bar on craft through reviews, docs and mentorship<br>• Talk to customers; let reality shape the work<br><br><b>What you'll bring:</b> 4+ years of relevant experience, strong collaboration instincts, and curiosity (it's our first company value).<br><br><b>Range:</b> ${fmtK(band[0])}–${fmtK(band[2])} + bonus + equity. ${esc(brandName())} is an equal-opportunity employer.<br><br><i>Copy it, tweak it, post it.</i>`,actions:canSee('recruit')?[{label:'Open a req',act:'openNewReq'}]:[]};}
     /* draft praise */
     m=raw.match(/praise (?:for )?([A-Za-z]+)/i);
     if(/praise/.test(q)&&m){
@@ -6708,6 +6819,9 @@ ACT.saveJob=eid=>{
    ============================================================ */
 const PTS_ALLOWANCE=100;
 const allowance=()=>((DB&&DB.cheersAllowance)||PTS_ALLOWANCE);
+/* managers get an extra per-direct-report allowance so they can recognize their teams more */
+const cheersMgrBonus=()=>((DB&&DB.cheersMgrBonus)||0);
+const allowanceFor=eid=>allowance()+cheersMgrBonus()*reportsOf(eid).length;
 const REWARDS=[{id:'rw1',name:'$10 coffee card',pts:100,icon:'☕'},{id:'rw2',name:'$25 gift card',pts:250,icon:'🎁'},{id:'rw3',name:'Charity donation $25',pts:250,icon:'💝'},{id:'rw4',name:'Half-day Friday pass',pts:400,icon:'🌴'},{id:'rw5',name:'Meridian robot swag kit',pts:300,icon:'🤖'}];
 const allRewards=()=>REWARDS.concat((DB&&DB.customRewards)||[]);
 const fbRecipients=f=>f.recipients||(f.toId?[f.toId]:[]);
@@ -6715,7 +6829,7 @@ const monthStart=()=>iso(new Date(now().getFullYear(),now().getMonth(),1));
 const ptsGiven=eid=>{let t=0;DB.feedback.forEach(f=>{const n=fbRecipients(f).length||1;
   if(f.fromId===eid&&f.at>=monthStart())t+=(f.pts||0)*n;
   (f.boosts||[]).forEach(b=>{if(b.by===eid&&b.at>=monthStart())t+=b.pts*n;});});return t;};
-const ptsLeft=eid=>Math.max(0,allowance()-ptsGiven(eid));
+const ptsLeft=eid=>Math.max(0,allowanceFor(eid)-ptsGiven(eid));
 const ptsEarned=eid=>{let t=0;DB.feedback.forEach(f=>{if(!fbRecipients(f).includes(eid))return;
   t+=(f.pts||0);(f.boosts||[]).forEach(b=>t+=b.pts);});
   return t-sum((DB.redemptions||[]).filter(r=>r.employeeId===eid).map(r=>r.pts));};
@@ -7121,7 +7235,7 @@ function msgHtml(m,inThread){
     <div class="m-text">${renderMsgText(m.text)}</div>
     ${m.file?`<div class="chip mt8" style="cursor:pointer" onclick="UI.toast('Demo: file preview/download','📎')">📎 ${esc(m.file.name)} <span class="faint">· ${m.file.size}</span></div>`:''}
     <div class="m-reacts">${Object.entries(m.reactions||{}).map(([emo,n])=>`<span class="chip" data-act="chatReact" data-arg="${m.id}|${emo}">${emo} ${n}</span>`).join('')}
-      <span class="chip" data-act="chatReact" data-arg="${m.id}|👍" style="opacity:.55">+ 👍</span></div>
+      <button class="chip react-add" data-act="emojiFor" data-arg="react:${m.id}" title="Add a reaction" aria-label="Add a reaction">😊 +</button></div>
     ${replies.length?`<span class="thread-chip" data-act="openThread" data-arg="${m.id}">💬 ${replies.length} repl${replies.length===1?'y':'ies'} <span class="faint">· latest ${replies[replies.length-1].time}</span></span>`:''}
   </div></div>`;
 }
@@ -7180,6 +7294,7 @@ Views.chat=param=>{
       </div>
       <div class="chat-foot">${canPost?`<div class="chat-input">
         <button class="iconbtn" title="Attach a file" data-act="chatAttach" data-arg="${cur.id}">📎</button>
+        ${emojiBtn('ins:chat-in','Emoji')}
         <input id="chat-in" placeholder="Message ${cur.dm?esc(dmOther(cur).name.split(' ')[0]):'#'+esc(cur.name)} — @mention to notify" oninput="(UIS.chatDrafts=UIS.chatDrafts||{})['${cur.id}']=this.value" onkeydown="if(event.key==='Enter')ACT.chatSend('${cur.id}')">
         <button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="chatSend" data-arg="${cur.id}">${I.send}</button></div>`
         :`<div class="tiny faint" style="text-align:center">📣 Only the People team posts in #announcements — reply in #general instead.</div>`}</div>`}
@@ -7198,9 +7313,11 @@ window.chatDoSearch=q=>{
 };
 ACT.chatSend=ch=>{
   const inp=$('#chat-in');if(!inp||!inp.value.trim())return;
+  const text=inp.value.trim();
+  inp.value='';  /* clear NOW so render()'s focus-restore captures empty, not the sent text */
   const c=byId(DB.channels,ch);
-  DB.chatMsgs.push({id:uid('M'),ch,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text:inp.value.trim(),reactions:{}});
-  mentionNotify(inp.value,c);
+  DB.chatMsgs.push({id:uid('M'),ch,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text,reactions:{}});
+  mentionNotify(text,c);
   if(UIS.chatDrafts)delete UIS.chatDrafts[ch];
   window._chatFocus=true;Store.save();render();
 };
@@ -7217,18 +7334,19 @@ ACT.openThread=mid=>{
   UI.drawer({head:`<span class="notif-ic" style="background:color-mix(in srgb,#6d28d9 12%,transparent)">💬</span><div class="col" style="gap:1px"><b style="font-size:15px">Thread</b><span class="tiny muted">${c?(c.dm?'Direct message':'#'+c.name):''} · ${replies.length} repl${replies.length===1?'y':'ies'}</span></div>`,
     body:`<div id="thread-body">${msgHtml(parent,true)}<div class="divider"></div>
       ${replies.map(r=>msgHtml(r,true)).join('')||'<div class="tiny faint" style="padding:8px">No replies yet — start the thread.</div>'}</div>
-      <div class="chat-input mt12"><input id="thread-in" placeholder="Reply in thread…" onkeydown="if(event.key==='Enter')ACT.threadReply('${mid}')">
+      <div class="chat-input mt12">${emojiBtn('ins:thread-in','Emoji')}<input id="thread-in" placeholder="Reply in thread…" onkeydown="if(event.key==='Enter')ACT.threadReply('${mid}')">
       <button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="threadReply" data-arg="${mid}">${I.send}</button></div>`,
     foot:'<button class="btn ghost" data-act="closeDrawer">Close</button>'});
   setTimeout(()=>{const i=$('#thread-in');if(i)i.focus();},150);
 };
 ACT.threadReply=mid=>{
   const inp=$('#thread-in');if(!inp||!inp.value.trim())return;
+  const text=inp.value.trim();inp.value='';
   const parent=byId(DB.chatMsgs,mid);if(!parent)return;
   const c=byId(DB.channels,parent.ch);
-  DB.chatMsgs.push({id:uid('M'),ch:parent.ch,parentId:mid,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text:inp.value.trim(),reactions:{}});
+  DB.chatMsgs.push({id:uid('M'),ch:parent.ch,parentId:mid,fromId:DB.me.employeeId,at:todayISO(),time:nowTime(),text,reactions:{}});
   if(parent.fromId!==DB.me.employeeId)notify(parent.fromId,'💬',`${me().name} replied to your thread in ${c.dm?'a DM':'#'+c.name}`,'#/chat/'+parent.ch);
-  mentionNotify(inp.value,c);
+  mentionNotify(text,c);
   Store.save();ACT.openThread(mid);render();
 };
 ACT.chatSave=mid=>{
@@ -8074,6 +8192,7 @@ function meetStage(){
         <button class="meet-btn ${M.rec?'off':''}" data-act="meetRec" title="Record">⏺️</button>
         <button class="meet-btn ${M.raised[DB.me.employeeId]?'off':''}" data-act="meetHand" title="Raise hand">✋</button>
         ${['👏','❤️','😂','🎉'].map(e2=>`<button class="meet-btn" data-act="meetReact" data-arg="${e2}" title="React" style="width:40px;font-size:15px">${e2}</button>`).join('')}
+        <button class="meet-btn" data-act="emojiFor" data-arg="meetreact:_" title="More reactions" style="width:40px;font-size:15px">😊</button>
         <button class="meet-btn" data-act="meetBg" title="Background">🪄</button>
         <button class="meet-btn ${M.captions?'':'off'}" data-act="meetCaptions" title="Captions" style="font-size:11px;font-weight:800">CC</button>
         <button class="meet-btn ${M.layout==='speaker'?'':'off'}" data-act="meetLayout" title="Layout">▦</button>
@@ -8087,7 +8206,7 @@ function meetStage(){
         (M.chat.map(c2=>`<div style="margin-bottom:9px"><b style="font-size:11.5px">${esc(c2.from)}</b> <span style="opacity:.55;font-size:10px">${c2.t}</span><br>${esc(c2.text)}</div>`).join('')||'<span style="opacity:.5">Say hi — chat is call-only.</span>')
         :allP.map(p=>`<div class="row" style="gap:8px;margin-bottom:9px">${av(p,'sm')}<span class="col" style="gap:0;flex:1"><b style="font-size:12px">${p.id===DB.me.employeeId?'You':esc(p.name)}</b><span style="opacity:.55;font-size:10.5px">${p.id===DB.me.employeeId?(M.muted?'muted':'unmuted'):p.id===(others[1]||{}).id?'muted':'unmuted'}${M.raised[p.id]?' · ✋':''}</span></span>
         ${p.id!==DB.me.employeeId?`<button style="opacity:.6;font-size:10.5px" onclick="UI.toast('Asked ${esc(p.name.split(' ')[0])} to unmute (host control)','🎙️')">🎙️ ask</button>`:''}</div>`).join('')}</div>
-      ${M.panel==='chat'?`<div class="mp-foot"><div class="row" style="gap:6px"><input id="meet-chat-in" placeholder="Message everyone…" style="flex:1;background:#0c0e1a;border:1px solid #262b42;border-radius:9px;padding:7px 10px;color:#eef0fa;outline:none;font-size:12px" onkeydown="if(event.key==='Enter')ACT.meetChatSend()">
+      ${M.panel==='chat'?`<div class="mp-foot"><div class="row" style="gap:6px"><button class="iconbtn emoji-trigger" data-act="emojiFor" data-arg="ins:meet-chat-in" title="Emoji" style="color:#9aa3c4">😊</button><input id="meet-chat-in" placeholder="Message everyone…" style="flex:1;background:#0c0e1a;border:1px solid #262b42;border-radius:9px;padding:7px 10px;color:#eef0fa;outline:none;font-size:12px" onkeydown="if(event.key==='Enter')ACT.meetChatSend()">
       <button class="btn sm primary" style="--brand:#2d8cff;--brand-deep:#1d7af0" data-act="meetChatSend">${I.send}</button></div></div>`:''}
     </div>
   </div>`;
@@ -8115,8 +8234,9 @@ ACT.meetLayout=()=>{const M=UIS.meetActive;M.layout=M.layout==='speaker'?'grid':
 ACT.meetPanel=p=>{UIS.meetActive.panel=p;render();setTimeout(()=>{const i=$('#meet-chat-in');if(i)i.focus();},80);};
 ACT.meetChatSend=()=>{
   const i=$('#meet-chat-in');if(!i||!i.value.trim())return;
+  const text=i.value.trim();i.value='';
   const M=UIS.meetActive;
-  M.chat.push({from:'You',t:nowTime(),text:i.value.trim()});
+  M.chat.push({from:'You',t:nowTime(),text});
   if(M.chat.length===1&&M.parts.length){const o=emp(M.parts[0]);if(o)setTimeout(()=>{if(UIS.meetActive){UIS.meetActive.chat.push({from:o.name.split(' ')[0],t:nowTime(),text:'👍 noted!'});render();}},1800);}
   render();setTimeout(()=>{const x=$('#meet-chat-in');if(x)x.focus();},60);
 };
@@ -8154,7 +8274,8 @@ Views.intranet=param=>{
         <h4>${esc(p.title)}</h4>
         <div class="row mb8" style="gap:7px">${a?av(a,'xs'):''}<span class="tiny faint">${a?esc(a.name):''} · ${rel(p.at)}</span></div>
         <p class="small muted" style="line-height:1.7">${esc(p.body)}</p>
-        <div class="row mt8" style="gap:6px">${Object.entries(p.reactions||{}).map(([emo,n])=>`<button class="chip" data-act="postReact" data-arg="${p.id}|${emo}" style="padding:1px 8px;font-size:11px">${emo} ${n}</button>`).join('')}</div>
+        <div class="row mt8" style="gap:6px;flex-wrap:wrap">${Object.entries(p.reactions||{}).map(([emo,n])=>`<button class="chip" data-act="postReact" data-arg="${p.id}|${emo}" style="padding:1px 8px;font-size:11px">${emo} ${n}</button>`).join('')}
+          <button class="chip react-add" data-act="emojiFor" data-arg="postreact:${p.id}" style="padding:1px 8px;font-size:11px" title="Add a reaction" aria-label="Add a reaction">😊 +</button></div>
       </div>`;}).join(''):'<div class="empty"><div class="big">📰</div>No posts yet in this space.</div>'}</div>
     <div class="col" style="gap:16px">
       <div class="card pad"><div class="row between"><b class="small">📄 Wiki pages</b>${canPost?`<button class="btn xs soft" style="--brand:#0891b2" data-act="pageNew" data-arg="${cur.id}">＋ Page</button>`:''}</div>
@@ -8709,7 +8830,7 @@ ACT.flowOpen=fid=>{
     ${f.envelopeId?`<a class="card pad row hovercard mb16" style="gap:10px;box-shadow:none;background:var(--warn-soft);color:inherit;padding:11px 14px;cursor:pointer" data-act="signOpen" data-arg="${f.envelopeId}">📜 <span class="col" style="gap:0;flex:1"><b class="small">Signature in MosaicSign</b><span class="tiny muted">${f.envelopeId} — opens the envelope</span></span>${I.chev}</a>`:''}
     <b class="small">Activity</b>
     <div class="timeline mt8" style="--mod:#e0457b">${[...f.activity].reverse().map(a=>`<div class="tl-item"><span class="small">${esc(a.text)}</span><div class="tiny faint">${esc(a.by)} · ${rel(a.at)}</div></div>`).join('')}</div>
-    <div class="row mt12" style="gap:7px"><input id="wf-note" placeholder="Add a comment…" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;outline:none;font-size:12.5px" onkeydown="if(event.key==='Enter')ACT.flowComment('${f.id}')">
+    <div class="row mt12" style="gap:7px">${emojiBtn('ins:wf-note','Emoji')}<input id="wf-note" placeholder="Add a comment…" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;outline:none;font-size:12.5px" onkeydown="if(event.key==='Enter')ACT.flowComment('${f.id}')">
       <button class="btn xs soft" style="--brand:#e0457b" data-act="flowComment" data-arg="${f.id}">Post</button></div>`,
     foot:`${(isAdmin()||f.requesterId===DB.me.employeeId)&&!tpl.bp?`<button class="btn ghost" style="color:var(--bad)" data-act="flowDelete" data-arg="${f.id}">🗑 Delete</button>`:''}
       ${f.stage>0&&f.stage<last&&flowCanAdvance(f)?`<button class="btn ghost" data-act="flowMove" data-arg="${f.id}|-1">← Send back</button>`:''}<span class="spacer"></span>
@@ -9084,7 +9205,7 @@ function showSplash(){
   const team=DB.employees.filter(e=>e.status!=='terminated').length;
   const picks=['people','recruit','learn','grow','pay','spend','sign','flows','chat','cal','drive','cheers'];
   const mods=picks.map(id=>MODULES.find(m=>m.id===id)).filter(Boolean);
-  const title=brandName()===COMPANY.name?'Mosaic':esc(brandName());
+  const title='Mosaic';  /* product name — the company white-labels via brandName() elsewhere */
   sp.innerHTML=`
     <span class="sp-orb o1"></span><span class="sp-orb o2"></span><span class="sp-orb o3"></span>
     <div class="sp-card">
@@ -9294,7 +9415,7 @@ Views.careers=param=>{
   const fDept=UIS.carDept||'',fLoc=UIS.carLoc||'';
   const head=`
   <div class="row mb12" style="gap:10px;align-items:center">
-    ${logoSVG(26)}<b style="font-family:var(--font-display);font-size:17px">${esc(COMPANY.name)} Careers</b>
+    ${logoSVG(26)}<b style="font-family:var(--font-display);font-size:17px">${esc(brandName())} Careers</b>
     <span class="spacer"></span><a class="tiny linklike" href="#/recruit" title="Back into the Mosaic demo">⤺ back to Mosaic (demo)</a></div>`;
   if(r){
     const hm=emp(r.hmId);
@@ -9304,7 +9425,7 @@ Views.careers=param=>{
       <h1 style="font-family:var(--font-display);font-size:27px;margin-top:10px">${esc(r.title)}</h1>
       <div class="row wrap mt8" style="gap:7px"><span class="chip">${deptName(r.dept)}</span><span class="chip">${esc(r.loc)}</span><span class="chip">Full-time</span><span class="chip num">${fmtK(r.salary[0])}–${fmtK(r.salary[1])} + bonus + equity</span></div>
       <div class="divider"></div>
-      <p class="small muted" style="line-height:1.8"><b>About ${esc(COMPANY.name)}.</b> ${esc(COMPANY.tagline)}. We're ${activeEmps().length} people building robots families actually love — deliberate about how we work: ${VALUES.join(', ').toLowerCase()}.</p>
+      <p class="small muted" style="line-height:1.8"><b>About ${esc(brandName())}.</b> ${esc(COMPANY.tagline)}. We're ${activeEmps().length} people building robots families actually love — deliberate about how we work: ${VALUES.join(', ').toLowerCase()}.</p>
       <p class="small muted mt12" style="line-height:1.8"><b>What you'll do.</b> Own meaningful pieces of the ${deptName(r.dept).toLowerCase()} roadmap end-to-end, partner tightly across the Home Hub platform, and stay close to customers.</p>
       <p class="small muted mt12" style="line-height:1.8"><b>Pay & benefits.</b> ${fmtK(r.salary[0])}–${fmtK(r.salary[1])} base + bonus + equity · full medical/dental/vision · 4% 401(k) match · 20 vacation days · 16 weeks paid parental leave. Equal-opportunity employer.</p>
       <div class="divider"></div>
@@ -9314,13 +9435,13 @@ Views.careers=param=>{
         <div class="field"><label>Email</label><input id="ap-email" type="email" placeholder="you@example.com"></div>
       </div>
       <div class="field"><label>LinkedIn or portfolio (optional)</label><input id="ap-link" placeholder="linkedin.com/in/…"></div>
-      <div class="field"><label>Why ${esc(COMPANY.name)}?</label><textarea id="ap-why" placeholder="A sentence or two — we read every one."></textarea></div>
+      <div class="field"><label>Why ${esc(brandName())}?</label><textarea id="ap-why" placeholder="A sentence or two — we read every one."></textarea></div>
       <button class="btn primary" style="--brand:var(--c-recruit);--brand-deep:#e04a77;padding:11px 26px" data-act="applySubmit" data-arg="${r.id}">Submit application</button>
       <p class="tiny faint mt12">Demo note: this lands as a real candidate in Recruiting → ${r.id}, source “Careers site”.</p>
     </div>
     ${myRole()!=='admin'||DB.me.employeeId?`<div class="card pad mt16" style="border:1.5px solid var(--c-grow);background:color-mix(in srgb,var(--c-grow) 5%,var(--card))">
       <div class="row" style="gap:10px;align-items:flex-start;flex-wrap:wrap"><span style="font-size:20px">🌱</span>
-        <div class="col" style="gap:2px;flex:1;min-width:220px"><b class="small">Already at ${esc(COMPANY.name)}? Apply internally.</b>
+        <div class="col" style="gap:2px;flex:1;min-width:220px"><b class="small">Already at ${esc(brandName())}? Apply internally.</b>
         <span class="tiny muted">Internal candidates skip the initial screen and route straight to the hiring manager. Your current manager is notified per our internal-mobility policy.</span></div>
         <button class="btn sm soft" style="--brand:var(--c-grow)" data-act="applyInternal" data-arg="${r.id}">Apply as ${esc(me().name.split(' ')[0])} →</button></div></div>`:''}`;
   }
@@ -9342,7 +9463,7 @@ Views.careers=param=>{
         <div class="tiny faint" style="margin-top:2px">${deptName(x.dept)} · ${esc(x.loc)} · ${fmtK(x.salary[0])}–${fmtK(x.salary[1])}</div></div>
       <span class="btn xs soft" style="--brand:var(--c-recruit)">View & apply →</span>
     </div>`).join('')||'<div class="empty"><div class="big">🌱</div>No openings match — check back soon.</div>'}</div>
-  <p class="tiny faint mt12" style="text-align:center">© 2026 ${esc(COMPANY.name)} (fictional) · powered by Mosaic — applications flow straight into the same pipeline recruiters work in.</p>`;
+  <p class="tiny faint mt12" style="text-align:center">© 2026 ${esc(brandName())} (fictional) · powered by Mosaic — applications flow straight into the same pipeline recruiters work in.</p>`;
 };
 ACT.applySubmit=rid=>{
   const r=byId(DB.reqs,rid);if(!r)return;
@@ -9364,7 +9485,7 @@ ACT.applyInternal=rid=>{
   const r=byId(DB.reqs,rid);if(!r)return;const me2=me();
   if(DB.candidates.some(c=>c.reqId===rid&&c.internalId===me2.id)){UI.toast('You\'ve already applied to this one — it\'s in the pipeline','🌱');return;}
   const c={id:uid('C'),name:me2.name,email:me2.email,reqId:r.id,stage:'screening',source:'Internal',internalId:me2.id,
-    company:COMPANY.name+' (internal)',years:+(between(me2.hireDate,todayISO())/365).toFixed(1),location:me2.location,
+    company:brandName()+' (internal)',years:+(between(me2.hireDate,todayISO())/365).toFixed(1),location:me2.location,
     appliedAt:todayISO(),scorecards:[],notes:[],
     activity:[{at:todayISO(),by:'Careers site',text:`Internal application — currently ${me2.title} in ${deptName(me2.dept)}. Skipped initial screen per policy.`}]};
   DB.candidates.push(c);
@@ -9408,10 +9529,19 @@ ACT.stateImport=()=>{
 /* #8 white-label branding */
 const shade=(hex,f)=>{const n=parseInt(hex.slice(1),16);const r=Math.round(((n>>16)&255)*f),g2=Math.round(((n>>8)&255)*f),b2=Math.round((n&255)*f);
   return '#'+[r,g2,b2].map(x=>clamp(x,0,255).toString(16).padStart(2,'0')).join('');};
+const tint=(hex,f)=>{const n=parseInt(hex.slice(1),16);const mix=ch=>Math.round(ch+(255-ch)*f);
+  return '#'+[mix((n>>16)&255),mix((n>>8)&255),mix(n&255)].map(x=>x.toString(16).padStart(2,'0')).join('');};
 function applyBrand(){
-  const b=DB&&DB.brand;
-  document.documentElement.style.setProperty('--brand',b&&b.color?b.color:'#6366f1');
-  document.documentElement.style.setProperty('--brand-deep',b&&b.color?shade(b.color,0.82):'#4f46e5');
+  const b=DB&&DB.brand;const c=b&&b.color;
+  const root=document.documentElement.style;
+  const dark=document.documentElement.classList.contains('dark');
+  root.setProperty('--brand',c||'#6366f1');
+  root.setProperty('--brand-deep',c?shade(c,0.82):'#4f46e5');
+  /* the soft tint drives every .btn.soft, bulk bar, calendar-today, org count,
+     focus rings, active rows — setting it is what makes the brand land widely */
+  root.setProperty('--brand-soft',c?(dark?shade(c,0.30):tint(c,0.90)):(dark?'#23264a':'#eef0fe'));
+  /* keep the theme-color meta + product mark in sync on real installs */
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta&&c)meta.setAttribute('content',c);
 }
 const brandName=()=>((DB&&DB.brand&&DB.brand.name)||COMPANY.name);
 ACT.brandSave=()=>{
@@ -9555,6 +9685,7 @@ function hropsConsoles(){
     {icon:'🎯',label:'Comp admin',home:'Compensation → Comp admin',link:'#/pay/compadmin',gid:'g-comp',n:activeEmps().filter(e=>{const b=bandFor(e.level,e.dept);const cr=e.comp.base/b[1];return cr<0.85||cr>1.15;}).length,nLabel:'out of band',has:canCompAdmin()},
     {icon:'🏥',label:'Benefits admin',home:'Benefits → Benefits admin',link:'#/benefits/benadmin',gid:'g-benefits',n:activeEmps().filter(e=>{const el=DB.benefits.find(b=>b.employeeId===e.id);return !el||!el.medical;}).length,nLabel:'missing elections',has:hasCap('benefits-admin')||isAdmin()},
     {icon:'🌿',label:'Leave admin',home:'Benefits → Leave admin',link:'#/benefits/benleaves',gid:'g-benefits',n:(DB.leaves||[]).filter(l=>l.status!=='completed').length,nLabel:'open leaves',has:hasCap('benefits-admin')||isAdmin()},
+    {icon:'🧑‍🚀',label:'Journeys',home:'Onboarding & offboarding',link:'#/onboard',gid:'g-people',n:DB.onboarding.concat(DB.offboarding||[]).flatMap(j=>j.tasks||[]).filter(t=>!t.done&&t.due<todayISO()).length,nLabel:'overdue tasks',has:canSee('onboard')},
     {icon:'🎟️',label:'Ask People settings',home:'Ask People → Settings',link:'#/askpeople/apsettings',gid:'g-people',n:DB.cases.filter(c=>c.status==='open').length,nLabel:'open cases',has:hasCap('cases')||isAdmin()},
     {icon:'🎓',label:'Learning compliance',home:'Learning → Compliance dashboard',link:'#/learn/compliance',gid:'g-learn-admin',n:DB.enrollments.filter(en=>en.progress<100&&en.due&&en.due<todayISO()).length,nLabel:'overdue trainings',has:isAdmin()||hasCap('learn-admin')},
     {icon:'🎉',label:'Cheers admin',home:'Cheers → Admin',link:'#/cheers/cadmin',gid:'g-cheers-admin',n:0,nLabel:'',has:hasCap('cheers-admin')||isAdmin()},
@@ -10120,7 +10251,7 @@ ACT.w2Gen=eid=>{
   const k401=Math.round(wages*pctK/100);
   const blocks=[
     {t:`FORM W-2 — WAGE AND TAX STATEMENT · ${yr}`,bold:true,size:13,gap:8},
-    {t:`${e.name} · ${e.id} · ${COMPANY.name} (EIN 87-${rint(1000000,9999999)})`,gap:10},
+    {t:`${e.name} · ${e.id} · ${brandName()} (EIN 87-${rint(1000000,9999999)})`,gap:10},
     {t:`Box 1 — Wages, tips, other comp: ${fmt$(wages-k401)}`,gap:3},
     {t:`Box 2 — Federal income tax withheld: ${fmt$(Math.round((wages-k401)*0.18))}`,gap:3},
     {t:`Box 3 — Social Security wages: ${fmt$(Math.min(wages,168600))} · Box 4 — SS tax: ${fmt$(Math.round(Math.min(wages,168600)*0.062))}`,gap:3},
@@ -10159,7 +10290,7 @@ ACT.paystub=arg=>{
   const blocks=[
     {t:'EARNINGS STATEMENT',bold:true,size:13,gap:6},
     {t:`${e.name} · ${e.title} · ${e.id}`,gap:2},
-    {t:`Pay period ${fmtD(start)} – ${fmtD(end)} · pay date ${fmtD(end)} · ${COMPANY.name}`,size:9,color:[0.4,0.42,0.52],gap:10},
+    {t:`Pay period ${fmtD(start)} – ${fmtD(end)} · pay date ${fmtD(end)} · ${brandName()}`,size:9,color:[0.4,0.42,0.52],gap:10},
     {t:'EARNINGS',bold:true,size:10,gap:4},
     L('Regular salary (semi-monthly)',gross),
     ...(oneTime?[L('One-time payment (approved BP)',oneTime,oneTime)]:[]),

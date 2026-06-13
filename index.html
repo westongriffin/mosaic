@@ -672,6 +672,61 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 .as-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
 .as-chips .chip{cursor:pointer;font-size:11.5px}
 .as-chips .chip:hover{border-color:var(--brand);color:var(--brand)}
+.ai-pending{display:flex;flex-direction:column;gap:8px;align-self:stretch}
+.ai-act-card{background:color-mix(in srgb,var(--brand) 7%,var(--card));border:1.5px solid color-mix(in srgb,var(--brand) 32%,var(--line));border-radius:12px;padding:10px 12px}
+.ai-act-ic{width:18px;height:18px;border-radius:6px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:11px;flex:none}
+.cmd-item{display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:9px;cursor:pointer;transition:background .12s}
+.cmd-item:hover{background:var(--bg2)}
+.cmd-ic{width:30px;height:30px;border-radius:9px;background:var(--bg2);display:grid;place-items:center;font-size:15px;flex:none}
+.cmd-chev{color:var(--ink3);display:flex}
+.cmd-acts{opacity:.92}
+@media(max-width:640px){.cmd-item{flex-wrap:wrap}.cmd-acts{width:100%;padding-left:41px}}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.dash-w{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;position:relative;grid-column:span 1;box-shadow:var(--shadow);min-height:90px}
+.dash-w.wide{grid-column:span 2}
+.dash-x,.dash-size{position:absolute;top:8px;height:22px;min-width:22px;padding:0 5px;border-radius:6px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:10px;display:grid;place-items:center;color:var(--ink3)}
+.dash-x{right:8px}.dash-x:hover{color:var(--bad);border-color:var(--bad)}
+.dash-size{right:36px}
+@media(max-width:900px){.dash-grid{grid-template-columns:repeat(2,1fr)}.dash-w.wide{grid-column:span 2}}
+@media(max-width:560px){.dash-grid{grid-template-columns:1fr}.dash-w,.dash-w.wide{grid-column:span 1}}
+.aut-rule.off{opacity:.62}
+.aut-when,.aut-then{font-size:9.5px;font-weight:800;letter-spacing:.05em;color:var(--ink3)}
+.aut-chip{font-size:11.5px;font-weight:650;background:var(--bg2);border:1px solid var(--line);border-radius:7px;padding:2px 9px;color:var(--ink2)}
+.aut-chip.act{background:color-mix(in srgb,var(--brand) 11%,var(--card));border-color:color-mix(in srgb,var(--brand) 30%,transparent);color:var(--brand)}
+.switch{position:relative;display:inline-block;width:38px;height:22px;flex:none;cursor:pointer}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.sw-track{position:absolute;inset:0;background:var(--line2);border-radius:99px;transition:.18s}
+.sw-track:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch input:checked+.sw-track{background:var(--ok)}
+.switch input:checked+.sw-track:before{transform:translateX(16px)}
+.sch-table{border-collapse:separate;border-spacing:4px;width:100%;min-width:680px}
+.sch-table th{font-size:11px;font-weight:700;color:var(--ink3);text-align:center;padding:4px}
+.sch-table th.today{color:#0d9488}
+.sch-table th.sch-name,td.sch-name{text-align:left;width:150px;min-width:150px}
+.sch-cell{padding:0;vertical-align:top}
+.sch-empty{min-height:42px;border-radius:8px;border:1.4px dashed var(--line);display:grid;place-items:center;color:var(--ink3);cursor:pointer;font-size:15px}
+.sch-empty:hover{border-color:#0d9488;color:#0d9488;background:color-mix(in srgb,#0d9488 5%,transparent)}
+.sch-block{min-height:42px;border-radius:8px;padding:5px 7px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:1px;color:#fff;background:#0d9488}
+.sch-block b{font-size:11px;white-space:nowrap}.sch-block span{font-size:9.5px;opacity:.9}
+.sch-block.s-Early{background:#0ea5e9}.sch-block.s-Mid{background:#0d9488}.sch-block.s-Late{background:#7c3aed}
+.sch-block:hover{filter:brightness(1.08)}
+.post-dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}
+.post-dot.ok{background:var(--ok-soft);color:#076b4c}
+.post-dot.warn{background:var(--warn-soft);color:#92400e}
+/* D3 · skip layout/paint for off-screen rows in long lists (helps at scale) */
+.task-row,.tlist-row,.cmd-item{content-visibility:auto;contain-intrinsic-size:auto 46px}
+/* D2 · visible keyboard focus across all interactive elements */
+button:focus-visible,a:focus-visible,[role=button]:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.vchip:focus-visible,.chip:focus-visible{outline:2.5px solid var(--brand);outline-offset:2px;border-radius:5px}
+/* D4 · skeleton shimmer for async loads */
+.skel{background:linear-gradient(90deg,var(--bg2) 25%,var(--line) 37%,var(--bg2) 63%);background-size:400% 100%;border-radius:8px;animation:skel 1.4s ease infinite}
+.skel-line{height:12px;margin:7px 0}
+@keyframes skel{0%{background-position:100% 0}100%{background-position:-100% 0}}
+@media(prefers-reduced-motion:reduce){.skel{animation:none}}
+@media(max-width:640px){
+  .sch-name,td.sch-name{width:104px;min-width:104px}
+  .aut-rule .row{row-gap:8px}
+  .ai-act-card{padding:9px}
+}
 .as-foot{padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:8px}
 .as-foot input{flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:11px;padding:9px 13px;outline:none}
 .as-foot input:focus{border-color:var(--brand)}
@@ -1079,6 +1134,16 @@ body.proxying #topbar{top:34px}
    Created by Wes Griffin · Designed & built with AI.
    © 2026 Wes Griffin. All rights reserved. Visibility of this
    source is not a license — see the notice at the top of the file.
+
+   ── ARCHITECTURE (single self-contained file, no build step) ──
+   1. Utilities & helpers          5. UI primitives (modal/drawer/toast)
+   2. Seed builders → buildSeed()  6. Views.{module}  +  ACT.{verb}
+   3. Store (load/save/undo/redo)  7. Assistant + AI core (BYOK)
+   4. Router: #/mod/param → Views  8. init() boot guard (bottom)
+   ⚠️ INVARIANT: every `ACT.x = …` assignment MUST appear AFTER the
+   `const ACT = {…}` literal — a forward reference throws a TDZ error
+   at load and fells the whole script. The init() guard surfaces it.
+   New cross-module collections are lazy-guarded (DB.x = DB.x || …).
    ============================================================ */
 
 /* ---------------- utilities ---------------- */
@@ -1335,6 +1400,22 @@ function buildEmployees(){
   const ann=E.find(e=>e.name==='Elena Volkov');ann.hireDate=iso(new Date(new Date(daysAhead(4)).setFullYear(new Date().getFullYear()-3)));
   const ann2=E.find(e=>e.name==='Camille Laurent');ann2.hireDate=iso(new Date(new Date(daysAhead(11)).setFullYear(new Date().getFullYear()-2)));
   const bd2=E.find(e=>e.name==='Kofi Mensah');bd2.birthday=daysAhead(2).slice(5);
+  /* ---- synthetic fleet — scales the org so analytics, search, org chart & perf prove out at size ---- */
+  const SF=['Aaron','Bella','Caleb','Dora','Eli','Farah','Gus','Hana','Ivan','Jada','Kira','Liam','Mara','Nico','Oona','Paul','Quinn','Rosa','Theo','Uma','Vince','Wren','Xena','Yael','Zane','Ada','Boris','Cleo','Dina','Esme','Finn','Gail','Hugo','Iris','Jonas','Kara','Leon','Mona','Noor','Otto','Pia','Reed','Suki','Tariq','Ulla','Vera','Wade','Yara','Amir','Beth','Cory','Dani','Enzo','Fern','Gabe','Hina','Igor','June','Kit','Lara','Mads','Nadia','Omar','Petra','Remy','Sara','Tom','Ursula'];
+  const SL=['Ahmed','Bauer','Costa','Diaz','Evans','Frost','Ghosh','Holm','Ito','Jain','Khan','Lopez','Meyer','Novak','Owens','Pratt','Qian','Roy','Stone','Tran','Vasquez','Walsh','Yoon','Zito','Bianchi','Cho','Dubois','Ericsson','Fischer','Gupta','Hassan','Ivanov','Jensen','Kumar','Larsen','Moreno','Nguyen','Olsen','Romano','Singh','Ueno','Vidal','Wong','Yamada','Adeyemi','Brandt','Conti','Delgado'];
+  const STitles={eng:['Software Engineer II','Software Engineer III','Senior Software Engineer','QA Engineer II','DevOps Engineer','Frontend Engineer'],data:['Data Analyst II','Data Scientist II','Analytics Engineer','ML Engineer II'],product:['Product Manager II','Associate Product Manager'],design:['Product Designer II','UX Designer','Visual Designer'],mktg:['Marketing Specialist','Content Strategist','Growth Analyst','Lifecycle Marketer'],sales:['Account Executive','Sales Development Rep','Solutions Consultant','Account Manager'],cx:['Customer Support Specialist','Customer Success Manager','Support Engineer'],fin:['Staff Accountant','Financial Analyst','AP Specialist'],ops:['Operations Analyst','Logistics Coordinator','Facilities Associate'],people:['People Operations Generalist','Recruiter','L&D Specialist'],it:['IT Support Specialist','Systems Engineer']};
+  const SLevels=['IC2','IC2','IC3','IC3','IC3','IC4','IC4','IC5'];
+  const mgrByDept={};E.forEach(e=>{if(/^M/.test(e.level||'')){(mgrByDept[e.dept]=mgrByDept[e.dept]||[]).push(e.id);}});
+  const deptPool=['eng','eng','eng','eng','sales','sales','cx','cx','data','design','mktg','mktg','ops','people','fin','product','it'];
+  const N=95;
+  for(let i=0;i<N;i++){
+    const id='E'+String(78+i).padStart(3,'0');
+    const dept=pick(deptPool);
+    const mgrs=mgrByDept[dept]||['E007'];const managerId=pick(mgrs);
+    const mgr=E.find(x=>x.id===managerId)||{};
+    const name=pick(SF)+' '+pick(SL);
+    add({id,name,title:pick(STitles[dept]||['Specialist']),level:pick(SLevels),dept,team:mgr.team||deptName(dept),managerId,loc:pick(['San Francisco HQ','Austin','New York','Remote','Remote']),hireDate:daysAgo(rint(40,2100)),base:rint(95,205)*1000});
+  }
   return E;
 }
 
@@ -2352,6 +2433,46 @@ function buildProjects(emps){
     ]});
   return {projects,tasks};
 }
+/* ---- B2/C1/C2 data builders (lazy-guarded in views too) ---- */
+function defaultAutomations(){
+  return [
+    {id:'AUT-1',name:'New hire → assign starter learning',trigger:'hire',action:'assign_course',detail:'When a candidate is hired, auto-enroll them in onboarding courses by role.',enabled:true,runs:9},
+    {id:'AUT-2',name:'Time off over 5 days → second approval',trigger:'pto_long',action:'add_approver',detail:'Requests longer than 5 days route to the skip-level manager after the direct manager.',enabled:true,runs:3},
+    {id:'AUT-3',name:'Expense over $1,000 → Finance review',trigger:'expense_big',action:'finance_review',detail:'Any expense report above $1,000 adds a Finance approval step.',enabled:true,runs:5},
+    {id:'AUT-4',name:'Offer accepted → spin up onboarding journey',trigger:'offer_accepted',action:'create_journey',detail:'A signed offer creates the 10-task onboarding journey and notifies the manager.',enabled:true,runs:6},
+    {id:'AUT-5',name:'Goal marked at-risk → nudge the manager',trigger:'goal_risk',action:'notify_manager',detail:'When an employee flags a goal at-risk, their manager gets a heads-up to talk in the next 1:1.',enabled:false,runs:0},
+    {id:'AUT-6',name:'Work anniversary → post a celebration',trigger:'anniversary',action:'celebrate',detail:'Auto-post a kudos to #celebrations on each work anniversary.',enabled:true,runs:12},
+  ];
+}
+const DATA_RETENTION=[
+  {id:'RET-1',category:'Rejected candidate records',period:'2 years',basis:'EEOC / OFCCP',action:'Auto-purge',next:daysAhead(40)},
+  {id:'RET-2',category:'Former employee files',period:'7 years after termination',basis:'IRS / FLSA',action:'Archive then purge',next:daysAhead(180)},
+  {id:'RET-3',category:'Form I-9',period:'3 yrs after hire or 1 yr after term',basis:'USCIS',action:'Auto-purge',next:daysAhead(75)},
+  {id:'RET-4',category:'Payroll & tax records',period:'4 years',basis:'IRS',action:'Archive',next:daysAhead(300)},
+  {id:'RET-5',category:'Benefits & ERISA records',period:'6 years',basis:'ERISA',action:'Archive',next:daysAhead(220)},
+  {id:'RET-6',category:'Performance reviews',period:'Duration + 3 years',basis:'Internal policy',action:'Archive',next:daysAhead(120)},
+];
+function buildShifts(emps){
+  const out=[];const idOf=n=>(emps.find(e=>e.name===n)||{}).id;
+  /* schedule the Support + Operations teams (deskless/hourly) across the next 10 days */
+  const crew=emps.filter(e=>['cx','ops'].includes(e.dept)&&e.status==='active');
+  const hnum=s=>parseInt(hash32(s).slice(0,7),16);
+  const blocks=[['Early','07:00','15:00'],['Mid','11:00','19:00'],['Late','13:00','21:00']];
+  for(let d=-2;d<8;d++){
+    const date=daysAhead(d);const dow=new Date(date+'T12:00:00').getDay();
+    if(dow===0||dow===6)continue; /* weekdays */
+    crew.forEach((e,i)=>{
+      if((hnum(e.id+date)%10)<3)return; /* not everyone every day */
+      const b=blocks[hnum(e.id+date+'b')%blocks.length];
+      const past=d<0||(d===0);
+      out.push({id:'SH-'+e.id+'-'+date,employeeId:e.id,date,role:e.team,block:b[0],start:b[1],end:b[2],
+        status:past?'completed':'scheduled',
+        clockIn:past?b[1].replace(/:00$/,':0'+(hnum(e.id+date+'i')%6)):null,
+        clockOut:past?b[2]:null});
+    });
+  }
+  return out;
+}
 
 /* ============================================================
    STORE — the single data spine. Every module reads/writes DB
@@ -2383,7 +2504,7 @@ function buildSeed(){
   const mail=buildMail(employees);
   mail.forEach(m=>{m.threadId=m.thread==='offer-alex'||/Offer — Senior Robotics/.test(m.subject)?'th-offer-alex':uid('TH');m.labels=m.labels||[];});
   const pt=buildProjects(employees);
-  return {v:16,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
+  return {v:17,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
     projects:pt.projects,tasks:pt.tasks,
     mailLabels:[{id:'lb1',name:'Benefits',color:'#10b981'},{id:'lb2',name:'Launch',color:'#6d28d9'},{id:'lb3',name:'Board',color:'#f59e0b'}],
     channels:chat.channels,chatMsgs:chat.msgs,mail,events:buildEvents(employees),
@@ -2400,6 +2521,7 @@ function buildSeed(){
     chatRead:{},saved:{},statuses:{},canned:CANNED.map(c=>({...c,id:uid('CN')})),slaHours:24,autoAssign:false,
     pages:buildPages(employees),courseQA:{'L-101':[{id:'QA-1',fromId:(employees.find(e=>e.name==='Owen Gallagher')||{}).id,at:daysAgo(4),text:'If a new hire\'s document is expired but they have a receipt for a renewal, does the 3-day clock still apply?',answer:'Great question — yes, a valid receipt works for 90 days, then the actual document must be presented. The course\'s scenario 3 walks the exact flow.',answeredBy:(employees.find(e=>e.name==='Maya Castillo')||{}).id}]},
     courseRatings:{},actionPlans:[],cheersAllowance:100,cheersMgrBonus:25,cheersAutoCele:true,
+    dashboards:defaultDashboards(),automations:defaultAutomations(),shifts:buildShifts(employees),retention:DATA_RETENTION.map(r=>({...r})),
     spend:buildSpend(employees),brand:null,
     notifications:buildNotifs(employees),audit:buildAudit(employees),
     delegations:[],savedReports:[],accessReviews:[],opsEvents:[],
@@ -2409,11 +2531,19 @@ function buildSeed(){
     accrual:{vacation:{perMonth:1.67,cap:30,carryover:5},sick:{perMonth:0.83,cap:15,carryover:0}},
     integrations:INTEGRATIONS.map(i=>({...i}))};
 }
+let _undo=[],_redo=[];const UNDO_CAP=10;
 const Store={
-  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===16){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save();},
-  save(){DB.savedAt=Date.now();try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){console.warn('Persist failed (private mode?)',e);}},
+  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===17){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
+  /* save(silent): on a normal save, snapshot the prior persisted state so Ctrl+Z can return to it */
+  save(silent){
+    if(!silent){try{const prev=localStorage.getItem(LS_KEY);if(prev){_undo.push(prev);if(_undo.length>UNDO_CAP)_undo.shift();_redo.length=0;}}catch(e){}}
+    DB.savedAt=Date.now();try{localStorage.setItem(LS_KEY,JSON.stringify(DB));}catch(e){console.warn('Persist failed (private mode?)',e);}
+  },
+  undo(){if(!_undo.length){UI.toast('Nothing to undo','↩️');return;}try{_redo.push(localStorage.getItem(LS_KEY));const s=_undo.pop();DB=JSON.parse(s);this.save(true);}catch(e){return;}closeOverlays();render();UI.toast('Undone','↩️',{label:'Redo',fn:()=>Store.redo()});},
+  redo(){if(!_redo.length){UI.toast('Nothing to redo','↪️');return;}try{_undo.push(localStorage.getItem(LS_KEY));const s=_redo.pop();DB=JSON.parse(s);this.save(true);}catch(e){return;}closeOverlays();render();UI.toast('Redone','↪️');},
   reset(){try{localStorage.removeItem(LS_KEY);}catch(e){}location.hash='#/home';location.reload();}
 };
+function closeOverlays(){try{UI.closeModal();UI.closeDrawer();}catch(e){}}
 
 /* ---------------- accessors + permissions ---------------- */
 const PERSONAS={admin:'E007',manager:'E010',employee:'E030'};
@@ -2454,7 +2584,7 @@ const canSee=mod=>{
     intranet:['admin','manager','employee'],chat:['admin','manager','employee'],mail:['admin','manager','employee'],
     cal:['admin','manager','employee'],drive:['admin','manager','employee'],meet:['admin','manager','employee'],
     sign:['admin','manager','employee'],flows:['admin','manager','employee'],cheers:['admin','manager','employee'],benefits:['admin','manager','employee'],
-    spend:['admin','manager','employee'],dept:['admin','manager','employee'],map:['admin','manager','employee'],careers:['admin','manager','employee'],team:['admin','manager','employee'],qa:['admin']};
+    spend:['admin','manager','employee'],schedule:['admin','manager','employee'],dept:['admin','manager','employee'],map:['admin','manager','employee'],careers:['admin','manager','employee'],team:['admin','manager','employee'],command:['admin','manager','employee'],qa:['admin']};
   if((map[mod]||[]).includes(role))return true;
   /* group grants stack on top of the role baseline */
   return groupsOf(DB.me.employeeId).some(g=>g.modules&&g.modules.includes(mod));
@@ -2563,6 +2693,12 @@ function inboxFor(empId){
         acts:[{label:'✓ Match & approve',act:'invAdvance',arg:v2.id,cls:'good'}]});
     });
   }
+  /* my own tasks due today or overdue (Workflows · Asana layer) */
+  (DB.tasks||[]).filter(t=>!t.done&&t.assigneeId===empId&&taskDue(t)&&taskDue(t)<=todayISO()).forEach(t=>{
+    const p=projOf(t.projectId);const od=taskDue(t)<todayISO();
+    items.push({icon:od?'🔴':'✅',kind:'Task',text:`${od?'Overdue: ':''}${t.title}${p?' · '+p.name:''}`,link:'#/flows',due:taskDue(t),weight:od?0:2,
+      acts:[{label:'✓ Done',act:'taskDone',arg:t.id,cls:'good'},{label:'Open',act:'taskOpen',arg:t.id,cls:'soft'}]});
+  });
   return items.sort((a,b)=>a.weight-b.weight||String(a.due).localeCompare(String(b.due)));
 }
 
@@ -2724,6 +2860,7 @@ const Chart={
    ============================================================ */
 const MODULES=[
   {id:'home',label:'Home',icon:'home',color:'var(--c-home)',group:'Workspace',desc:'Your day at a glance'},
+  {id:'command',label:'Command',icon:'target',color:'#ef4444',group:'Workspace',desc:'Everything that needs you — one prioritized queue across every module'},
   {id:'people',label:'People',icon:'people',color:'var(--c-people)',group:'Workspace',desc:'Directory, profiles & org chart'},
   {id:'cheers',label:'Cheers',icon:'gift',color:'#22c55e',group:'Workspace',desc:'Recognition — points, boosts, rewards & leaderboards'},
   {id:'intranet',label:'Hub',icon:'globe',color:'#0891b2',group:'Connect',desc:'Company & department intranet + knowledge base'},
@@ -2738,6 +2875,7 @@ const MODULES=[
   {id:'grow',label:'Performance',icon:'grow',color:'var(--c-grow)',group:'Talent',desc:'Goals, reviews & feedback'},
   {id:'flows',label:'Workflows',icon:'zap',color:'#e0457b',group:'Operations',desc:'Projects, tasks & requests — plan it, run it, route the approvals'},
   {id:'spend',label:'Spend',icon:'pay',color:'#1d4ed8',group:'Operations',desc:'Procurement, invoices, budgets & expenses — Coupa/NetSuite/Concur tier'},
+  {id:'schedule',label:'Scheduling',icon:'time',color:'#0d9488',group:'Operations',desc:'Shift scheduling, clock-in & timesheets for hourly teams'},
   {id:'hrops',label:'HR Ops',icon:'shield',color:'#0f766e',group:'Operations',desc:'Payroll workbench, compliance, data health & process control — the operational backbone'},
   {id:'sign',label:'MosaicSign',icon:'edit',color:'#d97706',group:'Operations',desc:'E-signatures with an ESIGN-grade audit trail'},
   {id:'time',label:'Time Off',icon:'time',color:'var(--c-time)',group:'Operations',desc:'Balances, requests & calendar'},
@@ -2765,6 +2903,8 @@ function moduleBadge(mod){
   const myId=DB.me.employeeId;
   try{switch(mod){
     case 'home':return inboxFor(myId).length;
+    case 'command':return inboxFor(myId).filter(i=>i.weight===0||(i.due&&i.due<todayISO())).length;
+    case 'schedule':return (DB.shifts||[]).filter(s=>s.employeeId===myId&&s.date===todayISO()&&!s.clockOut).length;
     case 'chat':return sum((DB.channels||[]).filter(chanVisible).map(c=>chUnread(c.id)));
     case 'mail':return (DB.mail||[]).filter(mm=>mm.ownerId===myId&&mm.folder==='inbox'&&!mm.read).length;
     case 'sign':return (DB.envelopes||[]).filter(env=>envMyTurn(env)).length;
@@ -2895,7 +3035,9 @@ function buildIndex(){
   if(canSee('drive'))(DB.files||[]).filter(fileVisible).forEach(f=>ix.push({type:'file',label:f.name,sub:'Drive · '+f.kind,icon:'drive',color:'#1fa463',link:'#/drive/'+(f.kind==='folder'?f.id:(f.parent||''))}));
   (DB.posts||[]).forEach(p=>{const s=SPACES.find(x=>x.id===p.spaceId);if(s&&deptScopeOk(s.scope))ix.push({type:'post',label:p.title,sub:'Hub · '+s.name,icon:'globe',color:'#0891b2',link:'#/intranet/'+p.spaceId});});
   (DB.envelopes||[]).filter(envVisible).forEach(env=>ix.push({type:'envelope',label:env.title,sub:'MosaicSign · '+env.status,icon:'edit',color:'#d97706',link:'#/sign'}));
-  (DB.flows||[]).forEach(f=>{const tpl=tplOf(f.templateId);ix.push({type:'flow',label:f.title,sub:'Workflows · '+tpl.name+' · '+tpl.stages[f.stage],icon:'zap',color:'#e0457b',link:'#/flows'});});
+  (DB.flows||[]).forEach(f=>{const tpl=tplOf(f.templateId);ix.push({type:'flow',label:f.title,sub:'Requests · '+tpl.name+' · '+tpl.stages[f.stage],icon:'zap',color:'#e0457b',link:'#/flows/requests'});});
+  (DB.projects||[]).filter(p=>!p.archived).forEach(p=>ix.push({type:'project',label:p.icon+' '+p.name,sub:'Project · '+projProgress(p.id)+'% · '+projTasks(p.id).filter(t=>!t.done).length+' open',icon:'zap',color:'#e0457b',link:'#/flows/'+p.id}));
+  (DB.tasks||[]).filter(t=>t.assigneeId===DB.me.employeeId||(t.projectId&&inProj(projOf(t.projectId)))).slice(0,120).forEach(t=>{const p=projOf(t.projectId);ix.push({type:'task',label:t.title,sub:'Task · '+(p?p.name:'My Tasks')+(t.done?' · done':taskDue(t)?' · due '+fmtDshort(taskDue(t)):''),icon:'zap',color:'#e0457b',link:'#/flows',taskId:t.id});});
   /* content layer: cases, chat messages, vendors, departments */
   DB.cases.filter(c=>hasCap('cases')||c.employeeId===DB.me.employeeId).forEach(c=>ix.push({type:'case',label:c.subject,sub:'Case '+c.id+' · '+c.status,icon:'help',color:'#ff5e00',link:hasCap('cases')?'#/askpeople':'#/help'}));
   if(canSee('chat'))(DB.chatMsgs||[]).slice(-60).forEach(m2=>{const c=byId(DB.channels||[],m2.ch);if(!c||c.dm||!chanVisible(c))return;const who=emp(m2.fromId);ix.push({type:'message',label:m2.text.slice(0,70),sub:'#'+c.name+' · '+(who?who.name:''),icon:'chat',color:'#6d28d9',link:'#/chat/'+c.id});});
@@ -2905,24 +3047,43 @@ function buildIndex(){
 }
 function openPalette(){
   const p=$('#palette');
-  p.querySelector('.pal-box').innerHTML=`<div class="pal-input">${I.search}<input id="pal-q" placeholder="Search Mosaic — people, candidates, courses, goals, help…" autocomplete="off"><kbd class="chip">esc</kbd></div><div class="pal-results" id="pal-res"></div>`;
+  p.querySelector('.pal-box').innerHTML=`<div class="pal-input">${I.search}<input id="pal-q" placeholder="Search anything — or ask in plain English…" autocomplete="off"><kbd class="chip">esc</kbd></div><div class="pal-results" id="pal-res"></div>`;
   p.classList.add('open');
   const q=$('#pal-q');q.focus();
   q.addEventListener('input',()=>palRender(q.value));
   palRender('');
 }
+/* semantic-ish ranking: token + synonym matching, field-weighted, with an AI fallback row */
+const SEARCH_SYN={pto:'time off,vacation,leave',vacation:'time off,pto,leave',comp:'compensation,pay,salary,band',pay:'compensation,payroll,salary,paystub',salary:'compensation,pay,band',org:'team,department,org chart',headcount:'people,employees,roster,workforce',review:'performance,feedback,calibration',perf:'performance,review',okr:'goal,objective',goal:'okr,objective',hire:'recruiting,candidate,requisition,offer',hiring:'recruiting,requisition,candidate,offer',recruit:'hiring,candidate,requisition',benefits:'401k,medical,dental,insurance,enrollment',pulse:'survey,engagement,enps',survey:'pulse,engagement,enps',ticket:'case,helpdesk',expense:'spend,reimbursement,concur',invoice:'spend,payable,vendor',sign:'e-signature,envelope,mosaicsign',project:'workflows,task,asana',task:'workflows,project,to-do,asana',leave:'loa,time off,fmla',learning:'course,training',course:'learning,training',security:'groups,access,permissions,compliance',schedule:'shift,calendar,attendance'};
+function palScore(x,groups){
+  const hay=((x.label||'')+' '+(x.sub||'')).toLowerCase();
+  let score=0;
+  for(const alts of groups){
+    let best=0;
+    for(const a of alts){if(!a)continue;if(hay.includes(a))best=Math.max(best,(x.label||'').toLowerCase().includes(a)?3:1.4);}
+    if(!best)return -1;
+    score+=best;
+  }
+  return score;
+}
+let _palIx=null;
 function palRender(query){
-  const ix=buildIndex();
+  const ix=_palIx||(_palIx=buildIndex());
   const ql=query.trim().toLowerCase();
   let res;
-  if(ql){res=ix.filter(x=>(x.label+' '+x.sub).toLowerCase().includes(ql));}
+  if(ql){
+    const tokens=ql.split(/\s+/).filter(Boolean);
+    const groups=tokens.map(t=>[t].concat((SEARCH_SYN[t]||'').split(',').filter(Boolean)));
+    res=ix.map(x=>({x,s:palScore(x,groups)})).filter(o=>o.s>=0).sort((a,b)=>b.s-a.s).map(o=>o.x).slice(0,15);
+    res.unshift({type:'ask',label:'Ask Mosaic: “'+query.trim()+'”',sub:AI.enabled()?'Answer with live AI — it can act too':'Answer from your live data, with sources',icon:'zap',color:'var(--brand)',ask:query.trim()});
+  }
   else{
     const rec=(UIS.palRecent||[]).map(r2=>({...r2,type:'recent'}));
     res=rec.concat(ix.filter(x=>x.type==='command').slice(0,5),ix.filter(x=>x.type==='view'));
   }
   res=res.slice(0,16);palItems=res;palSel=0;
   const groups=groupBy(res,'type');
-  const names={recent:'Recent',command:'Actions',view:'Go to',person:'People',req:'Open requisitions',candidate:'Candidates',course:'Courses',goal:'Goals',article:'Help articles',channel:'Channels',mail:'Mail',file:'Drive',post:'Hub posts',envelope:'MosaicSign',flow:'Workflows',case:'Cases',message:'Chat messages',vendor:'Vendors',dept:'Departments'};
+  const names={ask:'Ask',recent:'Recent',command:'Actions',view:'Go to',person:'People',req:'Open requisitions',candidate:'Candidates',course:'Courses',goal:'Goals',article:'Help articles',channel:'Channels',mail:'Mail',file:'Drive',post:'Hub posts',envelope:'MosaicSign',flow:'Requests',project:'Projects',task:'Tasks',case:'Cases',message:'Chat messages',vendor:'Vendors',dept:'Departments'};
   $('#pal-res').innerHTML=res.length?Object.entries(groups).map(([t,items])=>`<div class="pal-group">${names[t]||t}</div>`+items.map(x=>{
     const gi=palItems.indexOf(x);
     return `<div class="pal-item ${gi===palSel?'sel':''}" data-pi="${gi}" style="--mod:${x.color||'var(--brand)'}">
@@ -2936,10 +3097,12 @@ function palRender(query){
   });
 }
 function palGo(i){const x=palItems[i];if(!x)return;closePalette();
+  if(x.type==='ask'){if(!Assist.open)Assist.toggle();Assist.send(x.ask);return;}
   UIS.palRecent=[{label:x.label,sub:x.sub,icon:x.icon,color:x.color,link:x.link,cmd:x.cmd,arg:x.arg,emp:x.emp}].concat((UIS.palRecent||[]).filter(r2=>r2.label!==x.label)).slice(0,5);
   if(x.cmd){if(x.cmd==='nav')nav(x.arg);else if(ACT[x.cmd])ACT[x.cmd](x.arg);return;}
+  if(x.taskId){nav(x.link);setTimeout(()=>ACT.taskOpen(x.taskId),60);return;}
   nav(x.link);}
-function closePalette(){$('#palette').classList.remove('open');}
+function closePalette(){$('#palette').classList.remove('open');_palIx=null;}
 
 /* ---------------- global events ---------------- */
 document.addEventListener('click',ev=>{
@@ -2957,6 +3120,8 @@ document.addEventListener('click',ev=>{
 let _gChord=0;
 document.addEventListener('keydown',ev=>{
   if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='k'){ev.preventDefault();openPalette();return;}
+  if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='z'&&!/INPUT|TEXTAREA|SELECT/.test((ev.target||{}).tagName||'')){ev.preventDefault();ev.shiftKey?Store.redo():Store.undo();return;}
+  if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='y'&&!/INPUT|TEXTAREA|SELECT/.test((ev.target||{}).tagName||'')){ev.preventDefault();Store.redo();return;}
   const typing=/INPUT|TEXTAREA|SELECT/.test((ev.target||{}).tagName||'')||$('#palette').classList.contains('open')||$('#modal').classList.contains('open');
   if(!typing&&ev.key==='?'){ev.preventDefault();ACT.kbHelp();return;}
   if(!typing&&ev.key==='g'&&!ev.metaKey&&!ev.ctrlKey){_gChord=Date.now();return;}
@@ -3079,6 +3244,39 @@ function whosOut(days=7){
 /* ============================================================
    VIEW: HOME — role-aware dashboard + unified action inbox
    ============================================================ */
+/* ---------------- COMMAND CENTER — unified cross-module action queue ---------------- */
+Views.command=()=>{
+  const items=inboxFor(DB.me.employeeId);
+  const today=todayISO(),week=daysAhead(7);
+  const tierOf=it=>(it.weight===0||(it.due&&it.due<today))?0:(it.due===today?1:(it.due&&it.due<=week?2:3));
+  const tiers=[['🔴','Now — needs you',0,'var(--bad)'],['☀️','Today',1,'var(--warn)'],['📅','This week',2,'var(--brand)'],['🗓️','Later & FYI',3,'var(--ink3)']];
+  const filt=UIS.cmdFilter||'';
+  const kinds=uniq(items.map(i=>i.kind));
+  const shown=filt?items.filter(i=>i.kind===filt):items;
+  const evs=weekEventsFor(today);
+  const card=it=>`<div class="cmd-item"${it.link?` data-act="nav" data-arg="${it.link}" role="button" tabindex="0" onkeydown="if(event.key==='Enter')this.click()"`:''}>
+    <span class="cmd-ic">${it.icon}</span>
+    <span class="col" style="gap:1px;flex:1;min-width:0"><b class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(it.text)}</b><span class="tiny faint">${esc(it.kind)}${it.due?' · '+rel(it.due):''}</span></span>
+    ${it.acts&&it.acts.length?`<span class="row cmd-acts" style="gap:5px;flex:none">${it.acts.map(a=>`<button class="btn xs ${a.cls==='good'?'primary':a.cls==='ghost'?'ghost':'soft'}" data-act="${a.act}" data-arg="${a.arg}">${a.label}</button>`).join('')}</span>`:`<span class="cmd-chev">${I.chev}</span>`}</div>`;
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Command Center</h1>
+    <div class="page-sub">Everything that needs you — across every module — in one prioritized queue.</div></div>
+    <button class="btn ghost" data-act="cmdDigest">📬 Daily digest</button>
+    ${Assist?`<button class="btn primary" style="--brand:#6366f1;--brand-deep:#4f46e5" data-act="toggleAssist">✨ Ask the Copilot</button>`:''}</div>
+  <div class="grid g4 mb16">
+    ${[['🔴 Now',items.filter(i=>tierOf(i)===0).length,'var(--bad)'],['☀️ Today',items.filter(i=>tierOf(i)===1).length,'var(--warn)'],['📅 This week',items.filter(i=>tierOf(i)===2).length,'var(--brand)'],['📅 On calendar',evs.length,'var(--ink2)']].map(s=>`<div class="card pad" style="text-align:center"><div style="font-size:26px;font-weight:800;font-family:var(--font-display);color:${s[2]}">${s[1]}</div><div class="tiny faint">${s[0]}</div></div>`).join('')}</div>
+  <div class="row wrap mb14" style="gap:6px"><button class="vchip ${!filt?'on':''}" data-act="cmdFilter" data-arg="">All ${items.length}</button>${kinds.map(k=>`<button class="vchip ${filt===k?'on':''}" data-act="cmdFilter" data-arg="${esc(k)}">${esc(k)} ${items.filter(i=>i.kind===k).length}</button>`).join('')}</div>
+  ${items.length?tiers.map(([ic,lb,tn,col])=>{const list=shown.filter(i=>tierOf(i)===tn);return list.length?`<div class="card pad mb12" style="border-left:3px solid ${col}"><div class="sec-head" style="margin-bottom:6px">${ic} ${lb}<span class="chip num">${list.length}</span></div><div class="col" style="gap:2px">${list.map(card).join('')}</div></div>`:'';}).join(''):'<div class="card empty"><div class="big">🎉</div>You\'re all caught up — nothing needs you anywhere. Enjoy it.</div>'}`;
+};
+ACT.cmdFilter=a=>{UIS.cmdFilter=a;render();};
+ACT.cmdDigest=async()=>{
+  const items=inboxFor(DB.me.employeeId);const evs=weekEventsFor(todayISO());
+  const lines=items.slice(0,12).map(i=>`• [${i.kind}] ${i.text.replace(/\s+/g,' ')}${i.due?' (due '+rel(i.due)+')':''}`).join('\n');
+  const base=`📬 Daily digest — ${me().name.split(' ')[0]} · ${fmtD(todayISO())}\n\n${items.length} thing${items.length===1?'':'s'} need you${items.length?':\n'+lines:' — inbox zero 🎉'}\n\n📅 ${evs.length} on your calendar${evs.length?': '+evs.slice(0,3).map(e=>e.time+' '+e.title).join(' · '):''}`;
+  UI.modal({title:'📬 Your daily digest',sub:AI.enabled()?'Synthesizing with '+AI.model()+'…':'A shareable summary of your day',body:`<div class="small" id="digest-body" style="white-space:pre-wrap;line-height:1.7">${AI.enabled()?'<div class="skel skel-line" style="width:92%"></div><div class="skel skel-line" style="width:78%"></div><div class="skel skel-line" style="width:96%"></div><div class="skel skel-line" style="width:64%"></div>':esc(base)}</div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button><button class="btn primary" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.querySelector('#digest-body').innerText);UI.toast('Digest copied','📋')">📋 Copy</button>`});
+  if(AI.enabled()){const txt=await aiDraft(`Write a crisp, friendly daily digest for ${me().name} from these action items and calendar. Lead with the single most important thing, then a short bulleted list. Items:\n${lines}\nCalendar: ${evs.map(e=>e.time+' '+e.title).join(', ')||'clear'}. Plain text, under 130 words.`,base);const el=$('#digest-body');if(el)el.textContent=txt;}
+};
 Views.home=()=>{
   const my=me();const role=myRole();
   const h=now().getHours();
@@ -4224,7 +4422,7 @@ function onboardCard(j){
     <div class="card-head">${av(j.emp,'lg')}
       <div class="col" style="gap:1px"><a href="#/people/${j.emp.id}" style="color:inherit"><h3>${esc(j.emp.name)}</h3></a>
       <span class="tiny faint">${esc(j.emp.title)} · ${deptName(j.emp.dept)} · ${j.startDate<=todayISO()?'started':'starts'} ${rel(j.startDate)}${mgr?' · manager '+esc(mgr.name):''}${buddy?' · buddy '+esc(buddy.name):''}</span></div>
-      <span class="spacer"></span>${ring(p,56,'var(--c-onboard)')}</div>
+      <span class="spacer"></span><button class="btn xs soft" style="--brand:#e0457b" data-act="journeyToProject" data-arg="${j.id}" title="Create a Workflows project from this journey">🗂 Track as project</button>${ring(p,56,'var(--c-onboard)')}</div>
     <div class="card-body grid g2" style="gap:6px 22px">
       ${j.tasks.map(t=>{const overdue=!t.done&&t.due<todayISO();
         return `<label class="row" style="gap:9px;padding:5px 0;cursor:pointer">
@@ -4234,6 +4432,24 @@ function onboardCard(j){
         ${ownerChip(t.owner)}</label>`;}).join('')}
     </div></div>`;
 }
+/* golden thread: an onboarding journey → a real Workflows project */
+ACT.journeyToProject=obId=>{
+  const ob=byId(DB.onboarding,obId);if(!ob)return;const hire=emp(ob.employeeId);if(!hire)return;
+  const id=uid('PRJ');
+  DB.projects.unshift({id,name:'Onboarding — '+hire.name,icon:'🚀',color:'#e0457b',ownerId:DB.me.employeeId,
+    members:uniq([DB.me.employeeId,hire.id,hire.managerId].filter(x=>emp(x))),
+    sections:[{id:uid('SEC'),name:'Before day one'},{id:uid('SEC'),name:'Week one'},{id:uid('SEC'),name:'First 90 days'},{id:uid('SEC'),name:'Done'}],
+    status:'on-track',description:'Structured onboarding for '+hire.name+' ('+hire.title+') — mirrors the journey checklist, trackable like any project.',
+    createdAt:todayISO(),archived:false,startDate:ob.startDate||todayISO(),dueDate:daysAhead(90),fields:[],privacy:'team',
+    updates:[{at:todayISO(),by:DB.me.employeeId,status:'on-track',text:'Created from the onboarding journey for '+hire.name+'.'}]});
+  const p=projOf(id);
+  ob.tasks.forEach(t=>{const sec=t.done?p.sections[3].id:(t.due<=daysAhead(2)?p.sections[1].id:p.sections[2].id);
+    const nt=newTask({title:t.title,projectId:id,sectionId:sec,assigneeId:t.owner==='manager'?hire.managerId:t.owner==='employee'?hire.id:DB.me.employeeId,dueDate:t.due,priority:'medium'});
+    if(t.done){nt.done=true;nt.completedAt=t.due;}});
+  audit('Onboarding project created',id+' ← '+hire.name);
+  Store.save();UIS.flowTab='projects';UIS.projView='list';nav('#/flows/'+id);if(location.hash==='#/flows/'+id)render();
+  UI.toast('Onboarding for '+hire.name.split(' ')[0]+' is now a project 🚀','🗂');
+};
 ACT.toggleObTask=arg=>{
   const [obId,taskId]=arg.split('|');
   const ob=byId(DB.onboarding,obId);if(!ob)return;
@@ -4434,7 +4650,7 @@ ACT.continueCourse=cid=>{
    VIEW: PERFORMANCE (Grow)
    ============================================================ */
 Views.grow=param=>{
-  const tabs=[['goals','Goals & OKRs'],['reviews','Reviews'],['career','Career path'],['ones','1:1s']].concat(isManager()?[['talent','Talent map']]:[]);
+  const tabs=[['goals','Goals & OKRs'],['reviews','Reviews'],['career','Career path'],['ones','1:1s']].concat(isManager()?[['talent','Talent map'],['succession','Succession']]:[]);
   if(param)UIS.growTab=param;
   const tab=tabs.some(t=>t[0]===UIS.growTab)?UIS.growTab:'goals';
   return `
@@ -4445,9 +4661,36 @@ Views.grow=param=>{
   <div class="tabs">${tabs.map(t=>{const cyc=DB.cycles.find(c=>c.stage!=='done');
     const n=t[0]==='reviews'&&cyc?DB.reviews.filter(r=>r.cycleId===cyc.id&&r.reviewerId===DB.me.employeeId&&r.status==='open').length:t[0]==='goals'?DB.goals.filter(g=>g.ownerId===DB.me.employeeId&&g.status==='at-risk').length:0;
     return `<button class="${tab===t[0]?'on':''}" data-act="setGrowTab" data-arg="${t[0]}">${t[1]}${tabN(n)}</button>`;}).join('')}</div>
-  ${tab==='goals'?growGoals():tab==='reviews'?growReviews():tab==='career'?growCareer():tab==='ones'?growOnes():growTalent()}`;
+  ${tab==='goals'?growGoals():tab==='reviews'?growReviews():tab==='career'?growCareer():tab==='ones'?growOnes():tab==='succession'?growSuccession():growTalent()}`;
 };
 ACT.setGrowTab=a=>{UIS.growTab=a;tabSync('grow',a);render();};
+/* ============================================================
+   B5 · SUCCESSION & TALENT REVIEW — bench strength on top of the 9-box
+   ============================================================ */
+function successorsFor(e){
+  const pool=DB.employees.filter(x=>x.status==='active'&&x.id!==e.id&&(x.team===e.team||x.managerId===e.id||x.dept===e.dept));
+  return pool.map(x=>{const t=talentBoxOf(x);return {e:x,pot:t?t.pot:1,perf:t?t.perf:1};})
+    .sort((a,b)=>(b.pot*2+b.perf)-(a.pot*2+a.perf)).slice(0,3)
+    .map((s,i)=>({...s,readiness:(i===0&&s.pot>=2)?'Ready now':(i===0?'1–2 years':'2–3 years')}));
+}
+function lossRiskOf(e){try{const r=flightRisk(e);const t=r&&r.tier?r.tier:'low';return t==='medium'?'med':t;}catch(_){return 'low';}}
+function growSuccession(){
+  const scope=isAdmin()?activeEmps():[me()].concat(allReportsOf(DB.me.employeeId));
+  const keys=uniq(scope.filter(e=>e.status==='active'&&(reportsOf(e.id).length>0||['IC5','IC6'].includes(e.level)||/^M/.test(e.level||'')||/^E/.test(e.level||''))).map(e=>e.id)).map(emp).filter(Boolean).slice(0,16);
+  const ready=keys.filter(e=>successorsFor(e).some(s=>s.readiness==='Ready now')).length;
+  return `
+  <div class="grid g4 mb16">
+    ${[['Key roles tracked',keys.length,'var(--c-grow)'],['Ready successor on bench',ready,'var(--ok)'],['Single points of failure',keys.length-ready,'var(--bad)'],['At-risk incumbents',keys.filter(e=>lossRiskOf(e)!=='low').length,'var(--warn)']].map(s=>`<div class="card pad" style="text-align:center"><div style="font-size:26px;font-weight:800;font-family:var(--font-display);color:${s[2]}">${s[1]}</div><div class="tiny faint">${s[0]}</div></div>`).join('')}
+  </div>
+  <div class="col" style="gap:11px">${keys.map(e=>{const succ=successorsFor(e);const risk=lossRiskOf(e);const tb=talentBoxOf(e);
+    return `<div class="card pad"><div class="row between wrap" style="gap:10px">
+      <div class="row" style="gap:11px;cursor:pointer" data-act="nav" data-arg="#/people/${e.id}">${av(e,'md')}<div class="col" style="gap:1px"><b class="small">${esc(e.name)}</b><span class="tiny faint">${esc(e.title)} · ${deptName(e.dept)}${tb?' · '+tb.label:''}</span></div></div>
+      <span class="badge ${risk==='low'?'b-ok':'b-warn'}">${risk==='low'?'stable':'⚠ '+risk+' risk of loss'}</span></div>
+      <div class="divider" style="margin:11px 0"></div>
+      <div class="tiny faint" style="margin-bottom:8px">Succession bench${succ.length?'':' — none identified internally'}</div>
+      <div class="row wrap" style="gap:8px">${succ.map(s=>`<div class="succ-chip" data-act="nav" data-arg="#/people/${s.e.id}">${av(s.e,'xs')}<span class="col" style="gap:0"><b class="tiny" style="font-size:11.5px">${esc(s.e.name)}</b><span class="tiny" style="font-size:9.5px;color:${s.readiness==='Ready now'?'var(--ok)':'var(--ink3)'};font-weight:700">${s.readiness}</span></span></div>`).join('')||'<span class="tiny faint">Develop internally or plan to hire — flag in the talent review.</span>'}</div></div>`;}).join('')}</div>
+  <p class="tiny faint mt12">Bench is derived live from the 9-box talent map + team adjacency. Calibration-private: only managers in the chain and HR see it.</p>`;
+}
 ACT.setGoalsView=a=>{UIS.goalsView=a;render();};
 function goalCard(g,compact){
   const owner=g.ownerId?emp(g.ownerId):null;
@@ -5291,15 +5534,50 @@ const canPayroll=()=>hasCap('payroll-admin')||isAdmin();
 Views.pay=param=>{
   const oob=canCompAdmin()?activeEmps().filter(e=>{const b=bandFor(e.level,e.dept);const cr=e.comp.base/b[1];return cr<0.85||cr>1.15;}).length:0;
   const exN=canPayroll()?payrollExceptions().filter(x=>x.sev==='high').length:0;
-  const tabs=[['my','My pay',0]].concat(isManager()?[['merit','Merit cycle',0]]:[]).concat(isAdmin()?[['bands','Bands & equity',0]]:[]).concat(canCompAdmin()?[['compadmin','Comp admin',oob]]:[]).concat(canPayroll()?[['payroll','Payroll',exN]]:[]);
+  const tabs=[['my','My pay',0]].concat(isManager()?[['merit','Merit cycle',0],['planning','Comp planning',0]]:[]).concat(isAdmin()?[['bands','Bands & equity',0]]:[]).concat(canCompAdmin()?[['compadmin','Comp admin',oob]]:[]).concat(canPayroll()?[['payroll','Payroll',exN]]:[]);
   if(param)UIS.payTab=param;
   const tab=tabs.some(t=>t[0]===UIS.payTab)?UIS.payTab:'my';
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Compensation</h1>
     <div class="page-sub">Transparent bands, one merit cycle — with separate consoles for Comp Admin (governance) and Payroll Admin (the pay cycle)</div></div></div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setPayTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
-  ${tab==='my'?payMy():tab==='merit'?payMerit():tab==='compadmin'?payCompAdmin():tab==='payroll'?hropsPayroll():payBands()}`;
+  ${tab==='my'?payMy():tab==='merit'?payMerit():tab==='planning'?payPlanning():tab==='compadmin'?payCompAdmin():tab==='payroll'?hropsPayroll():payBands()}`;
 };
+/* ============================================================
+   B4 · COMP PLANNING WORKBENCH — model merit/promo vs budget for your team
+   ============================================================ */
+function payPlanGuide(e){const tb=talentBoxOf(e);return [2,4,6][tb?tb.perf:1];}
+function payPlanFor(e){return (DB.compPlan||{})[e.id]||{merit:payPlanGuide(e),promo:false};}
+function payPlanDelta(e){const p=payPlanFor(e);return e.comp.base*(p.merit/100)+(p.promo?e.comp.base*0.08:0);}
+function payPlanning(){
+  if(!DB.compPlan)DB.compPlan={};
+  const cfg=DB.compCfg||{merit:4};
+  const team=(isAdmin()?activeEmps().filter(e=>e.dept!=='exec'):allReportsOf(DB.me.employeeId)).filter(e=>e.status==='active').slice(0,40);
+  if(!team.length)return '<div class="card empty"><div class="big">📊</div>No reports to plan for — this workbench models raises for your team.</div>';
+  const pool=sum(team.map(e=>e.comp.base))*(cfg.merit/100);
+  const spent=sum(team.map(payPlanDelta));const over=spent>pool;
+  const rows=team.map(e=>{const p=payPlanFor(e);const band=bandFor(e.level,e.dept);const compa=e.comp.base/band[1];const tb=talentBoxOf(e);const delta=payPlanDelta(e);const nb=e.comp.base+delta;
+    return `<tr>
+      <td style="min-width:170px"><div class="row" style="gap:8px">${av(e,'xs')}<div class="col" style="gap:0"><b class="small">${esc(e.name)}</b><span class="tiny faint">${e.level} · ${tb?tb.label:'unrated'}</span></div></div></td>
+      <td class="num">${fmt$(e.comp.base)}</td>
+      <td><span class="badge ${compa<0.9?'b-warn':compa>1.1?'b-info':'b-ok'}">${compa.toFixed(2)}</span></td>
+      <td><input type="number" min="0" max="20" step="0.5" value="${p.merit}" onchange="ACT.compPlanSet('${e.id}|merit|'+this.value)" style="width:58px;text-align:right;background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:4px 6px;outline:none"> %</td>
+      <td style="text-align:center"><input type="checkbox" ${p.promo?'checked':''} onchange="ACT.compPlanSet('${e.id}|promo|'+(this.checked?1:0))" style="width:15px;height:15px;accent-color:var(--c-pay)"></td>
+      <td class="num"><b>${fmt$(nb)}</b> <span class="tiny" style="color:var(--ok)">+${fmt$(delta)}</span></td></tr>`;}).join('');
+  return `
+  <div class="grid g3 mb14">
+    <div class="card pad"><div class="tiny faint">Merit budget · ${cfg.merit}% of base</div><div style="font-size:23px;font-weight:800;font-family:var(--font-display)">${fmt$(pool)}</div></div>
+    <div class="card pad"><div class="tiny faint">Planned spend</div><div style="font-size:23px;font-weight:800;font-family:var(--font-display);color:${over?'var(--bad)':'var(--ok)'}">${fmt$(spent)}</div></div>
+    <div class="card pad"><div class="tiny faint">Remaining</div><div style="font-size:23px;font-weight:800;font-family:var(--font-display);color:${over?'var(--bad)':'var(--ink)'}">${fmt$(pool-spent)}</div></div>
+  </div>
+  <div class="card pad mb12">${progressBar(clamp(spent/pool*100,0,140),over?'var(--bad)':'var(--c-pay)')}<p class="tiny faint mt8">${over?'⚠️ Over budget — trim increases or request more from Finance.':'Within budget — '+Math.round(spent/pool*100)+'% allocated.'}</p></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Employee</th><th>Current base</th><th>Compa</th><th>Merit</th><th>Promo</th><th>New base</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="row mt12" style="gap:8px;justify-content:flex-end"><button class="btn ghost" data-act="compPlanReset">Reset to guidelines</button><button class="btn primary" style="--brand:var(--c-pay);--brand-deep:#1e3a8a" data-act="compPlanSubmit" ${over?'disabled':''}>Submit plan for approval</button></div>
+  <p class="tiny faint mt8">Suggested % pre-fills from each person's performance band; promotions add ~8%. Submitting routes each change through the comp-change business process.</p>`;
+}
+ACT.compPlanSet=arg=>{const [id,f,v]=arg.split('|');const e=emp(id);if(!e)return;DB.compPlan=DB.compPlan||{};const p=DB.compPlan[id]||{merit:payPlanGuide(e),promo:false};if(f==='merit')p.merit=clamp(+v||0,0,20);else p.promo=v==='1';DB.compPlan[id]=p;Store.save();render();};
+ACT.compPlanReset=()=>{DB.compPlan={};Store.save();render();UI.toast('Reset to guideline increases','📊');};
+ACT.compPlanSubmit=()=>{const n=Object.keys(DB.compPlan||{}).length;audit('Comp plan submitted',n+' changes modeled');UI.toast('Plan submitted — each increase routes through the comp-change BP for approval','✅');};
 /* #9: comp admin — bands governance, merit config, off-cycle log. g-comp gated. */
 function payCompAdmin(){
   const cfg=DB.compCfg||(DB.compCfg={merit:4,promo:1.5,window:'Jul 1 – Jul 19'});
@@ -5658,7 +5936,7 @@ function engageAdmin(sv){
   </div>
   <div class="grid g23">
     <div class="col" style="gap:16px">
-      <div class="card"><div class="card-head"><h3>Driver scores — ${esc(sv.name)}</h3></div><div class="card-body">
+      <div class="card"><div class="card-head"><h3>Driver scores — ${esc(sv.name)}</h3><span class="spacer"></span><button class="btn xs primary" style="--brand:#f59e0b;--brand-deep:#d97706" data-act="engageToProject" title="Spin up a project with a task per weak driver">🚀 Launch action-plan project</button></div><div class="card-body">
         ${Object.entries(sv.drivers).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
         <div class="row mb12" style="gap:12px"><span class="small" style="width:170px;font-weight:600">${k}</span>
         ${progressBar(v/5*100,v>=4?'var(--ok)':v>=3.6?'var(--c-time)':'var(--warn)')}<b class="num small" style="width:30px">${v.toFixed(1)}</b></div>`).join('')}</div></div>
@@ -5712,6 +5990,23 @@ ACT.planCycle=pid=>{
   const p=byId(DB.actionPlans||[],pid);if(!p)return;
   p.status=p.status==='open'?'in progress':p.status==='in progress'?'done':'open';
   Store.save();render();
+};
+/* golden thread: survey results → a real Workflows project, one task per weak driver */
+ACT.engageToProject=()=>{
+  const sv=DB.surveys.find(s=>s.status==='live')||DB.surveys[0];if(!sv){UI.toast('No survey to work from','📊');return;}
+  const weak=Object.entries(sv.drivers).sort((a,b)=>a[1]-b[1]).slice(0,4);
+  const id=uid('PRJ'),sections=['Themes','Committed','In progress','Shipped'];
+  DB.projects.unshift({id,name:sv.name+' — Action Plan',icon:'📊',color:'#f59e0b',ownerId:DB.me.employeeId,
+    members:uniq([DB.me.employeeId,'E007','E021'].filter(x=>emp(x))),
+    sections:sections.map(s=>({id:uid('SEC'),name:s})),status:'on-track',
+    description:'Turning the '+sv.name+' results into things people can feel — one commitment per weak driver.',
+    createdAt:todayISO(),archived:false,startDate:todayISO(),dueDate:daysAhead(45),fields:[],privacy:'team',
+    updates:[{at:todayISO(),by:DB.me.employeeId,status:'on-track',text:'Spun up from the '+sv.name+' results — '+weak.length+' focus themes seeded.'}]});
+  const p=projOf(id);
+  weak.forEach((d,i)=>newTask({title:'Lift "'+d[0]+'" ('+d[1].toFixed(1)+'/5)',projectId:id,sectionId:p.sections[1].id,assigneeId:DB.me.employeeId,dueDate:daysAhead(14+i*7),priority:d[1]<3.4?'high':'medium',notes:'Lowest-scoring driver in '+sv.name+'. Run a listening session, then commit to one concrete change and tell people about it.'}));
+  audit('Action-plan project created',id+' ← '+sv.name);
+  Store.save();UIS.flowTab='projects';UIS.projView='board';nav('#/flows/'+id);if(location.hash==='#/flows/'+id)render();
+  UI.toast(weak.length+' weak drivers became tasks — track them like any project 🚀','📊');
 };
 ACT.pulseNew=()=>{
   UI.modal({title:'Launch a new pulse 📊',sub:'Closes the current live pulse and opens this one to all active employees.',body:`
@@ -5770,17 +6065,58 @@ function headcountTrend(){
   return {labels,counts};
 }
 Views.insights=param=>{
-  if(param&&['people','talent','learning','pay'].includes(param))UIS.insightsTab=param;
-  const tab=UIS.insightsTab;
-  const tabs=[['people','People'],['talent','Talent acquisition'],['learning','Learning & growth'],['pay','Compensation']];
+  if(param&&['dashboards','people','talent','learning','pay'].includes(param))UIS.insightsTab=param;
+  const tab=['dashboards','people','talent','learning','pay'].includes(UIS.insightsTab)?UIS.insightsTab:'people';
+  const tabs=[['dashboards','My dashboards'],['people','People'],['talent','Talent acquisition'],['learning','Learning & growth'],['pay','Compensation']];
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Insights</h1>
     <div class="page-sub">Every chart below is computed live from the same records the other modules write to — no exports, no lag</div></div>
     <button class="btn ghost" onclick="UI.toast('Demo: scheduled email digest would configure here','📬')">${I.send} Schedule digest</button></div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setInsightsTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
-  ${tab==='people'?insightsPeople():tab==='talent'?insightsTalent():tab==='learning'?insightsLearning():insightsPay()}`;
+  ${tab==='dashboards'?insightsDashboards():tab==='people'?insightsPeople():tab==='talent'?insightsTalent():tab==='learning'?insightsLearning():insightsPay()}`;
 };
 ACT.setInsightsTab=a=>{UIS.insightsTab=a;tabSync('insights',a);render();};
+/* ============================================================
+   B1 · CUSTOM DASHBOARD BUILDER — drag-free widget board, saved per user
+   ============================================================ */
+function dashStat(label,val,sub,color){return `<div class="col" style="gap:3px"><span class="tiny faint" style="text-transform:uppercase;letter-spacing:.05em;font-weight:700">${label}</span><span style="font-size:30px;font-weight:800;font-family:var(--font-display);line-height:1;color:${color||'var(--ink)'}">${val}</span>${sub?`<span class="tiny faint">${sub}</span>`:''}</div>`;}
+const DASH_W={
+  headcount:{name:'Headcount',w:1,render:()=>dashStat('Active headcount',activeEmps().length,DB.employees.filter(e=>e.status==='onboarding').length+' onboarding · '+DB.reqs.filter(r=>r.status==='open').length+' open reqs','var(--c-people)')},
+  attrition:{name:'12-mo attrition',w:1,render:()=>{const ex=DB.former.filter(f=>between(f.termDate,todayISO())<=365).length;return dashStat('Attrition (12mo)',ex,pct(DB.former.filter(f=>f.regret).length,DB.former.length||1)+'% regretted','var(--bad)');}},
+  enps:{name:'eNPS',w:1,render:()=>{const sv=DB.surveys.find(s=>s.status==='live');return dashStat('eNPS',sv?sv.enps:42,'+4 vs March · '+(sv?pct(sv.respondedIds.length,sv.audience):0)+'% participation','var(--c-engage)');}},
+  ptoLiab:{name:'PTO liability',w:1,render:()=>{const days=sum(activeEmps().map(e=>(e.pto&&e.pto.vacBalance)||0));const val=sum(activeEmps().map(e=>((e.pto&&e.pto.vacBalance)||0)*(e.comp.base/2080*8)));return dashStat('PTO liability',fmtK(val),Math.round(days)+' days accrued','var(--c-time)');}},
+  tasksOpen:{name:'Open tasks',w:1,render:()=>dashStat('Open tasks',(DB.tasks||[]).filter(t=>!t.done).length,(DB.projects||[]).filter(p=>!p.archived).length+' active projects','#e0457b')},
+  compliance:{name:'Compliance',w:1,render:()=>{const c=typeof complianceItems==='function'?complianceItems():[];return dashStat('Open compliance',c.length,c.filter(x=>x.sev==='high').length+' high severity',c.some(x=>x.sev==='high')?'var(--bad)':'var(--ok)');}},
+  deptDonut:{name:'Headcount by dept',w:1,render:()=>`<b class="small">Headcount by department</b><div class="mt8">${Chart.donut(DEPTS.filter(d=>d.id!=='exec').map(d=>({label:d.name,v:activeEmps().filter(e=>e.dept===d.id).length,color:d.color})),150,0.62)}</div>`},
+  compDept:{name:'Payroll by dept',w:2,render:()=>`<b class="small">Annual base by department ($K)</b><div class="mt8">${Chart.bars(DEPTS.filter(d=>d.id!=='exec').map(d=>({label:d.name.split(' ')[0],v:Math.round(sum(activeEmps().filter(e=>e.dept===d.id).map(e=>e.comp.base))/1000),color:d.color})),{h:165,fmt:v=>'$'+Math.round(v)+'k'})}</div>`},
+  funnel:{name:'Hiring funnel',w:2,render:()=>{const st=[['applied','Applied'],['screening','Screen'],['interview','Interview'],['offer','Offer'],['hired','Hired']];return `<b class="small">Hiring funnel</b><div class="mt8">${Chart.bars(st.map(s=>({label:s[1],v:DB.candidates.filter(c=>c.stage===s[0]).length,color:'var(--c-recruit)'})),{h:165})}</div>`;}},
+  tenure:{name:'Tenure mix',w:1,render:()=>{const b=[['<1y',0],['1-2y',0],['2-4y',0],['4y+',0]];activeEmps().forEach(e=>{const y=between(e.hireDate,todayISO())/365;if(y<1)b[0][1]++;else if(y<2)b[1][1]++;else if(y<4)b[2][1]++;else b[3][1]++;});return `<b class="small">Tenure mix</b><div class="mt8">${Chart.bars(b.map(x=>({label:x[0],v:x[1],color:'var(--c-people)'})),{h:150})}</div>`;}},
+  flightRisk:{name:'Flight-risk watchlist',w:1,gate:()=>isAdmin(),render:()=>{const r=(typeof flightRiskList==='function'?flightRiskList(5):[]);return `<b class="small">Flight-risk watchlist</b><div class="col mt8" style="gap:6px">${r.map(x=>`<div class="row" style="gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:${x.tier==='high'?'var(--bad)':'var(--warn)'};display:inline-block"></span><span class="small" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((x.e||{}).name||'')}</span><span class="tiny faint">${x.score||''}</span></div>`).join('')||'<span class="tiny faint">No elevated signals.</span>'}</div>`;}},
+  openReqs:{name:'Open requisitions',w:1,render:()=>`<b class="small">Open requisitions</b><div class="col mt8" style="gap:6px">${DB.reqs.filter(r=>r.status==='open').slice(0,6).map(r=>`<div class="row" style="gap:7px"><span class="small" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.title)}</span><span class="tiny faint">${reqAge(r)}d</span></div>`).join('')||'<span class="tiny faint">None open.</span>'}</div>`},
+};
+function defaultDashboards(){return [{id:'DSH-1',name:'Exec overview',widgets:[['headcount',1],['attrition',1],['enps',1],['compliance',1],['funnel',2],['deptDonut',1],['compDept',2],['tenure',1]].map((w,i)=>({id:'w'+i,type:w[0],w:w[1]}))}];}
+function insightsDashboards(){
+  if(!DB.dashboards||!DB.dashboards.length)DB.dashboards=defaultDashboards();
+  const cur=byId(DB.dashboards,UIS.dashId)||DB.dashboards[0];UIS.dashId=cur.id;
+  const edit=UIS.dashEdit;
+  const widgets=cur.widgets.filter(w=>{const d=DASH_W[w.type];return d&&(!d.gate||d.gate());});
+  return `
+  <div class="row between wrap mb12" style="gap:10px">
+    <div class="row wrap" style="gap:6px">${DB.dashboards.map(d=>`<button class="vchip ${d.id===cur.id?'on':''}" data-act="dashSel" data-arg="${d.id}">${esc(d.name)}</button>`).join('')}<button class="vchip" data-act="dashNew">＋ New</button></div>
+    <button class="btn xs ${edit?'primary':'soft'}" data-act="dashEdit">${edit?'✓ Done editing':'✏️ Edit dashboard'}</button></div>
+  ${edit?`<div class="card pad mb12"><b class="small">Add a widget</b><div class="row wrap mt8" style="gap:6px">${Object.entries(DASH_W).filter(([k,d])=>!d.gate||d.gate()).map(([k,d])=>`<button class="vchip" data-act="dashAdd" data-arg="${k}">＋ ${d.name}</button>`).join('')}</div>
+    <div class="row between mt12" style="gap:8px"><input id="dash-name" value="${esc(cur.name)}" onchange="ACT.dashRename(this.value)" style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 11px;font-size:13px;font-weight:600;outline:none"><button class="btn xs ghost" style="color:var(--bad)" data-act="dashDel" data-arg="${cur.id}">🗑 Delete dashboard</button></div></div>`:''}
+  <div class="dash-grid">${widgets.length?widgets.map(w=>{const d=DASH_W[w.type];return `<div class="dash-w ${w.w===2?'wide':''}">${edit?`<button class="dash-x" data-act="dashRm" data-arg="${w.id}" title="Remove">✕</button><button class="dash-size" data-act="dashSize" data-arg="${w.id}" title="Resize">${w.w===2?'▭':'▭▭'}</button>`:''}${d.render()}</div>`;}).join(''):'<div class="card empty" style="grid-column:1/-1"><div class="big">📊</div>Empty dashboard — click ✏️ Edit and add widgets.</div>'}</div>
+  <p class="tiny faint mt12">Build any view of the business from live records. Dashboards save to your profile (localStorage in this demo).</p>`;
+}
+ACT.dashSel=id=>{UIS.dashId=id;render();};
+ACT.dashEdit=()=>{UIS.dashEdit=!UIS.dashEdit;render();};
+ACT.dashAdd=type=>{const c=byId(DB.dashboards,UIS.dashId);if(!c||!DASH_W[type])return;c.widgets.push({id:uid('w'),type,w:DASH_W[type].w||1});Store.save();render();};
+ACT.dashRm=wid=>{const c=byId(DB.dashboards,UIS.dashId);if(!c)return;c.widgets=c.widgets.filter(w=>w.id!==wid);Store.save();render();};
+ACT.dashSize=wid=>{const c=byId(DB.dashboards,UIS.dashId);const w=c&&c.widgets.find(x=>x.id===wid);if(!w)return;w.w=w.w===2?1:2;Store.save();render();};
+ACT.dashRename=v=>{const c=byId(DB.dashboards,UIS.dashId);if(c){c.name=String(v).trim()||c.name;Store.save();}};
+ACT.dashNew=()=>{const id=uid('DSH');DB.dashboards.push({id,name:'New dashboard',widgets:[{id:uid('w'),type:'headcount',w:1}]});UIS.dashId=id;UIS.dashEdit=true;Store.save();render();};
+ACT.dashDel=id=>{if((DB.dashboards||[]).length<=1){UI.toast('Keep at least one dashboard','📊');return;}DB.dashboards=DB.dashboards.filter(d=>d.id!==id);UIS.dashId=DB.dashboards[0].id;Store.save();render();};
 function insightsPeople(){
   const trend=headcountTrend();
   const terms=DB.former.filter(f=>between(f.termDate,todayISO())<=365);
@@ -6073,16 +6409,88 @@ ACT.rateCase=arg=>{
    VIEW: ADMIN
    ============================================================ */
 Views.admin=param=>{
-  const tabs=[['company','Company'],['security','Security & groups'],['integrations','Integrations'],['audit','Audit log'],['data','Data & demo']];
+  const tabs=[['company','Company'],['security','Security & groups'],['posture','Security center'],['automations','Automations'],['integrations','Integrations'],['audit','Audit log'],['data','Data & demo']];
   if(param)UIS.adminTab=param;
   const tab=tabs.some(t=>t[0]===UIS.adminTab)?UIS.adminTab:'company';
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Admin</h1>
     <div class="page-sub">Settings, security and the plumbing — boring on purpose</div></div></div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setAdminTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
-  ${tab==='company'?adminCompany():tab==='security'?adminSecurity():tab==='integrations'?adminIntegrations():tab==='audit'?adminAudit():adminData()}`;
+  ${tab==='company'?adminCompany():tab==='security'?adminSecurity():tab==='posture'?adminPosture():tab==='automations'?adminAutomations():tab==='integrations'?adminIntegrations():tab==='audit'?adminAudit():adminData()}`;
 };
 ACT.setAdminTab=a=>{UIS.adminTab=a;tabSync('admin',a);render();};
+/* ============================================================
+   C2 · SECURITY & COMPLIANCE CENTER — posture, RBAC map, retention
+   ============================================================ */
+function adminPosture(){
+  if(!DB.retention)DB.retention=DATA_RETENTION.map(r=>({...r}));
+  const groups=DB.groups||[];
+  const memList=g=>g.members==='*'?activeEmps().map(e=>e.id):(g.membersRule==='managers'?DB.employees.filter(e=>reportsOf(e.id).length>0).map(e=>e.id):(Array.isArray(g.members)?g.members:[]));
+  const adminsN=DB.employees.filter(e=>e.status==='active'&&roleOfEmp(e.id)==='admin').length;
+  const inGroup=id=>{const g=byId(groups,id);return g?memList(g).length:0;};
+  const reviews=DB.accessReviews||[];
+  const controls=[
+    ['Multi-factor authentication enforced',true,'Every login requires MFA (SSO/SAML in production).'],
+    ['Least-privilege security groups',groups.length>=4,groups.length+' groups scope access by capability.'],
+    ['Periodic access reviews',reviews.length>0,reviews.length?reviews.length+' review(s) on record.':'None run yet — start one in HR Ops → Compliance.'],
+    ['Data retention schedule defined',(DB.retention||[]).length>0,(DB.retention||[]).length+' record categories with purge dates.'],
+    ['Immutable audit trail',(DB.audit||[]).length>0,(DB.audit||[]).length+' events captured — see the Audit log tab.'],
+    ['Offboarding revokes access',true,'The termination business process closes accounts and access.'],
+    ['Encryption at rest & in transit',true,'AES-256 at rest, TLS 1.3 in transit (illustrative).'],
+    ['Sensitive fields permission-gated',true,'Compensation, payroll and SSN are gated by group and role.'],
+  ];
+  const pass=controls.filter(c=>c[1]).length;
+  return `
+  <div class="grid g4 mb16">
+    ${[['Security posture',pass+'/'+controls.length,pass===controls.length?'var(--ok)':'var(--warn)'],['Admin accounts',adminsN,'var(--c-people)'],['Can run payroll',inGroup('g-payroll')+adminsN,'var(--c-pay)'],['Security groups',groups.length,'#6d28d9']].map(s=>`<div class="card pad" style="text-align:center"><div style="font-size:25px;font-weight:800;font-family:var(--font-display);color:${s[2]}">${s[1]}</div><div class="tiny faint">${s[0]}</div></div>`).join('')}
+  </div>
+  <div class="grid g2">
+    <div class="card pad"><b class="small">🛡️ Control posture</b><div class="col mt12" style="gap:10px">${controls.map(c=>`<div class="row" style="gap:9px;align-items:flex-start"><span class="post-dot ${c[1]?'ok':'warn'}">${c[1]?'✓':'!'}</span><div class="col" style="gap:0;flex:1"><b class="small">${c[0]}</b><span class="tiny faint">${c[2]}</span></div></div>`).join('')}</div></div>
+    <div class="card pad"><b class="small">🔑 Access map — who can do what</b><div style="overflow-x:auto" class="mt8"><table class="tbl"><thead><tr><th>Group</th><th class="r">Members</th><th>Key access</th></tr></thead><tbody>${groups.map(g=>`<tr><td><b class="small">${esc(g.name)}</b></td><td class="num">${memList(g).length}</td><td class="tiny">${(g.caps||[]).includes('*')?'<span class="badge b-warn">full admin</span>':((g.caps||[]).slice(0,3).map(c=>`<span class="cf-chip">${esc(c)}</span>`).join(' ')||(g.modules||[]).slice(0,3).map(m=>`<span class="cf-chip">${esc(m)}</span>`).join(' ')||'—')}</td></tr>`).join('')}</tbody></table></div><a class="tiny linklike" data-act="setAdminTab" data-arg="security">Manage groups →</a></div>
+  </div>
+  <div class="card mt16"><div class="card-head"><h3>🗄️ Data retention schedule</h3><span class="spacer"></span><span class="tiny faint">auto-applied · GDPR/CCPA aligned</span></div>
+  <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Record category</th><th>Retention</th><th>Legal basis</th><th>Action</th><th>Next sweep</th></tr></thead><tbody>${(DB.retention||[]).map(r=>`<tr><td><b class="small">${esc(r.category)}</b></td><td>${esc(r.period)}</td><td class="tiny faint">${esc(r.basis)}</td><td>${badge('b-info',r.action)}</td><td class="tiny ${r.next<daysAhead(90)?'over':'faint'}">${fmtDshort(r.next)}</td></tr>`).join('')}</tbody></table></div></div>
+  <p class="tiny faint mt12">A real deployment maps these to SOC 2 / ISO 27001 evidence. Here they reflect Mosaic's actual gating, audit trail and lifecycle automations.</p>`;
+}
+/* ============================================================
+   B2 · NO-CODE AUTOMATIONS — "when X then Y", surfacing the rules the app already runs
+   ============================================================ */
+const AUT_TRIGGERS=[['hire','When a candidate is hired'],['offer_accepted','When an offer is accepted'],['pto_long','When time off exceeds 5 days'],['expense_big','When an expense exceeds $1,000'],['goal_risk','When a goal is marked at-risk'],['anniversary','On a work anniversary'],['onboarding_done','When onboarding completes'],['review_low','When a review rating is low'],['comp_outlier','When pay falls outside the band']];
+const AUT_ACTIONS=[['assign_course','assign starter learning'],['add_approver','add a second approver'],['finance_review','add a Finance review step'],['create_journey','create an onboarding journey'],['notify_manager','notify the manager'],['celebrate','post a celebration to #celebrations'],['create_task','create a follow-up task'],['flag_compliance','raise a compliance item']];
+const autTrigLabel=k=>(AUT_TRIGGERS.find(t=>t[0]===k)||[,k])[1];
+const autActLabel=k=>(AUT_ACTIONS.find(t=>t[0]===k)||[,k])[1];
+function adminAutomations(){
+  if(!DB.automations)DB.automations=defaultAutomations();
+  const rules=DB.automations;const on=rules.filter(r=>r.enabled).length;
+  return `<div class="row between wrap mb16" style="gap:10px"><div class="col" style="gap:2px"><b>${on} of ${rules.length} automations active</b><span class="tiny faint">These are the rules Mosaic already runs across modules — now visible and switchable. ${sum(rules.map(r=>r.runs||0))} total runs.</span></div>
+    <button class="btn sm primary" data-act="autNew">${I.plus} New automation</button></div>
+  <div class="col" style="gap:11px">${rules.map(r=>`<div class="card pad aut-rule ${r.enabled?'':'off'}">
+    <div class="row" style="gap:13px;align-items:flex-start">
+      <label class="switch" title="${r.enabled?'On':'Off'}"><input type="checkbox" ${r.enabled?'checked':''} onchange="ACT.autToggle('${r.id}')"><span class="sw-track"></span></label>
+      <div class="col" style="gap:3px;flex:1;min-width:0">
+        <b class="small">${esc(r.name)}</b>
+        <div class="row wrap" style="gap:6px;align-items:center"><span class="aut-when">WHEN</span><span class="aut-chip">${esc(autTrigLabel(r.trigger))}</span><span class="aut-then">THEN</span><span class="aut-chip act">${esc(autActLabel(r.action))}</span></div>
+        <span class="tiny faint">${esc(r.detail)}</span></div>
+      <div class="col" style="gap:6px;align-items:flex-end;flex:none"><span class="chip num" title="Times this rule has fired">${r.runs||0} runs</span><button class="btn xs ghost" style="color:var(--bad)" data-act="autDel" data-arg="${r.id}">Delete</button></div>
+    </div></div>`).join('')}</div>
+  <p class="tiny faint mt12">In production these compile to event handlers; here they reflect Mosaic's real cross-module wiring. Toggling one changes whether that behavior fires.</p>`;
+}
+ACT.autToggle=id=>{const r=byId(DB.automations,id);if(!r)return;r.enabled=!r.enabled;audit('Automation '+(r.enabled?'enabled':'disabled'),r.name);Store.save();render();UI.toast(r.name+' — '+(r.enabled?'on':'off'),'⚙️');};
+ACT.autDel=id=>{const i=DB.automations.findIndex(r=>r.id===id);if(i<0)return;const r=DB.automations[i];DB.automations.splice(i,1);Store.save();render();UI.toast('Automation removed','🗑️',{label:'Undo',fn:()=>{DB.automations.splice(i,0,r);Store.save();render();}});};
+ACT.autNew=()=>{
+  UI.modal({title:'⚙️ New automation',sub:'Pick a trigger and an action — Mosaic wires the rest.',body:`
+    <div class="field"><label>Name</label><input id="aut-name" placeholder="e.g. New manager → assign leadership course"></div>
+    <div class="field"><label>WHEN this happens</label><select id="aut-trig">${AUT_TRIGGERS.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div>
+    <div class="field"><label>THEN do this</label><select id="aut-act">${AUT_ACTIONS.map(a=>`<option value="${a[0]}">${a[1]}</option>`).join('')}</select></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" data-act="autSave">Create automation</button>`});
+  setTimeout(()=>{const i=$('#aut-name');if(i)i.focus();},120);
+};
+ACT.autSave=()=>{
+  const trig=$('#aut-trig').value,act=$('#aut-act').value;
+  const name=($('#aut-name')||{value:''}).value.trim()||('When '+autTrigLabel(trig)+' → '+autActLabel(act));
+  DB.automations.unshift({id:uid('AUT'),name,trigger:trig,action:act,detail:'Custom rule — fires '+autActLabel(act)+' '+autTrigLabel(trig).toLowerCase()+'.',enabled:true,runs:0});
+  audit('Automation created',name);Store.save();UI.closeModal();render();UI.toast('Automation created — it\'s live','⚙️');
+};
 function adminCompany(){
   return `<div class="grid g23">
     <div class="col" style="gap:16px">
@@ -6380,6 +6788,8 @@ function flightRisk(e){
   s=clamp(s,0,100);
   return {score:s,tier:s>=50?'high':s>=28?'watch':'low',reasons:rs};
 }
+/* top-N at-risk employees as an array (the per-employee fn above is not callable with no args) */
+function flightRiskList(n){return DB.employees.filter(e=>e.status==='active').map(e=>{const r=flightRisk(e);return {e,score:r.score,tier:r.tier,reasons:r.reasons};}).filter(x=>x.tier!=='low').sort((a,b)=>b.score-a.score).slice(0,n||5);}
 const riskPill=r=>`<span class="risk-pill risk-${r.tier}" title="Rule-based signal, not a prediction">${r.tier==='high'?'🔥':r.tier==='watch'?'👀':'🌿'} ${r.tier==='high'?'High risk':r.tier==='watch'?'Watch':'Healthy'} · ${r.score}</span>`;
 
 /* ============================================================
@@ -6607,6 +7017,21 @@ const AI={
   },
   text:msg=>(msg.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n'),
 };
+/* ---- agentic layer: write-tools STAGE actions; nothing mutates until the user confirms ---- */
+let AI_PENDING=[],_aiActSeq=0;
+function aiStage(kind,label,detail,run){const id='ACT'+(++_aiActSeq);AI_PENDING.push({id,kind,label,detail,run});return {staged:true,id,note:'Prepared — shown to the user as a confirm card. It will NOT run until they click Confirm.'};}
+function aiFindPerson(s){if(!s)return null;const ql=String(s).toLowerCase().trim();if(ql==='me')return me();return DB.employees.find(e=>e.status!=='terminated'&&e.name.toLowerCase()===ql)||DB.employees.find(e=>e.status!=='terminated'&&e.name.toLowerCase().includes(ql))||null;}
+function aiParseDate(s){if(!s)return null;s=String(s).toLowerCase().trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  if(/^today$/.test(s))return todayISO();if(/^tomorrow$/.test(s))return daysAhead(1);
+  let m=s.match(/(?:in\s+)?\+?(\d+)\s*(?:days?|d)?\b/);if(m)return daysAhead(+m[1]);
+  if(/next week/.test(s))return daysAhead(7);
+  const dows=['sun','mon','tue','wed','thu','fri','sat'];m=s.match(/(sun|mon|tue|wed|thu|fri|sat)/);
+  if(m){const target=dows.indexOf(m[1]);for(let i=1;i<=7;i++){const nd=new Date(Date.now()+i*DAY);if(nd.getDay()===target)return iso(nd);}}
+  return null;}
+function aiParseTime(s){if(!s)return '10:00';s=String(s).toLowerCase().trim();const m=s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);if(!m)return '10:00';let h=+m[1];const mn=m[2]?+m[2]:0;if(m[3]==='pm'&&h<12)h+=12;if(m[3]==='am'&&h===12)h=0;return String(h).padStart(2,'0')+':'+String(mn).padStart(2,'0');}
+ACT.aiRunAction=id=>{const i=AI_PENDING.findIndex(a=>a.id===id);if(i<0)return;const a=AI_PENDING[i];let res='Done';try{res=a.run()||'Done';}catch(e){res='⚠️ '+e.message;}AI_PENDING.splice(i,1);Store.save();Assist.hist.push({who:'bot',html:`✅ <b>${esc(res)}.</b> ${a.kind==='task'?'It\'s in Workflows → My Tasks.':a.kind==='project'?'Open it from Workflows → Projects.':a.kind==='event'?'It\'s on your Calendar.':'Posted.'}`});Assist.render();render();UI.toast(res,'⚡');};
+ACT.aiDiscardAction=id=>{AI_PENDING=AI_PENDING.filter(a=>a.id!==id);Assist.render();};
 /* the assistant's tool belt — every executor respects the SAME permission gates as the UI */
 const AI_TOOLS=[
   {name:'search_people',description:'Search the employee directory by name, title, team or department. Call this whenever the user mentions a person or asks who does something.',input_schema:{type:'object',properties:{query:{type:'string',description:'Name fragment, title or department'}},required:['query'],additionalProperties:false}},
@@ -6614,6 +7039,10 @@ const AI_TOOLS=[
   {name:'my_context',description:'The current user: who they are, PTO balances, pending approvals and inbox items, today\'s calendar. Call this for any question about "me" or "my".',input_schema:{type:'object',properties:{},additionalProperties:false}},
   {name:'metrics',description:'Live company metrics. Call this for questions about headcount, attrition, hiring funnel, engagement/eNPS, enrollment, flight risk, or payroll exceptions.',input_schema:{type:'object',properties:{topic:{type:'string',enum:['headcount','attrition','hiring','engagement','flight-risk','compliance','payroll']}},required:['topic'],additionalProperties:false}},
   {name:'list_items',description:'List live records: open requisitions, open cases, in-flight workflows, leaves, pending expenses, or upcoming time off.',input_schema:{type:'object',properties:{kind:{type:'string',enum:['reqs','cases','flows','leaves','expenses','timeoff']}},required:['kind'],additionalProperties:false}},
+  {name:'create_task',description:'STAGE a new task for the user to confirm (does not run until they click Confirm). Use whenever the user asks to create/add a task, to-do, reminder or follow-up.',input_schema:{type:'object',properties:{title:{type:'string'},assignee:{type:'string',description:'A name, or "me" (default)'},due:{type:'string',description:'YYYY-MM-DD, "today", "tomorrow", "in 3 days", or a weekday'},project:{type:'string',description:'Project name to file under (optional)'},priority:{type:'string',enum:['high','medium','low']}},required:['title'],additionalProperties:false}},
+  {name:'create_project',description:'STAGE a new project for the user to confirm. Use when the user asks to start/create a project or workspace.',input_schema:{type:'object',properties:{name:{type:'string'},description:{type:'string'},sections:{type:'array',items:{type:'string'},description:'Optional section/column names'}},required:['name'],additionalProperties:false}},
+  {name:'schedule_meeting',description:'STAGE a calendar event for the user to confirm. Use when the user asks to schedule/book a meeting or block time.',input_schema:{type:'object',properties:{title:{type:'string'},withWhom:{type:'array',items:{type:'string'},description:'Attendee names'},date:{type:'string',description:'YYYY-MM-DD, "tomorrow", "in 2 days", or a weekday'},time:{type:'string',description:'e.g. "2:00 PM" or "14:00"'},durationMin:{type:'number'}},required:['title'],additionalProperties:false}},
+  {name:'post_message',description:'STAGE a message to a chat channel for the user to confirm before it sends. Use when the user asks to post/announce/send something to a channel.',input_schema:{type:'object',properties:{channel:{type:'string',description:'Channel name like "people-updates" (with or without #)'},text:{type:'string'}},required:['channel','text'],additionalProperties:false}},
 ];
 function aiToolExec(name,input){
   const my=me();
@@ -6637,7 +7066,7 @@ function aiToolExec(name,input){
       if(t==='attrition')return {exits12mo:DB.former.filter(f=>between(f.termDate,todayISO())<=365).length,voluntaryPct:pct(DB.former.filter(f=>/Voluntary/.test(f.reason||'')).length,DB.former.length||1),regrettedPct:pct(DB.former.filter(f=>f.regret).length,DB.former.length||1)};
       if(t==='hiring')return {openReqs:DB.reqs.filter(r=>r.status==='open').length,candidates:DB.candidates.filter(c=>!['rejected','hired'].includes(c.stage)).length,offersOut:DB.candidates.filter(c=>c.stage==='offer').length,avgTimeToFillDays:avgTimeToFill()};
       if(t==='engagement'){const sv=DB.surveys.find(s=>s.status==='live');return {liveSurvey:sv?sv.name:null,participationPct:sv?pct(sv.respondedIds.length,sv.audience):null,eNPS:42};}
-      if(t==='flight-risk')return isAdmin()?{atRisk:flightRisk().slice(0,5).map(x=>({name:x.e.name,signals:x.why}))}:{error:'Flight risk is admin-only'};
+      if(t==='flight-risk')return isAdmin()?{atRisk:flightRiskList(5).map(x=>({name:x.e.name,score:x.score,signals:x.reasons}))}:{error:'Flight risk is admin-only'};
       if(t==='compliance')return {openItems:complianceItems().length,highSeverity:complianceItems().filter(x=>x.sev==='high').map(x=>x.text)};
       if(t==='payroll')return (typeof canPayroll==='function'&&canPayroll())?{period:payPeriod().label,exceptions:payrollExceptions().map(x=>x.text)}:{error:'Payroll is gated to Payroll Administration'};
     }
@@ -6650,12 +7079,41 @@ function aiToolExec(name,input){
       if(k==='expenses')return DB.spend.expenses.filter(x=>x.status!=='reimbursed').map(x=>({id:x.id,title:x.title,total:x.total,status:x.status}));
       if(k==='timeoff')return DB.timeoff.filter(t=>t.status==='approved'&&t.start>=todayISO()).slice(0,10).map(t=>({who:(emp(t.employeeId)||{}).name,start:t.start,end:t.end}));
     }
+    /* ---- write tools: stage for confirmation, never mutate here ---- */
+    if(name==='create_task'){
+      const asg=input.assignee&&input.assignee!=='me'?aiFindPerson(input.assignee):my;
+      const proj=input.project?projAll().find(p=>inProj(p)&&p.name.toLowerCase().includes(String(input.project).toLowerCase())):null;
+      const due=aiParseDate(input.due);
+      return aiStage('task','Create task: '+input.title,
+        `${asg?'Assignee '+asg.name.split(' ')[0]:'Unassigned'}${due?' · due '+fmtDshort(due):''} · ${proj?proj.name:'My Tasks'}${input.priority?' · '+input.priority:''}`,
+        ()=>{const t=newTask({title:input.title,assigneeId:asg?asg.id:null,dueDate:due,priority:input.priority||'medium',projectId:proj?proj.id:null,sectionId:proj?(proj.sections[0]||{}).id:null});audit('Task created (Copilot)',t.id+' · '+t.title);if(asg&&asg.id!==my.id)notify(asg.id,'✅',`${my.name} assigned you: ${t.title}`,'#/flows');return 'Task created: '+t.title;});
+    }
+    if(name==='create_project'){
+      const secs=input.sections&&input.sections.length?input.sections:['To do','In progress','Done'];
+      return aiStage('project','Create project: '+input.name,
+        `${input.description||'New project'} · ${secs.join(' / ')}`,
+        ()=>{const id=uid('PRJ');DB.projects.unshift({id,name:input.name,icon:'🗂',color:'#6366f1',ownerId:my.id,members:[my.id],sections:secs.map(s=>({id:uid('SEC'),name:s})),status:'on-track',description:input.description||'',createdAt:todayISO(),archived:false,startDate:todayISO(),dueDate:daysAhead(30),fields:[],privacy:'team',updates:[{at:todayISO(),by:my.id,status:'on-track',text:'Project created via Copilot.'}]});audit('Project created (Copilot)',id+' · '+input.name);return 'Project created: '+input.name;});
+    }
+    if(name==='schedule_meeting'){
+      const who=(input.withWhom||[]).map(aiFindPerson).filter(Boolean);
+      const d=aiParseDate(input.date)||daysAhead(1),t=aiParseTime(input.time);
+      return aiStage('event','Schedule: '+input.title,
+        `${fmtDshort(d)} · ${t}${who.length?' · with '+who.map(w=>w.name.split(' ')[0]).join(', '):''}`,
+        ()=>{const ev={id:uid('EV'),title:input.title,date:d,time:t,durMin:input.durationMin||30,kind:'meeting',attendees:[my.id,...who.map(w=>w.id)],organizer:my.id,color:'#2d7ff0',rsvp:{},meet:true};(DB.events=DB.events||[]).push(ev);who.forEach(w=>notify(w.id,'📅',`${my.name} scheduled: ${input.title}`,'#/cal'));audit('Event created (Copilot)',ev.id+' · '+input.title);return 'Meeting scheduled: '+input.title;});
+    }
+    if(name==='post_message'){
+      const key=String(input.channel||'').toLowerCase().replace(/^#/,'');
+      const ch=(DB.channels||[]).filter(c=>!c.dm&&chanVisible(c)).find(c=>(c.name||'').toLowerCase()===key)||(DB.channels||[]).filter(c=>!c.dm&&chanVisible(c)).find(c=>(c.name||'').toLowerCase().includes(key));
+      if(!ch)return {error:'No channel matched "'+input.channel+'". Visible channels: '+(DB.channels||[]).filter(c=>!c.dm&&chanVisible(c)).map(c=>'#'+c.name).slice(0,8).join(', ')};
+      return aiStage('message','Post to #'+ch.name,'“'+String(input.text).slice(0,90)+(input.text.length>90?'…':'')+'”',
+        ()=>{chatPost(ch.id,input.text);audit('Message posted (Copilot)','#'+ch.name);return 'Posted to #'+ch.name;});
+    }
   }catch(e){return {error:e.message};}
   return {error:'unknown tool'};
 }
 async function aiAnswer(raw){
   const my=me();
-  const system=`You are Ask Mosaic, the assistant inside Mosaic — the technology that powers work at ${brandName()} (a fictional demo company; all data is fictional). The current user is ${my.name}, ${my.title}, persona role: ${myRole()}. Today is ${fmtD(todayISO())}. Answer from the live data via tools — never invent records. Keep answers under 120 words, friendly and direct. Use the tools for ANY factual question about people, metrics or records. Respect the permission notes tools return.`;
+  const system=`You are Ask Mosaic, the AI copilot inside Mosaic — the technology that powers work at ${brandName()} (a fictional demo company; all data is fictional). The current user is ${my.name}, ${my.title}, persona role: ${myRole()}. Today is ${fmtD(todayISO())}. Answer from the live data via tools — never invent records. Keep answers under 120 words, friendly and direct. Use the read tools for ANY factual question about people, metrics or records, and respect the permission notes they return. You can also TAKE ACTIONS: when the user asks you to create a task/project, schedule a meeting, or post a message, call the matching write-tool — it STAGES the action and the user sees a Confirm card; nothing happens until they confirm. After staging, tell the user plainly what you prepared (e.g. "I've drafted a task to … — confirm it below"). Do not claim something is done; it is only proposed until confirmed.`;
   let messages=[{role:'user',content:raw}];
   for(let i=0;i<5;i++){
     const resp=await AI.call(messages,{system,tools:AI_TOOLS,max_tokens:1024});
@@ -6743,13 +7201,13 @@ const Assist={
   toggle(){this.open=!this.open;if(this.open&&!this.hist.length)this.greet();this.render();},
   greet(){
     const my=me();
-    this.hist.push({who:'bot',html:`Hey ${esc(my.name.split(' ')[0])} 👋 I'm <b>Ask Mosaic</b>. I can answer from your live workplace data — balances, approvals, people, policies — or draft things for you. Try a chip below.`});
+    this.hist.push({who:'bot',html:`Hey ${esc(my.name.split(' ')[0])} 👋 I'm <b>Ask Mosaic</b>, your copilot. I can answer from your live workplace data — balances, approvals, people, policies — <b>and take actions</b>: “create a task to…”, “schedule a sync with Priya”, “post an update to #people-updates”. You confirm everything before it happens.`});
   },
   chips(){
     const role=myRole();
-    const base=['How much PTO do I have?','Who\'s out this week?','What courses are due?'];
-    if(role==='admin')return base.concat(['Who\'s a flight risk?','Draft a JD for a robotics engineer','How\'s the pulse looking?']);
-    if(role==='manager')return base.concat(['What\'s waiting on me?','Draft praise for Jordan']);
+    const base=['How much PTO do I have?','Who\'s out this week?','⚡ Create a task to prep my 1:1 notes'];
+    if(role==='admin')return base.concat(['Who\'s a flight risk?','⚡ Schedule a sync with Priya tomorrow','How\'s the pulse looking?']);
+    if(role==='manager')return base.concat(['What\'s waiting on me?','⚡ Post to #people-updates: huge week — thank you all 🙌']);
     return base.concat(['How does the 401k match work?','What\'s our parental leave?']);
   },
   send(q){
@@ -6776,6 +7234,24 @@ const Assist={
   },
   answer(q,raw){
     const my=me();
+    /* ---- agentic intents (keyless path): stage an action, user confirms ---- */
+    let am=raw.match(/(?:create|add|make)\s+(?:a\s+)?task\s+(?:to\s+|for\s+|called\s+|named\s+|:\s*)?(.+)/i)||raw.match(/remind me to\s+(.+)/i)||raw.match(/^todo:?\s+(.+)/i);
+    if(am){const title=cap(am[1].replace(/[?.!]+$/,'').trim());const r=aiToolExec('create_task',{title});
+      return {html:`Sure — I've drafted a task <b>“${esc(title)}”</b> assigned to you, due in 3 days. Confirm it below to add it to your tasks. ${r.error?'<br><span class="tiny faint">'+esc(r.error)+'</span>':''}`};}
+    if(/\b(?:schedule|book|set ?up|arrange)\b/i.test(raw)&&/\b(?:meeting|sync|call|chat|1:1|catch[- ]?up|time|review)\b/i.test(raw)){
+      let names=[],topic='';
+      const mm=raw.match(/with\s+([a-z .,'&-]+?)(?:\s+(?:about|on|re:?|regarding|to discuss)\s+(.+))?$/i);
+      if(mm){names=mm[1].split(/\s*,\s*|\s+and\s+|\s*&\s*/).map(s=>s.trim()).filter(Boolean);topic=cap((mm[2]||'').replace(/[?.!]+$/,'').trim());}
+      if(!topic){const tm=raw.match(/(?:about|on|re:?|regarding|to discuss)\s+(.+)$/i);if(tm)topic=cap(tm[1].replace(/[?.!]+$/,'').trim());}
+      if(!topic)topic=names.length?'Sync with '+names.join(' & '):'Sync';
+      const r=aiToolExec('schedule_meeting',{title:topic,withWhom:names});
+      return {html:`Done — I've drafted a 30-min meeting <b>“${esc(topic)}”</b>${names.length?' with '+esc(names.join(', ')):''} for tomorrow. Confirm below to put it on your calendar.${r.error?'<br><span class="tiny faint">'+esc(r.error)+'</span>':''}`};}
+    am=raw.match(/(?:start|create|spin up|kick off)\s+(?:a\s+)?(?:new\s+)?project\s+(?:called\s+|named\s+|:\s*)?(.+)/i);
+    if(am){const name=cap(am[1].replace(/[?.!]+$/,'').trim());aiToolExec('create_project',{name});
+      return {html:`Nice — I've set up a project <b>“${esc(name)}”</b> with To do / In progress / Done. Confirm below and I'll open it.`};}
+    am=raw.match(/(?:post|send|announce|share)\s+(?:a\s+)?(?:message|update|note|announcement)?\s*(?:to|in|on)\s+#?([a-z0-9-]+)\s*(?:saying|:|that)?\s*([^]*?)$/i);
+    if(am&&am[2]&&am[2].trim()){const r=aiToolExec('post_message',{channel:am[1],text:am[2].trim()});
+      return {html:r.error?esc(r.error):`Ready — I've drafted a post to <b>#${esc(am[1])}</b>. Confirm below to send it.`};}
     /* daily briefing — synthesis across every module */
     if(/brief(ing)?( me)?|start my day|good morning|my day\b/.test(q)){
       const evs=weekEventsFor(todayISO());
@@ -6877,11 +7353,12 @@ const Assist={
         <button class="iconbtn" data-act="toggleAssist" aria-label="Close assistant">${I.x}</button></div>
       <div class="as-body" id="as-body">${this.hist.map(msg=>`<div class="as-msg ${msg.who}">${msg.html}</div>
         ${msg.actions&&msg.actions.length?`<div class="as-actions">${msg.actions.map(a=>`<button class="btn xs soft" data-act="${a.act}" ${a.arg?`data-arg="${a.arg}"`:''}>${a.label}</button>`).join('')}</div>`:''}
-        ${msg.sources&&msg.sources.length?`<div class="as-sources"><span class="tiny faint" style="align-self:center">Sources:</span>${msg.sources.map((s,i)=>`<span class="chip" data-act="nav" data-arg="${s.link}">[${i+1}] ${esc(s.label)}</span>`).join('')}</div>`:''}`).join('')}</div>
+        ${msg.sources&&msg.sources.length?`<div class="as-sources"><span class="tiny faint" style="align-self:center">Sources:</span>${msg.sources.map((s,i)=>`<span class="chip" data-act="nav" data-arg="${s.link}">[${i+1}] ${esc(s.label)}</span>`).join('')}</div>`:''}`).join('')}
+        ${AI_PENDING.length?`<div class="ai-pending">${AI_PENDING.map(a=>`<div class="ai-act-card"><div class="row" style="gap:7px"><span class="ai-act-ic">⚡</span><b class="small" style="flex:1">${esc(a.label)}</b></div><div class="tiny faint" style="margin:3px 0 8px 25px">${esc(a.detail)}</div><div class="row" style="gap:6px;margin-left:25px"><button class="btn xs primary" data-act="aiRunAction" data-arg="${a.id}">✓ Confirm</button><button class="btn xs ghost" data-act="aiDiscardAction" data-arg="${a.id}">Discard</button></div></div>`).join('')}</div>`:''}</div>
       <div class="as-chips">${this.chips().map(c=>`<span class="chip" data-act="assistChip" data-arg="${esc(c)}">${esc(c)}</span>`).join('')}</div>
-      <div class="as-foot"><input id="as-input" placeholder="Ask anything about work here…" autocomplete="off" onkeydown="if(event.key==='Enter')ACT.assistSend()">
+      <div class="as-foot"><input id="as-input" placeholder="Ask, or tell me to do something…" autocomplete="off" onkeydown="if(event.key==='Enter')ACT.assistSend()">
         <button class="btn primary" data-act="assistSend" style="padding:9px 13px">${I.send}</button></div>
-      <div class="as-note">Rule-based demo assistant · production version would plug in the Claude API</div>`;
+      <div class="as-note">${AI.enabled()?'Live AI with tools — it can answer AND take actions (you confirm each one)':'Built-in engine · add a key in Admin → Integrations for live AI + actions'}</div>`;
     p.classList.add('open');
     const b=$('#as-body');if(b)b.scrollTop=b.scrollHeight;
     const inp=$('#as-input');if(inp)inp.focus();
@@ -10175,6 +10652,22 @@ Views.qa=()=>{
   T('BP engine intact (applyBP)',()=>typeof applyBP==='function');
   T('envelope hashes verify',()=>DB.envelopes.every(env=>envHash(env)===env.hash||env.status!=='completed'));
   T('PDF engine valid',()=>{const p=makePDF([{t:'qa'}]);return p.startsWith('%PDF-1.4')&&p.includes('startxref');});
+  /* ---- math & flow assertions (not just "does it render") ---- */
+  T('vesting never exceeds grant',()=>{if(typeof vestingOf!=='function')return true;const v=vestingOf(emp('E007'));return !v||v.total==null||v.vested<=v.total+1;});
+  T('project progress in 0–100',()=>{const p=(DB.projects||[])[0];if(!p)return true;const v=projProgress(p.id);return v>=0&&v<=100;});
+  T('task blocked-by returns boolean',()=>{const t=(DB.tasks||[]).find(x=>(x.dependsOn||[]).length);return t?typeof taskBlocked(t)==='boolean':true;});
+  T('comp-plan delta ≥ 0',()=>typeof payPlanDelta==='function'?payPlanDelta(emp('E030'))>=0:true);
+  T('shift hours positive',()=>{const s=(DB.shifts||[])[0];return s?shiftHrs(s)>0:true;});
+  T('succession bench ≤ 3',()=>{const e=DB.employees.find(x=>reportsOf(x.id).length>0);return e?successorsFor(e).length<=3:true;});
+  T('semantic search ranks a person',()=>{const ix=buildIndex();return ix.some(x=>x.type==='person'&&palScore(x,[['priya']])>0);});
+  T('copilot stages, never mutates',()=>{const n=(DB.tasks||[]).length;AI_PENDING=[];const r=aiToolExec('create_task',{title:'qa probe'});const ok=!!r.staged&&(DB.tasks||[]).length===n;AI_PENDING=[];return ok;});
+  T('dashboard widgets all render',()=>Object.values(DASH_W).every(w=>(w.gate&&!w.gate())?true:typeof w.render()==='string'));
+  T('automations seeded',()=>(DB.automations||[]).length>=4);
+  T('retention schedule defined',()=>(DB.retention||[]).length>=4);
+  T('command queue aggregates',()=>Array.isArray(inboxFor('E007')));
+  T('undo stack bounded',()=>_undo.length<=UNDO_CAP);
+  T('seed scaled past 150 people',()=>DB.employees.length>=150);
+  T('every task has a valid project or none',()=>(DB.tasks||[]).every(t=>!t.projectId||projOf(t.projectId)));
   const pass=results.filter(r=>r.ok).length;
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">🧪 Self-test</h1>
@@ -10437,7 +10930,7 @@ function hropsBadge(){
 }
 
 /* ---- module ---- */
-const HROPS_TABS=[['consoles','Consoles'],['compliance','Compliance'],['health','Data health'],['tower','Control tower'],['positions','Positions'],['reports','Reports'],['opscal','Ops calendar']];
+const HROPS_TABS=[['consoles','Consoles'],['compliance','Compliance'],['health','Data health'],['tower','Control tower'],['positions','Positions'],['workforce','Workforce plan'],['reports','Reports'],['opscal','Ops calendar']];
 Views.hrops=param=>{
   if(param&&(HROPS_TABS.some(t=>t[0]===param)||param==='payroll'))UIS.hropsTab=param==='payroll'?'consoles':param;
   const tab=HROPS_TABS.some(t=>t[0]===UIS.hropsTab)?UIS.hropsTab:'consoles';
@@ -10449,8 +10942,113 @@ Views.hrops=param=>{
     ${myDelegation()?`<button class="btn ghost" data-act="delegEnd" data-arg="${myDelegation().id}">🤝 Delegated → ${esc((emp(myDelegation().toId)||{}).name||'')} ✕</button>`:`<button class="btn ghost" data-act="delegNew">🤝 Delegate approvals</button>`}</div>
   <div class="tabs">${HROPS_TABS.map(t=>{const n=t[0]==='compliance'?compN:0;
     return `<button class="${tab===t[0]?'on':''}" data-act="setHropsTab" data-arg="${t[0]}">${t[1]}${tabN(n)}</button>`;}).join('')}</div>
-  ${tab==='consoles'?hropsConsoles():tab==='compliance'?hropsCompliance():tab==='health'?hropsHealth():tab==='tower'?hropsTower():tab==='positions'?hropsPositions():tab==='reports'?hropsReports():hropsCal()}`;
+  ${tab==='consoles'?hropsConsoles():tab==='compliance'?hropsCompliance():tab==='health'?hropsHealth():tab==='tower'?hropsTower():tab==='positions'?hropsPositions():tab==='workforce'?hropsWorkforce():tab==='reports'?hropsReports():hropsCal()}`;
 };
+/* ============================================================
+   B3 · WORKFORCE PLANNING & ORG DESIGN — headcount scenarios vs budget
+   ============================================================ */
+function hropsWorkforce(){
+  if(!DB.workforcePlan)DB.workforcePlan={};
+  const depts=DEPTS.filter(d=>d.id!=='exec');
+  const cur=d=>activeEmps().filter(e=>e.dept===d.id).length;
+  const openR=d=>DB.reqs.filter(r=>r.status==='open'&&r.dept===d.id).length;
+  const avgBase=d=>{const p=activeEmps().filter(e=>e.dept===d.id);return p.length?avg(p.map(e=>e.comp.base)):150000;};
+  const adds=d=>DB.workforcePlan[d.id]!=null?DB.workforcePlan[d.id]:openR(d);
+  const totalCur=sum(depts.map(cur)),totalAdds=sum(depts.map(adds)),costDelta=sum(depts.map(d=>adds(d)*avgBase(d)*1.3));
+  const rows=depts.map(d=>{const c=cur(d),a=adds(d),target=c+a,cost=a*avgBase(d)*1.3;
+    return `<tr>
+      <td><span class="row" style="gap:7px"><span style="width:9px;height:9px;border-radius:50%;background:${d.color};display:inline-block"></span><b class="small">${d.name}</b></span></td>
+      <td class="num">${c}</td>
+      <td><div class="row" style="gap:6px;justify-content:flex-end"><button class="btn xs ghost" data-act="wfpAdd" data-arg="${d.id}|-1" aria-label="remove">−</button><b style="width:22px;text-align:center">${a}</b><button class="btn xs ghost" data-act="wfpAdd" data-arg="${d.id}|1" aria-label="add">+</button></div></td>
+      <td class="num"><b>${target}</b> ${a>0?`<span class="tiny" style="color:var(--ok)">+${Math.round(a/c*100)}%</span>`:''}</td>
+      <td class="num">${a>0?fmtK(cost):'—'}</td></tr>`;}).join('');
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Current headcount',totalCur,'active employees','var(--c-people)')}
+    ${statCard('Planned adds',totalAdds,'net-new across the plan','var(--c-recruit)')}
+    ${statCard('Target headcount',totalCur+totalAdds,'+'+pct(totalAdds,totalCur)+'% growth','#0f766e')}
+    ${statCard('Annualized cost',fmtK(costDelta),'fully-loaded (1.3×)','var(--c-pay)')}
+  </div>
+  <div class="card mb12"><div class="card-head"><h3>📈 Headcount plan — scenario</h3><span class="spacer"></span><button class="btn xs ghost" data-act="wfpReset">Reset to open reqs</button></div>
+  <table class="tbl"><thead><tr><th>Department</th><th class="r">Now</th><th class="r">Planned adds</th><th class="r">Target</th><th class="r">Cost</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="grid g2">
+    <div class="card pad"><b class="small">Headcount: target by department</b><div class="mt8">${Chart.bars(depts.map(d=>({label:d.name.split(' ')[0],v:cur(d)+adds(d),color:d.color})),{h:175})}</div></div>
+    <div class="card pad"><b class="small">Span of control — widest teams</b><div class="col mt12" style="gap:8px">${DB.employees.filter(e=>reportsOf(e.id).length>=4).sort((a,b)=>reportsOf(b.id).length-reportsOf(a.id).length).slice(0,7).map(m=>`<div class="row" style="gap:8px">${av(m,'xs')}<span class="small" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.name)}</span><span class="badge ${reportsOf(m.id).length>8?'b-warn':'b-mute'}">${reportsOf(m.id).length} reports</span></div>`).join('')}</div></div>
+  </div>
+  <p class="tiny faint mt12">Adjust planned adds to model growth and cost before opening reqs. Cost is fully-loaded (salary × 1.3). This feeds the Positions seat plan.</p>`;
+}
+ACT.wfpAdd=arg=>{const [d,n]=arg.split('|');DB.workforcePlan=DB.workforcePlan||{};const c=DB.workforcePlan[d]!=null?DB.workforcePlan[d]:DB.reqs.filter(r=>r.status==='open'&&r.dept===d).length;DB.workforcePlan[d]=clamp(c+(+n),0,50);Store.save();render();};
+ACT.wfpReset=()=>{DB.workforcePlan={};Store.save();render();UI.toast('Plan reset to current open reqs','📈');};
+/* ============================================================
+   C1 · SCHEDULING / TIME & ATTENDANCE — shifts, clock-in, coverage, timesheets
+   ============================================================ */
+const canManageSchedule=()=>isAdmin()||isManager()||hasCap('hr-admin');
+const scheduleCrew=()=>uniq((DB.shifts||[]).map(s=>s.employeeId)).map(emp).filter(Boolean).sort((a,b)=>(a.team||'').localeCompare(b.team||''));
+function shiftWeekDays(){const off=UIS.schOff||0;const base=new Date();base.setDate(base.getDate()-base.getDay()+off*7);const days=[];for(let i=0;i<7;i++)days.push(iso(new Date(base.getFullYear(),base.getMonth(),base.getDate()+i)));return days;}
+const shiftHrs=s=>{const[h1,m1]=s.start.split(':').map(Number),[h2,m2]=s.end.split(':').map(Number);return((h2*60+m2)-(h1*60+m1))/60;};
+Views.schedule=param=>{
+  if(!DB.shifts)DB.shifts=[];
+  const tabs=[['grid','Schedule'],['coverage','Coverage'],['sheets','Timesheets']];
+  if(param&&tabs.some(t=>t[0]===param))UIS.schTab=param;
+  const tab=tabs.some(t=>t[0]===UIS.schTab)?UIS.schTab:'grid';
+  const todayShift=(DB.shifts||[]).find(s=>s.employeeId===DB.me.employeeId&&s.date===todayISO());
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Scheduling</h1>
+    <div class="page-sub">Shifts, clock-in and timesheets for the deskless crew — Support & Operations.</div></div>
+    ${canManageSchedule()?`<button class="btn primary" style="--brand:#0d9488;--brand-deep:#0f766e" data-act="shiftNew">${I.plus} Add shift</button>`:''}</div>
+  ${todayShift?`<div class="card pad mb14 row between wrap" style="gap:10px;border-left:3px solid #0d9488"><div class="col" style="gap:1px"><b class="small">Your shift today · ${todayShift.start}–${todayShift.end} (${esc(todayShift.block)})</b><span class="tiny faint">${todayShift.clockIn?'Clocked in '+todayShift.clockIn:'Not clocked in yet'}${todayShift.clockOut?' · out '+todayShift.clockOut:''}</span></div>
+    ${todayShift.clockOut?'<span class="badge b-ok">Shift complete</span>':todayShift.clockIn?`<button class="btn sm soft" style="--brand:#0d9488" data-act="clockOut" data-arg="${todayShift.id}">Clock out</button>`:`<button class="btn sm primary" style="--brand:#0d9488;--brand-deep:#0f766e" data-act="clockIn" data-arg="${todayShift.id}">🕒 Clock in</button>`}</div>`:''}
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setSchTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${tab==='coverage'?schedCoverage():tab==='sheets'?schedSheets():schedGrid()}`;
+};
+function schedGrid(){
+  const days=shiftWeekDays();const crew=scheduleCrew();const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const cell=(eid,date)=>{const s=(DB.shifts||[]).find(x=>x.employeeId===eid&&x.date===date);
+    if(!s)return `<td class="sch-cell"><div class="sch-empty" ${canManageSchedule()?`data-act="shiftAdd" data-arg="${eid}|${date}" role="button" tabindex="0"`:''}>${canManageSchedule()?'+':''}</div></td>`;
+    return `<td class="sch-cell"><div class="sch-block s-${s.block}" ${canManageSchedule()?`data-act="shiftEdit" data-arg="${s.id}" role="button" tabindex="0"`:''} title="${s.start}–${s.end} · ${esc(s.role)}"><b>${s.start}–${s.end}</b><span>${esc(s.block)}${s.clockOut?' ✓':s.clockIn?' 🕒':''}</span></div></td>`;};
+  return `<div class="card pad" style="overflow-x:auto">
+    <div class="row between mb12"><b>Week of ${fmtDshort(days[0])}</b><span class="row" style="gap:6px"><button class="vchip" data-act="schNav" data-arg="-1">‹</button><button class="vchip" data-act="schNav" data-arg="0">This week</button><button class="vchip" data-act="schNav" data-arg="1">›</button></span></div>
+    <table class="sch-table"><thead><tr><th class="sch-name">Team member</th>${days.map(d=>`<th class="${d===todayISO()?'today':''}">${dn[new Date(d+'T12:00:00').getDay()]}<br><span class="tiny faint">${+d.slice(8,10)}</span></th>`).join('')}</tr></thead>
+    <tbody>${crew.map(e=>`<tr><td class="sch-name"><div class="row" style="gap:7px">${av(e,'xs')}<div class="col" style="gap:0"><b class="tiny" style="font-size:12px;white-space:nowrap">${esc(e.name)}</b><span class="tiny faint">${esc(e.team)}</span></div></div></td>${days.map(d=>cell(e.id,d)).join('')}</tr>`).join('')||'<tr><td colspan="8" class="tiny faint" style="padding:18px;text-align:center">No crew scheduled.</td></tr>'}</tbody></table></div>
+  <p class="tiny faint mt8">${canManageSchedule()?'Click any cell to add or edit a shift.':'Your shifts are highlighted. Clock in from the banner on shift days.'}</p>`;
+}
+function schedCoverage(){
+  const days=shiftWeekDays();const dn=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const sched=d=>(DB.shifts||[]).filter(s=>s.date===d).length;
+  const target=Math.max(3,Math.round(scheduleCrew().length*0.5));
+  const weekday=d=>{const x=new Date(d+'T12:00:00').getDay();return x!==0&&x!==6;};
+  return `<div class="card pad"><div class="row between"><b class="small">Daily coverage vs target (${target})</b><span class="tiny faint">red = understaffed</span></div>
+  <div class="mt12">${Chart.bars(days.map(d=>({label:dn[new Date(d+'T12:00:00').getDay()],v:sched(d),color:weekday(d)&&sched(d)<target?'var(--bad)':'#0d9488'})),{h:200})}</div>
+  <div class="col mt12" style="gap:6px">${days.filter(d=>weekday(d)&&sched(d)<target).map(d=>`<div class="row" style="gap:8px"><span class="badge b-warn">Understaffed</span><span class="small">${fmtD(d)} — ${sched(d)} scheduled, target ${target}</span></div>`).join('')||'<span class="tiny faint">✓ Every weekday meets the coverage target this week.</span>'}</div></div>`;
+}
+function schedSheets(){
+  const done=(DB.shifts||[]).filter(s=>s.status==='completed').sort((a,b)=>b.date.localeCompare(a.date));
+  const byEmp={};done.forEach(s=>{byEmp[s.employeeId]=(byEmp[s.employeeId]||0)+shiftHrs(s);});
+  return `<div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Team member</th><th>Date</th><th>Shift</th><th class="r">Hours</th><th>Status</th></tr></thead><tbody>
+  ${done.slice(0,40).map(s=>{const e=emp(s.employeeId);return `<tr><td>${e?esc(e.name):''}</td><td>${fmtDshort(s.date)}</td><td>${s.start}–${s.end}</td><td class="num">${shiftHrs(s).toFixed(1)}</td><td>${s.clockOut?badge('b-ok','out '+s.clockOut):badge('b-warn','no clock-out')}</td></tr>`;}).join('')||'<tr><td colspan="5" class="tiny faint" style="padding:16px;text-align:center">No completed shifts yet.</td></tr>'}</tbody></table></div>
+  <p class="tiny faint mt8">${done.length} completed shifts · ${Object.keys(byEmp).length} people · ${sum(Object.values(byEmp)).toFixed(0)} total hours this period.</p>`;
+}
+function shiftModal(s,presetEid,presetDate){
+  const crewEmps=activeEmps().filter(e=>['cx','ops'].includes(e.dept));
+  const cur=s?s.block:'Mid';
+  UI.modal({title:s?'Edit shift':'Add shift',body:`
+    <div class="field"><label>Team member</label><select id="sh-emp">${crewEmps.map(e=>`<option value="${e.id}" ${(s?s.employeeId:presetEid)===e.id?'selected':''}>${esc(e.name)} — ${esc(e.team)}</option>`).join('')}</select></div>
+    <div class="grid g2" style="gap:10px"><div class="field"><label>Date</label><input type="date" id="sh-date" value="${s?s.date:presetDate||todayISO()}"></div>
+    <div class="field"><label>Block</label><select id="sh-block">${[['Early','07:00','15:00','Early · 7a–3p'],['Mid','11:00','19:00','Mid · 11a–7p'],['Late','13:00','21:00','Late · 1p–9p']].map(b=>`<option value="${b[0]}|${b[1]}|${b[2]}" ${cur===b[0]?'selected':''}>${b[3]}</option>`).join('')}</select></div></div>`,
+    foot:`${s?`<button class="btn ghost" style="color:var(--bad)" data-act="shiftDel" data-arg="${s.id}">Delete</button>`:''}<span class="spacer"></span><button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0d9488" data-act="shiftSave" data-arg="${s?s.id:''}">Save shift</button>`});
+}
+ACT.shiftNew=()=>shiftModal(null,null,null);
+ACT.shiftAdd=arg=>{const [eid,date]=arg.split('|');shiftModal(null,eid,date);};
+ACT.shiftEdit=id=>{const s=byId(DB.shifts,id);if(s)shiftModal(s);};
+ACT.shiftSave=id=>{const eid=$('#sh-emp').value,date=$('#sh-date').value,parts=$('#sh-block').value.split('|'),e=emp(eid);if(!e)return;
+  if(id){const s=byId(DB.shifts,id);if(s)Object.assign(s,{employeeId:eid,date,block:parts[0],start:parts[1],end:parts[2],role:e.team});}
+  else DB.shifts.push({id:uid('SH'),employeeId:eid,date,role:e.team,block:parts[0],start:parts[1],end:parts[2],status:date<todayISO()?'completed':'scheduled',clockIn:null,clockOut:null});
+  audit('Shift saved',eid+' '+date);Store.save();UI.closeModal();render();UI.toast('Shift saved','🗓');};
+ACT.shiftDel=id=>{DB.shifts=DB.shifts.filter(s=>s.id!==id);Store.save();UI.closeModal();render();UI.toast('Shift removed','🗑️');};
+ACT.clockIn=id=>{const s=byId(DB.shifts,id);if(!s)return;s.clockIn=nowTime();Store.save();render();UI.toast('Clocked in at '+s.clockIn,'🕒');};
+ACT.clockOut=id=>{const s=byId(DB.shifts,id);if(!s)return;s.clockOut=nowTime();s.status='completed';audit('Shift clocked out',s.id);Store.save();render();UI.toast('Clocked out — nice work','✅');};
+ACT.setSchTab=a=>{UIS.schTab=a;tabSync('schedule',a);render();};
+ACT.schNav=d=>{UIS.schOff=(+d===0)?0:((UIS.schOff||0)+ +d);render();};
 /* the launcher: every admin surface in the company — gating group, live alert count, one click in */
 function hropsConsoles(){
   const myId=DB.me.employeeId;
@@ -11462,10 +12060,24 @@ window.Tour=Tour;
    ============================================================ */
 (function init(){
   try{if(localStorage.getItem('mosaic-theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}
-  Store.load();
-  applyBrand();
-  if(!location.hash)history.replaceState(null,'','#/home');
-  render();
+  /* boot-integrity guard: a single-file app can be felled by one ordering bug (e.g. TDZ on ACT).
+     Catch it and show a clear message instead of a silent blank page. */
+  try{
+    Store.load();
+    if(typeof ACT!=='object'||Object.keys(ACT).length<50)throw new Error('Action registry failed to initialize');
+    if(typeof CANNED==='undefined')throw new Error('Script halted before full initialization');
+    applyBrand();
+    if(!location.hash)history.replaceState(null,'','#/home');
+    render();
+  }catch(bootErr){
+    console.error('Mosaic boot error:',bootErr);
+    const main=document.querySelector('#main')||document.body;
+    main.innerHTML=`<div style="max-width:560px;margin:14vh auto;text-align:center;font-family:system-ui;color:#1f2433">
+      <div style="font-size:42px">🧩</div><h2 style="margin:10px 0 6px">Mosaic hit a snag starting up</h2>
+      <p style="color:#646a86;line-height:1.6">${(bootErr&&bootErr.message)||'Unknown error'}. This is almost always a stale cache — try a hard refresh, or reset the demo data.</p>
+      <button onclick="try{localStorage.removeItem('mosaic-demo-v1')}catch(e){};location.reload()" style="margin-top:14px;padding:9px 18px;border-radius:10px;border:none;background:#6366f1;color:#fff;font-weight:700;cursor:pointer">Reset & reload</button></div>`;
+    return;
+  }
   /* #9 PWA — registers only when actually served over http(s) */
   if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){try{navigator.serviceWorker.register('sw.js');}catch(e){}}
   /* #6 first-visit splash */

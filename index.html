@@ -601,10 +601,10 @@ html.dark .toast{background:#262b42;color:#eef0fa}
 @media(max-width:640px){
   .home-stats,.grid.g4:has(>.stat){display:flex!important;overflow-x:auto;gap:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:12px}
   .home-stats::-webkit-scrollbar,.grid.g4:has(>.stat)::-webkit-scrollbar{display:none}
-  .home-stats .stat,.grid.g4:has(>.stat) .stat{min-width:138px;flex:none;padding:10px 13px}
+  .home-stats .stat,.grid.g4:has(>.stat) .stat{min-width:150px;flex:none;padding:10px 13px}
   .home-stats .stat .val,.grid.g4:has(>.stat) .stat .val{font-size:19px}
   .home-stats .stat .tilebg,.grid.g4:has(>.stat) .stat .tilebg{display:none}
-  .home-stats .stat .sub,.grid.g4:has(>.stat) .stat .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+  .home-stats .stat .sub,.grid.g4:has(>.stat) .stat .sub{white-space:normal;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .kanban{scroll-snap-type:x mandatory}
   .kanban .kcol{scroll-snap-align:start}
   .req-meta{width:100%;gap:10px}
@@ -1142,6 +1142,8 @@ body.proxying #topbar{top:34px}
   .me-chip .who{display:none}
   #notif-pop{right:10px}
 }
+/* mobile-only action toggles (compact profile overflow) */
+.show-m{display:none}
 @media(max-width:640px){
   #tabbar{display:grid}
   #main{padding-bottom:130px}
@@ -1181,6 +1183,26 @@ body.proxying #topbar{top:34px}
   .crumb-name{overflow:hidden;text-overflow:ellipsis}
   .crumb-sub{display:none}
   input,select,textarea,.field input,.field select,.field textarea,.as-foot input,.filterbar input[type=search]{font-size:16px}
+  /* ---------- Mobile streamline (UI/UX pass) ---------- */
+  /* drop descriptive page subtitles — the module name already sits in the top bar */
+  .page-head .page-sub{display:none}
+  /* presenter/demo chrome off the hero (the single ▶ Demo reel primary stays) */
+  .page-head [data-act="parity"],.page-head [data-act="tourPick"],.page-head [data-act="resetDemo"]{display:none}
+  /* declutter card headers: drop the de-emphasised right-side caption (links & counts stay) */
+  .card-head .tiny.faint{display:none}
+  /* opt-in hide for leading in-content explainer blurbs */
+  .mhide{display:none!important}
+  /* compact profile header */
+  .prof-head{align-items:flex-start!important;gap:14px!important}
+  .prof-head .av.xxl{width:64px;height:64px;font-size:23px;border-radius:18px}
+  .prof-head>div:nth-child(2){min-width:0!important}
+  .prof-head .prof-side{align-items:stretch!important;width:100%}
+  .prof-head .prof-actions{justify-content:flex-start!important}
+  .prof-head .hide-m{display:none!important}
+  .prof-head .show-m{display:inline-flex!important}
+  /* tab strips: snap while scrolling */
+  .tabs{scroll-snap-type:x proximity}
+  .tabs>button{scroll-snap-align:start}
 }
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media print{#sidebar,#topbar{display:none}#main-wrap{margin:0}}
@@ -3738,11 +3760,17 @@ function profileView(id){
   const tabsAll=[['overview','Overview']].concat(canPersonal?[['personal','Personal info']]:[]).concat([['job','Job & Comp'],['time','Time Off'],['learning','Learning'],['perf','Performance'],['docs','Documents']]).concat(canPersonal?[['history','History']]:[]);
   const tab=tabsAll.some(t=>t[0]===UIS.profileTab)?UIS.profileTab:'overview';
   const tabs=tabsAll;
+  const _self=e.id===DB.me.employeeId;
+  const cEdit=isAdmin()||hasCap('edit-people');
+  const cBP=(isAdmin()||hasCap('hr-admin'))&&!_self;
+  const cPromo=canSeeComp(e)&&!_self&&e.level!=='E'&&e.status==='active'&&isManager();
+  const cOff=isAdmin()&&e.status==='active'&&!_self;
+  const canManage=cEdit||cBP||cPromo||cOff;
   return `
-  <div class="card pad mb16" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+  <div class="card pad mb16 prof-head" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
     ${av(e,'xxl')}
     <div style="flex:1;min-width:230px">
-      <div class="row" style="gap:10px;flex-wrap:wrap"><h1 class="page" style="font-size:21px">${esc(e.name)}</h1>${badge(e.status)}${e.id===DB.me.employeeId?'<span class="badge b-vio">That\'s you</span>':''}</div>
+      <div class="row" style="gap:10px;flex-wrap:wrap"><h1 class="page" style="font-size:21px">${esc(e.name)}</h1>${badge(e.status)}${_self?'<span class="badge b-vio">That\'s you</span>':''}</div>
       <div class="muted" style="margin-top:2px">${esc(e.title)} · ${deptName(e.dept)} · ${esc(e.location)}</div>
       <div class="row mt8 wrap" style="gap:14px;font-size:12.5px;color:var(--ink2)">
         <span class="row" style="gap:5px">${I.mail} ${esc(e.email)}</span>
@@ -3751,17 +3779,18 @@ function profileView(id){
         <span class="row" style="gap:5px">${esc(e.pronouns)}</span>
       </div>
     </div>
-    <div class="col" style="gap:8px;align-items:flex-end">
-      ${isAdmin()&&e.status==='active'&&e.id!==DB.me.employeeId?riskPill(flightRisk(e)):''}
+    <div class="col prof-side" style="gap:8px;align-items:flex-end">
+      ${isAdmin()&&e.status==='active'&&!_self?riskPill(flightRisk(e)):''}
       ${mgr?`<a class="chip" href="#/people/${mgr.id}" title="Manager">${av(mgr,'xs')} Reports to <b>${esc(mgr.name)}</b></a>`:'<span class="chip">Reports to the board</span>'}
-      <div class="row wrap" style="gap:7px;justify-content:flex-end">
+      <div class="row wrap prof-actions" style="gap:7px;justify-content:flex-end">
         <a class="btn sm soft" style="--brand:var(--c-people)" href="#/team/${e.id}" title="See ${esc(e.name.split(' ')[0])} on the org chart">${I.people} View team</a>
         <button class="btn sm soft" data-act="openPraise" data-arg="${e.id}">⭐ Praise</button>
-        ${e.id===DB.me.employeeId?'<button class="btn sm ghost" data-act="openTimeReq">🏖️ Time off</button>':''}
-        ${isAdmin()||hasCap('edit-people')?`<button class="btn sm ghost" data-act="editJob" data-arg="${e.id}">${I.edit} Edit job</button>`:''}
-        ${(isAdmin()||hasCap('hr-admin'))&&e.id!==DB.me.employeeId?`<button class="btn sm ghost" data-act="startBP" data-arg="${e.id}" title="Start a Workday-style business process for this worker">🧩 BP</button>`:''}
-        ${canSeeComp(e)&&e.id!==DB.me.employeeId&&e.level!=='E'&&e.status==='active'&&isManager()?`<button class="btn sm good" data-act="openPromote" data-arg="${e.id}">📈 Promote</button>`:''}
-        ${isAdmin()&&e.status==='active'&&e.id!==DB.me.employeeId?`<button class="btn sm ghost" data-act="openOffboard" data-arg="${e.id}">👋 Offboard</button>`:''}
+        ${_self?'<button class="btn sm ghost" data-act="openTimeReq">🏖️ Time off</button>':''}
+        ${cEdit?`<button class="btn sm ghost hide-m" data-act="editJob" data-arg="${e.id}">${I.edit} Edit job</button>`:''}
+        ${cBP?`<button class="btn sm ghost hide-m" data-act="startBP" data-arg="${e.id}" title="Start a Workday-style business process for this worker">🧩 BP</button>`:''}
+        ${cPromo?`<button class="btn sm good hide-m" data-act="openPromote" data-arg="${e.id}">📈 Promote</button>`:''}
+        ${cOff?`<button class="btn sm ghost hide-m" data-act="openOffboard" data-arg="${e.id}">👋 Offboard</button>`:''}
+        ${canManage?`<button class="btn sm ghost show-m" data-act="manageWorker" data-arg="${e.id}" title="More actions">⋯ Manage</button>`:''}
       </div>
     </div>
   </div>
@@ -3769,6 +3798,21 @@ function profileView(id){
   ${profileTab(e,tab,mgr,team)}`;
 }
 ACT.setProfileTab=a=>{UIS.profileTab=a;render();};
+/* Mobile overflow: the secondary worker actions (Edit job / BP / Promote / Offboard)
+   collapse behind a single ⋯ Manage button on phones — each opens its full modal. */
+ACT.manageWorker=id=>{
+  const e=emp(id);if(!e)return;
+  const self=e.id===DB.me.employeeId;
+  const acts=[];
+  if(isAdmin()||hasCap('edit-people'))acts.push(['editJob',`${I.edit} Edit job`,'Title, level, department, manager, comp']);
+  if((isAdmin()||hasCap('hr-admin'))&&!self)acts.push(['startBP','🧩 Start a business process','Run a Workday-style multi-step process']);
+  if(canSeeComp(e)&&!self&&e.level!=='E'&&e.status==='active'&&isManager())acts.push(['openPromote','📈 Promote','Move to a new level and band']);
+  if(isAdmin()&&e.status==='active'&&!self)acts.push(['openOffboard','👋 Offboard','Start the exit workflow']);
+  if(!acts.length){UI.toast('No management actions available','🔒');return;}
+  UI.modal({title:'Manage '+esc(e.name.split(' ')[0]),sub:'Pick an action — it opens the full form.',body:
+    `<div class="col" style="gap:9px">${acts.map(a=>`<button class="btn soft" style="justify-content:flex-start;width:100%;padding:12px 14px" data-act="${a[0]}" data-arg="${e.id}"><span class="col" style="gap:1px;align-items:flex-start;text-align:left"><b class="small">${a[1]}</b><span class="tiny faint">${a[2]}</span></span></button>`).join('')}</div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>`});
+};
 /* Round 9 #10: the new hire's own view of the journey their manager has been driving */
 function myJourneyCard(e){
   const ob=(DB.onboarding||[]).find(o=>o.employeeId===e.id);
@@ -11343,7 +11387,7 @@ function hropsConsoles(){
     <div class="row mt8" style="gap:6px"><span class="chip" style="font-size:10px" title="Security group that grants this console">🔑 ${esc(g.name)}</span>
       ${c.n?`<span class="tiny faint">${c.n} ${c.nLabel}</span>`:''}</div></div>`;};
   return `
-  <div class="row mb12" style="gap:8px"><span class="tiny faint" style="flex:1">One cockpit, every console — each lives in its own module with its own security group; this page just knows where they all are and what's on fire. Counts are live.</span></div>
+  <div class="row mb12 mhide" style="gap:8px"><span class="tiny faint" style="flex:1">One cockpit, every console — each lives in its own module with its own security group; this page just knows where they all are and what's on fire. Counts are live.</span></div>
   <div class="grid g3 mb16">${mine.map(card).join('')}</div>
   ${locked.length?`<div class="sec-head">Not granted to you (${locked.length}) — proxy as a group in the persona switcher to preview</div>
   <div class="grid g3">${locked.map(card).join('')}</div>`:''}
@@ -11769,7 +11813,7 @@ function hropsCal(){
   const sorted=items.filter(x=>x.d>=todayISO()).sort((a,b)=>a.d.localeCompare(b.d));
   let lastM=null;
   return `
-  <div class="row mb12" style="gap:8px"><span class="tiny faint" style="flex:1">Every operational deadline in one place — payroll cutoffs, compliance filings, cycle windows and holidays, with owners.</span>
+  <div class="row mb12 mhide" style="gap:8px"><span class="tiny faint" style="flex:1">Every operational deadline in one place — payroll cutoffs, compliance filings, cycle windows and holidays, with owners.</span>
     <button class="btn sm ghost" data-act="opsEventNew">＋ Add deadline</button></div>
   <div class="card pad">${sorted.map(x=>{const m=fmtD(x.d,{month:'long',year:'numeric'});
     const head=m!==lastM?`<div class="sec-head" style="margin-top:${lastM?'14px':'0'}">${m}</div>`:'';lastM=m;

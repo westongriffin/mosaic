@@ -163,10 +163,11 @@ html{touch-action:manipulation}
 .card-head .spacer{flex:1}
 .card-body{padding:16px 20px}
 .grid{display:grid;gap:16px}
+.grid>*{min-width:0}/* let grid tracks shrink below content — prevents page-wide overflow on mobile */
 .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}.g23{grid-template-columns:2fr 1fr}.g32{grid-template-columns:1fr 2fr}
 @media(max-width:1100px){.g3,.g4{grid-template-columns:repeat(2,1fr)}.g23,.g32{grid-template-columns:1fr}}
-@media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+@media(max-width:760px){.g2,.g3,.g4,.g23,.g32{grid-template-columns:1fr}}
 .row{display:flex;align-items:center;gap:10px}.row.between{justify-content:space-between}.row.wrap{flex-wrap:wrap}
 .col{display:flex;flex-direction:column;gap:4px}
 .spacer{flex:1}
@@ -295,6 +296,36 @@ html.dark .toast{background:#262b42;color:#eef0fa}
 .toast .t-ic{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;flex:none;font-size:11px}
 .toast a{color:#a5b4fc;font-weight:650}
 @keyframes toastIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+/* iPhone-style in-app notification banners */
+#banner-stack{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;flex-direction:column;gap:8px;padding:max(8px,env(safe-area-inset-top)) 10px 0;pointer-events:none;align-items:center}
+.ios-banner{pointer-events:auto;width:100%;max-width:430px;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid var(--line);border-radius:19px;box-shadow:0 10px 34px rgba(10,12,26,.2);padding:11px 14px;display:flex;gap:11px;align-items:center;cursor:pointer;transform:translateY(-150%);transition:transform .36s cubic-bezier(.3,.95,.35,1),opacity .22s}
+.ios-banner.in{transform:translateY(0)}
+.ios-banner.out{transform:translateY(-150%);opacity:0}
+.ib-app{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--bg2);flex:none}
+.ib-app svg{width:20px;height:20px}
+.ib-title{font-size:11.5px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}
+.ib-time{font-size:11px;color:var(--ink3);flex:none}
+.ib-msg{font-size:13.5px;line-height:1.4;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* settings switch rows */
+.set-row{gap:12px;padding:11px 13px;border-radius:12px;background:var(--card2);cursor:pointer}
+.set-row.locked{opacity:.62;cursor:not-allowed}
+/* demo reel overlay */
+#demo-overlay{position:fixed;inset:0;z-index:300;pointer-events:none;font-family:var(--font-ui)}
+#demo-prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(120,120,140,.15)}
+#demo-prog i{display:block;height:100%;width:0;background:var(--brand);transition:width .6s linear;box-shadow:0 0 10px var(--brand)}
+#demo-exit{position:absolute;top:12px;right:14px;pointer-events:auto;background:rgba(10,12,26,.55);color:#fff;border:none;border-radius:9px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);z-index:2}
+#demo-cap{position:absolute;left:0;right:0;bottom:0;padding:64px 9vw 46px;background:linear-gradient(to top,rgba(8,10,22,.86),rgba(8,10,22,.5) 55%,transparent);color:#fff;text-align:center;opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
+#demo-cap.show{opacity:1;transform:none}
+#demo-cap .dc-main{font-family:var(--font-display);font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.15;text-shadow:0 2px 30px rgba(0,0,0,.5)}
+#demo-cap .dc-sub{font-size:16.5px;margin-top:11px;opacity:.92;font-weight:500;max-width:760px;margin-left:auto;margin-right:auto}
+#demo-cap:not(.has-sub) .dc-sub{display:none}
+#demo-card{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 32% 18%,#1c2142,#0b0d18 72%);opacity:0;transition:opacity .7s ease;pointer-events:none}
+#demo-card.show{opacity:1}
+.demo-card-in{text-align:center;color:#fff;max-width:720px;padding:0 28px;animation:demoCard .9s cubic-bezier(.2,.85,.2,1)}
+.demo-card-in h1{font-family:var(--font-display);font-size:48px;font-weight:800;letter-spacing:-.03em;margin:22px 0 0;background:linear-gradient(115deg,#fff,#c2c6ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.demo-card-in p{font-size:18px;opacity:.86;margin-top:16px;line-height:1.65}
+@keyframes demoCard{from{opacity:0;transform:scale(.95) translateY(14px)}to{opacity:1;transform:none}}
+@media(max-width:640px){#demo-cap{padding:48px 7vw 110px}#demo-cap .dc-main{font-size:24px}#demo-cap .dc-sub{font-size:14px}.demo-card-in h1{font-size:34px}.demo-card-in p{font-size:15px}}
 
 /* ---------- command palette ---------- */
 #palette{position:fixed;inset:0;z-index:110;background:rgba(10,12,26,.5);backdrop-filter:blur(3px);display:grid;justify-items:center;align-items:start;padding-top:12vh;opacity:0;pointer-events:none;transition:opacity .15s}
@@ -733,10 +764,11 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,[tabindex]:focu
 .as-note{font-size:10px;color:var(--ink3);text-align:center;padding:0 0 8px}
 
 /* ---------- mobile bottom tab bar ---------- */
-#tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr)}
-#tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border-radius:10px;font-size:10px;font-weight:650;color:var(--ink3)}
+#tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-auto-flow:column;grid-auto-columns:1fr}
+#tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 1px;border-radius:10px;font-size:8.5px;font-weight:650;letter-spacing:-.02em;color:var(--ink3);min-width:0}
+#tabbar button span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #tabbar button.on{color:var(--mod,var(--brand))}
-#tabbar button svg{width:19px;height:19px}
+#tabbar button svg{width:18px;height:18px}
 
 /* ---------- risk badge ---------- */
 .risk-pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700}
@@ -749,29 +781,60 @@ html.dark .risk-low{color:#4ade9d}html.dark .risk-watch{color:#fbc34d}html.dark 
 html.dark .letter{background:#f4f4f6}
 
 /* ---------- workspace suite: chat ---------- */
-.chat-wrap{display:grid;grid-template-columns:230px 1fr;gap:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-height:560px;box-shadow:var(--shadow)}
-.chat-side{border-right:1px solid var(--line);background:var(--card2);padding:12px 8px;overflow-y:auto;max-height:72vh}
-.chat-side .nav-label{padding:10px 10px 4px}
-.ch-item{display:flex;align-items:center;gap:8px;width:100%;padding:6px 10px;border-radius:8px;font-size:13px;color:var(--ink2);text-align:left}
+.chat-wrap{display:grid;grid-template-columns:272px 1fr;gap:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-height:560px;box-shadow:var(--shadow)}
+.chat-side{border-right:1px solid var(--line);background:var(--card2);padding:10px 8px;overflow-y:auto;max-height:74vh;min-width:0}
+.chat-side .nav-label{padding:12px 10px 4px}
+.ch-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:12px;font-size:13px;color:var(--ink2);text-align:left}
 .ch-item:hover{background:var(--bg)}
-.ch-item.on{background:color-mix(in srgb,#6d28d9 12%,transparent);color:var(--ink);font-weight:650}
-.ch-item .hash{color:var(--ink3);font-weight:700}
-.ch-item .unread-dot{margin-left:auto;background:#6d28d9;color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:0 6px}
-.chat-main{display:flex;flex-direction:column;max-height:72vh}
-.chat-head{padding:12px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
-.chat-msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:2px}
-.msg{display:flex;gap:10px;padding:5px 8px;border-radius:10px;align-items:flex-start}
-.msg:hover{background:var(--card2)}
-.msg .m-body{flex:1;min-width:0}
-.msg .m-meta{font-size:11px;color:var(--ink3)}
-.msg .m-text{font-size:13.5px;line-height:1.55}
-.msg .m-reacts{display:flex;gap:5px;margin-top:3px}
-.msg .m-reacts .chip{padding:0 7px;font-size:11px;cursor:pointer}
-.chat-foot{padding:12px 16px;border-top:1px solid var(--line)}
-.chat-input{display:flex;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:8px 10px}
-.chat-input input{flex:1;border:none;outline:none;background:none;font-size:13.5px}
-.day-divider{display:flex;align-items:center;gap:10px;margin:10px 0 6px;color:var(--ink3);font-size:11px;font-weight:700}
-.day-divider:before,.day-divider:after{content:'';flex:1;height:1px;background:var(--line)}
+.ch-item.on{background:color-mix(in srgb,#6d28d9 13%,transparent)}
+.ch-av{flex:none;display:grid;place-items:center}
+.ch-hash{width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,#6d28d9 13%,var(--card));color:#6d28d9;display:grid;place-items:center;font-weight:800;font-size:17px}
+.ch-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.ch-name{font-weight:600;color:var(--ink);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-prev{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-item.has-unread .ch-name{font-weight:750}.ch-item.has-unread .ch-prev{color:var(--ink2)}
+.ch-end{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px;align-self:flex-start;padding-top:3px}
+.ch-time{font-size:11px;color:var(--ink3);white-space:nowrap}
+.ch-item .unread-dot{background:#6d28d9;color:#fff;font-size:10px;font-weight:700;border-radius:99px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
+.ch-new{color:var(--ink3);justify-content:flex-start;padding-left:14px}
+.chat-main{display:flex;flex-direction:column;max-height:74vh;min-width:0}
+.chat-head{padding:11px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.chat-back{display:none;width:30px;height:30px;border:none;background:none;color:var(--brand);font-size:28px;line-height:1;cursor:pointer;flex:none;align-items:center;justify-content:center;margin-left:-6px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:2px;background:var(--card)}
+/* ---- iMessage bubbles ---- */
+.imsg{display:flex;gap:7px;align-items:flex-end;margin-top:10px}
+.imsg.cont{margin-top:2px}
+.imsg.me{flex-direction:row-reverse}
+.imsg-gut{width:28px;flex:none;display:flex;align-items:flex-end}
+.imsg-gut .av{width:28px;height:28px;font-size:10px}
+.imsg-col{display:flex;flex-direction:column;min-width:0;max-width:80%}
+.imsg.me .imsg-col{align-items:flex-end}
+.imsg-name{font-size:11px;color:var(--ink3);font-weight:650;padding:0 8px 3px}
+.imsg-name .imsg-time{font-weight:500;opacity:.7}
+.imsg-line{display:flex;align-items:center;gap:5px;max-width:100%}
+.imsg.me .imsg-line{flex-direction:row-reverse}
+.imsg-bubble{font-size:14px;line-height:1.42;padding:8px 13px;border-radius:19px;color:var(--ink);overflow-wrap:anywhere;min-width:0}
+.imsg.them .imsg-bubble{background:color-mix(in srgb,var(--ink) 8%,var(--card));border-bottom-left-radius:7px}
+.imsg.them.cont .imsg-bubble{border-bottom-left-radius:19px}
+.imsg.me .imsg-bubble{background:var(--brand);color:#fff;border-bottom-right-radius:7px}
+.imsg.me.cont .imsg-bubble{border-bottom-right-radius:19px}
+.imsg.me .imsg-bubble .mention{color:#fff;background:rgba(255,255,255,.22)}
+.imsg-edited{font-size:10px;opacity:.6}
+.imsg-file{margin-top:6px;font-size:12px;background:rgba(0,0,0,.06);border-radius:10px;padding:5px 9px;cursor:pointer}
+.imsg.me .imsg-file{background:rgba(255,255,255,.2)}
+.imsg-acts{display:flex;gap:1px;opacity:0;transition:opacity .12s;flex:none}
+.imsg:hover .imsg-acts{opacity:1}
+.imsg-act{width:26px;height:26px;border:none;background:none;cursor:pointer;border-radius:50%;font-size:13px;color:var(--ink3);display:grid;place-items:center}
+.imsg-act:hover{background:var(--card2)}
+.imsg-reacts{display:flex;gap:4px;margin:3px 4px 0;flex-wrap:wrap}
+.rpill{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:1px 8px;font-size:11px;cursor:pointer;box-shadow:var(--shadow)}
+.imsg .thread-chip{margin:5px 6px 0}
+.chat-foot{padding:10px 14px;border-top:1px solid var(--line);background:var(--card)}
+.chat-input{display:flex;gap:8px;align-items:center;background:var(--bg);border:1.5px solid var(--line);border-radius:22px;padding:5px 6px 5px 8px}
+.chat-input input{flex:1;border:none;outline:none;background:none;font-size:14px;padding:6px 4px}
+.chat-input>.btn{border-radius:50%;width:34px;height:34px;padding:0;flex:none}
+.day-divider{display:flex;align-items:center;gap:10px;margin:14px 0 8px;color:var(--ink3);font-size:11px;font-weight:700;justify-content:center}
+.day-divider:before,.day-divider:after{content:'';width:54px;height:1px;background:var(--line)}
 
 /* ---------- mail ---------- */
 .mail-wrap{display:grid;grid-template-columns:190px 1fr;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-height:540px;box-shadow:var(--shadow)}
@@ -832,11 +895,21 @@ html.dark .letter{background:#f4f4f6}
 .post .pin{color:#0891b2;font-size:11px;font-weight:700}
 
 @media(max-width:900px){
-  .chat-wrap,.mail-wrap{grid-template-columns:1fr}
-  /* on mobile the rails become horizontal scrollers instead of disappearing */
-  .chat-side,.mail-side{display:flex;flex-direction:row;align-items:center;gap:4px;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);padding:8px;max-height:none;-webkit-overflow-scrolling:touch}
-  .chat-side .nav-label,.mail-side .nav-label,.chat-side .divider,.mail-side .divider,.chat-side p,.mail-side p,.chat-side .row.between,#chat-q,#chat-search-res{display:none}
-  .chat-side .ch-item,.mail-side .ch-item{width:auto;white-space:nowrap;flex:none}
+  /* mail keeps its horizontal rail */
+  .mail-wrap{grid-template-columns:1fr}
+  .mail-side{display:flex;flex-direction:row;align-items:center;gap:4px;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);padding:8px;max-height:none;-webkit-overflow-scrolling:touch}
+  .mail-side .nav-label,.mail-side .divider,.mail-side p,.mail-side .row.between{display:none}
+  .mail-side .ch-item{width:auto;white-space:nowrap;flex:none}
+  /* chat → iMessage list ↔ full-screen thread */
+  .chat-ph{display:none}
+  .chat-wrap{grid-template-columns:1fr;border:none;border-radius:0;box-shadow:none;background:transparent;min-height:0}
+  .chat-side{border-right:none;max-height:none;overflow-y:visible;padding:0 0 12px;background:transparent}
+  .chat-back{display:flex}
+  .chat-wrap.conv-open .chat-side{display:none}
+  .chat-wrap:not(.conv-open) .chat-main{display:none}
+  .chat-wrap.conv-open{height:calc(100dvh - 92px)}
+  .chat-wrap.conv-open .chat-main{height:100%;max-height:none;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .chat-head{position:sticky;top:0;z-index:2;background:var(--card)}
   .meet-wrap{grid-template-columns:1fr}
   .meet-panel{max-height:240px}
   .cal-layout{grid-template-columns:1fr!important}
@@ -1059,7 +1132,10 @@ body.proxying #topbar{top:34px}
   #sidebar{transform:translateX(-105%)}
   #sidebar.open{transform:none}
   #main-wrap{margin-left:0}
-  #main{padding:18px 16px 60px}
+  #main{padding:18px 16px 60px;overflow-x:clip}
+  /* hard guarantee: no view can push the page sideways on mobile */
+  body,#app,#main-wrap{overflow-x:clip;max-width:100vw}
+  #main .seg{flex-wrap:wrap}
   #menu-btn{display:grid}
   .searchpill{display:none}
   .role-switch button{padding:5px 8px;font-size:11px}
@@ -1069,6 +1145,14 @@ body.proxying #topbar{top:34px}
 @media(max-width:640px){
   #tabbar{display:grid}
   #main{padding-bottom:130px}
+  /* task rows: keep the title on its own line, wrap the meta chips beneath (they were squeezing the title to zero width) */
+  .task-row{flex-wrap:wrap;row-gap:3px}
+  .task-row .t-meta{flex:1 1 100%;padding-left:28px;justify-content:flex-start;flex-wrap:wrap;row-gap:5px}
+  /* full-screen iMessage thread: fill to just above the tab bar, drop the dead bottom padding */
+  #main:has(.chat-wrap.conv-open){padding-bottom:0}
+  .chat-wrap.conv-open{height:calc(100dvh - 140px)}
+  /* the AI FAB would sit on the composer in a thread — get it out of the way */
+  body:has(.chat-wrap.conv-open) #assist-fab{display:none}
   #assist-fab{bottom:84px;right:14px;width:48px;height:48px}
   #assist-panel{bottom:142px;right:14px;height:480px}
   #toasts{bottom:150px;right:14px}
@@ -1088,6 +1172,9 @@ body.proxying #topbar{top:34px}
      always fully visible and uniform across every page */
   #topbar{padding:0 12px;gap:8px}
   #topbar .topbtn,#topbar .topnew,#topbar .me-chip{flex:none}
+  /* the search pill (flex:1) that normally pushes the actions right is hidden on mobile —
+     so right-justify the action group (New task · persona · alerts · profile) explicitly */
+  #topbar .topnew{margin-left:auto}
   #topbar>.iconbtn{display:none}
   #topbar [data-act="toggleTheme"]{display:none}
   .crumb{font-size:15px;max-width:54vw;overflow:hidden;text-overflow:ellipsis}
@@ -1118,6 +1205,7 @@ body.proxying #topbar{top:34px}
 <div id="notif-pop"></div>
 <div id="emoji-pop"></div>
 <div id="toasts" role="status" aria-live="polite"></div>
+<div id="banner-stack" role="status" aria-live="polite"></div>
 <div id="tour-veil"></div>
 <div id="tour-pop"></div>
 <button id="assist-fab" data-act="toggleAssist" title="Ask Mosaic" aria-label="Ask Mosaic assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L20 10l-6.1 1.4L12 17l-1.9-5.6L4 10l6.1-1.4L12 3Z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg></button>
@@ -2584,7 +2672,7 @@ const canSee=mod=>{
     intranet:['admin','manager','employee'],chat:['admin','manager','employee'],mail:['admin','manager','employee'],
     cal:['admin','manager','employee'],drive:['admin','manager','employee'],meet:['admin','manager','employee'],
     sign:['admin','manager','employee'],flows:['admin','manager','employee'],cheers:['admin','manager','employee'],benefits:['admin','manager','employee'],
-    spend:['admin','manager','employee'],schedule:['admin','manager','employee'],dept:['admin','manager','employee'],map:['admin','manager','employee'],careers:['admin','manager','employee'],team:['admin','manager','employee'],command:['admin','manager','employee'],qa:['admin']};
+    spend:['admin','manager','employee'],schedule:['admin','manager','employee'],dept:['admin','manager','employee'],map:['admin','manager','employee'],careers:['admin','manager','employee'],team:['admin','manager','employee'],command:['admin','manager','employee'],settings:['admin','manager','employee'],qa:['admin']};
   if((map[mod]||[]).includes(role))return true;
   /* group grants stack on top of the role baseline */
   return groupsOf(DB.me.employeeId).some(g=>g.modules&&g.modules.includes(mod));
@@ -2602,6 +2690,34 @@ function notify(forId,icon,text,link){
   const prefs=(DB.notifPrefs||{})[forId];
   if(prefs){const ch=notifChannelOf(icon,text);if(prefs[ch]===false)return;}
   DB.notifications.unshift({id:uid('N'),forId,icon,text,at:todayISO(),link:link||'#/home',read:false});
+  /* real-time delivery only for the person currently using the app */
+  if(forId===DB.me.employeeId)deliverNotif(icon,text,link||'#/home');
+}
+/* in-app iPhone-style banner + (opt-in) OS push */
+function deliverNotif(icon,text,link){
+  const prefs=(DB.notifPrefs||{})[DB.me.employeeId]||{};
+  if(prefs.digest)return; /* digest mode silences real-time pings */
+  if(prefs.banner!==false)showBanner(icon,text,link);
+  if(prefs.push&&typeof Notification!=='undefined'&&Notification.permission==='granted'){
+    try{const n=new Notification((typeof brandName==='function'?brandName():'Mosaic'),{body:String(text).replace(/<[^>]+>/g,''),tag:'mosaic-'+Math.round(performance?0:0)});n.onclick=()=>{try{window.focus();}catch(e){}nav(link);n.close();};}catch(e){}
+  }
+}
+function showBanner(icon,text,link){
+  const stack=document.getElementById('banner-stack');if(!stack)return;
+  const b=document.createElement('div');b.className='ios-banner';
+  b.innerHTML=`<span class="ib-app">${typeof logoSVG==='function'?logoSVG(20):'🟦'}</span>
+    <span class="col" style="gap:1px;flex:1;min-width:0">
+      <span class="row between" style="gap:8px"><b class="ib-title">Mosaic</b><span class="ib-time">now</span></span>
+      <span class="ib-msg">${icon||'🔔'} ${text}</span></span>`;
+  let t1,sy=null;
+  const dismiss=()=>{clearTimeout(t1);b.classList.remove('in');b.classList.add('out');setTimeout(()=>b.remove(),340);};
+  b.onclick=()=>{nav(link||'#/home');dismiss();};
+  b.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;},{passive:true});
+  b.addEventListener('touchmove',e=>{if(sy!=null){const dy=e.touches[0].clientY-sy;if(dy<0)b.style.transform='translateY('+dy+'px)';}},{passive:true});
+  b.addEventListener('touchend',e=>{if(sy!=null){const dy=e.changedTouches[0].clientY-sy;if(dy<-28)dismiss();else b.style.transform='';sy=null;}});
+  stack.appendChild(b);
+  requestAnimationFrame(()=>b.classList.add('in'));
+  t1=setTimeout(dismiss,4800);
 }
 
 /* ---------------- unified action inbox (derived, cross-module) ---------------- */
@@ -3012,6 +3128,8 @@ function palCommands(){
     {label:'Ask People — log a case',sub:'HR helpdesk ticket',cmd:'openNewCase'},
     {label:'Pick a guided tour 🧭',sub:'Four scripted stories through Mosaic',cmd:'tourPick'},
     {label:'Capability map',sub:'Everything Mosaic replaces, in one grid',cmd:'nav',arg:'#/map'},
+    {label:'▶ Play the demo reel',sub:'Self-running 60-second highlight tour — hit record',cmd:'demoPlay'},
+    {label:'Notification & app settings',sub:'Push, in-app banners, categories, appearance',cmd:'nav',arg:'#/settings'},
     {label:'Toggle dark mode',sub:'Easier on the eyes',cmd:'toggleTheme'},
     {label:'Keyboard shortcuts',sub:'g+h, g+p, ⌘K, ? …',cmd:'kbHelp'},
     {label:'Reset demo data',sub:'Back to the pristine seeded world',cmd:'resetDemo'}
@@ -3176,7 +3294,9 @@ const ACT={
         <span class="badge ${role==='admin'?'b-vio':role==='manager'?'b-info':'b-mute'}">${cap(role)}</span>${myRole()===role?'<span style="color:var(--ok)">✓</span>':''}</button>`;}).join('')
       +((myRole()==='admin'||DB.me.proxy)?`<div class="divider" style="margin:8px 4px"></div>
       <button class="pp-row" data-act="openProxy" data-arg="person"><span style="font-size:17px">🎭</span><span class="col" style="gap:0;flex:1"><b class="small">Proxy as anyone</b><span class="tiny faint">see their exact Mosaic, audit-logged</span></span></button>
-      <button class="pp-row" data-act="openProxy" data-arg="group"><span style="font-size:17px">🛡️</span><span class="col" style="gap:0;flex:1"><b class="small">Preview a security group</b><span class="tiny faint">see exactly what a group grants</span></span></button>`:'');
+      <button class="pp-row" data-act="openProxy" data-arg="group"><span style="font-size:17px">🛡️</span><span class="col" style="gap:0;flex:1"><b class="small">Preview a security group</b><span class="tiny faint">see exactly what a group grants</span></span></button>`:'')
+      +`<div class="divider" style="margin:8px 4px"></div>
+      <button class="pp-row" data-act="nav" data-arg="#/settings"><span style="font-size:17px">⚙️</span><span class="col" style="gap:0;flex:1"><b class="small">Settings</b><span class="tiny faint">notifications, banners, appearance</span></span></button>`;
     p.classList.add('open');},
   toggleTheme(){
     const dark=document.documentElement.classList.toggle('dark');
@@ -3319,6 +3439,7 @@ Views.home=()=>{
   <div class="page-head">
     <div style="flex:1"><h1 class="page">${greet}, ${esc(my.name.split(' ')[0])} 👋</h1>
     <div class="page-sub">${now().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · ${esc(brandName())} · ${esc(COMPANY.tagline)}</div></div>
+    <button class="btn primary" style="--brand:#6366f1;--brand-deep:#4f46e5" data-act="demoPlay" title="Self-running highlight reel — hit record">▶ Demo reel</button>
     <button class="btn soft" data-act="tourPick">${I.spark} Guided tours</button>
     <button class="btn ghost" data-act="resetDemo">${I.refresh} Reset demo</button>
   </div>
@@ -3697,24 +3818,149 @@ function dataTransparencyCard(e){
     </div>
     <p class="tiny faint mt8">Want to preview a group's view yourself? Admin → Security → proxy as a group.</p></div>`;
 }
-ACT.notifPrefs=()=>{
-  const p=(DB.notifPrefs||{})[DB.me.employeeId]||{};
-  UI.modal({title:'🔔 Notification preferences',sub:'Yours alone — badge what matters, mute the rest. Approvals you owe people can\'t be fully silenced.',body:`
-    <div class="col" style="gap:4px">${NOTIF_CHANNELS.map(c=>{const on=c[0]==='digest'?!!p.digest:p[c[0]]!==false;const locked=c[0]==='approvals';
-      return `<label class="row between" style="gap:10px;padding:10px 12px;border-radius:11px;background:var(--card2);cursor:${locked?'not-allowed':'pointer'};opacity:${locked?.7:1}">
-        <span class="small">${c[1]}</span>
-        <input type="checkbox" ${on?'checked':''} ${locked?'disabled':''} onchange="ACT.notifPrefSet('${c[0]}|'+this.checked)" style="width:17px;height:17px;accent-color:var(--brand)"></label>`;}).join('')}</div>
-    <p class="tiny faint mt12">Daily digest rolls non-urgent notifications into one morning summary instead of pinging you all day.</p>`,
-    foot:'<button class="btn primary" data-act="closeModal">Done</button>'});
-};
+/* the gear in the notif popover (and anywhere else) now opens the full Settings page */
+ACT.notifPrefs=()=>{closePopovers();nav('#/settings');if(location.hash==='#/settings')render();};
 ACT.notifPrefSet=arg=>{
   const [ch,val]=arg.split('|');
   (DB.notifPrefs=DB.notifPrefs||{})[DB.me.employeeId]=DB.notifPrefs[DB.me.employeeId]||{};
   DB.notifPrefs[DB.me.employeeId][ch]=val==='true';
   audit('Notification preference',ch+' → '+val);
   Store.save();
-  UI.toast(ch==='digest'?(val==='true'?'Daily digest on — quiet until morning':'Real-time notifications back on'):'Preference saved','🔔');
+  if(ch==='banner'&&val==='true')showBanner('🔔','In-app banners are on — alerts will appear up here','#/settings');
+  else UI.toast(ch==='digest'?(val==='true'?'Daily digest on — quiet until morning':'Real-time notifications back on'):'Preference saved','🔔');
+  if(ROUTE.mod==='settings')render();
 };
+/* ============================================================
+   USER SETTINGS — notifications (push + iPhone-style banners), appearance, data
+   ============================================================ */
+Views.settings=()=>{
+  const p=(DB.notifPrefs||{})[DB.me.employeeId]||{};
+  const perm=typeof Notification!=='undefined'?Notification.permission:'unsupported';
+  const sw=(label,sub,on,onchange,locked)=>`<label class="row between set-row${locked?' locked':''}">
+    <span class="col" style="gap:1px;min-width:0"><b class="small">${label}</b>${sub?`<span class="tiny faint">${sub}</span>`:''}</span>
+    <span class="switch" style="flex:none"><input type="checkbox" ${on?'checked':''} ${locked?'disabled':''} onchange="${onchange}"><span class="sw-track"></span></span></label>`;
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Settings</h1>
+    <div class="page-sub">Your preferences — how and what you're notified about, appearance, and your data.</div></div></div>
+  <div class="grid g2">
+    <div class="col" style="gap:16px">
+      <div class="card pad"><b class="small">🔔 How you're notified</b>
+        <div class="col mt12" style="gap:8px">
+          ${sw('Push notifications',perm==='denied'?'Blocked in your browser — re-enable in site settings':(perm==='unsupported'?'Not supported in this browser':'OS alerts even when Mosaic isn\'t open'),p.push&&perm==='granted',"ACT.notifPushToggle(this.checked)",perm==='denied'||perm==='unsupported')}
+          ${sw('In-app banners','Temporary banners slide in from the top — like iPhone',p.banner!==false,"ACT.notifPrefSet('banner|'+this.checked)")}
+          ${sw('Daily digest','Roll non-urgent alerts into one morning summary',!!p.digest,"ACT.notifPrefSet('digest|'+this.checked)")}
+        </div>
+        <div class="row mt12" style="gap:8px"><button class="btn xs soft" data-act="notifTest">🔔 Preview a banner</button>${p.push&&perm==='granted'?`<button class="btn xs soft" data-act="notifTestPush">📲 Preview a push</button>`:''}</div>
+      </div>
+      <div class="card pad"><b class="small">📂 What you're notified about</b>
+        <div class="col mt12" style="gap:8px">${NOTIF_CHANNELS.filter(c=>c[0]!=='digest').map(c=>{const on=p[c[0]]!==false;const locked=c[0]==='approvals';
+          return sw(c[1],locked?'Approvals you owe people can\'t be fully silenced':'',on,"ACT.notifPrefSet('"+c[0]+"|'+this.checked)",locked);}).join('')}</div>
+        <p class="tiny faint mt12">These apply to the bell, the banners and push alike — mute a category everywhere at once.</p>
+      </div>
+    </div>
+    <div class="col" style="gap:16px">
+      <div class="card pad"><b class="small">🎨 Appearance</b>
+        <div class="col mt12" style="gap:8px">${sw('Dark mode','Easier on the eyes at night',document.documentElement.classList.contains('dark'),"ACT.toggleTheme()")}</div>
+      </div>
+      <div class="card pad"><b class="small">👤 Account</b>
+        <div class="col mt10" style="gap:6px">
+          <a class="btn sm ghost" style="justify-content:flex-start" href="#/people/${DB.me.employeeId}">${av(me(),'xs')} My profile</a>
+          <button class="btn sm ghost" style="justify-content:flex-start" data-act="dataExport" data-arg="${DB.me.employeeId}">⬇️ Export my data (GDPR)</button>
+          <div class="row" style="gap:6px;flex-wrap:wrap">${['employee','manager','admin'].map(r=>`<button class="btn xs ${myRole()===r?'primary':'ghost'}" data-act="switchRole" data-arg="${r}">${cap(r)}</button>`).join('')}</div>
+          <span class="tiny faint">Demo persona — switch the seat you're viewing Mosaic from.</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+};
+ACT.notifTest=()=>showBanner('🎉','Camille Laurent reacted 💜 to your update',brandName?'#/command':'#/home');
+ACT.notifTestPush=()=>{try{const n=new Notification(brandName(),{body:'You have 3 approvals waiting in your Command Center.'});n.onclick=()=>{window.focus();nav('#/command');n.close();};}catch(e){UI.toast('Push preview failed','📲');}};
+ACT.notifPushToggle=async checked=>{
+  if(checked){
+    if(typeof Notification==='undefined'){UI.toast('This browser doesn\'t support notifications','🔔');render();return;}
+    let perm=Notification.permission;
+    if(perm==='default'){try{perm=await Notification.requestPermission();}catch(e){perm='denied';}}
+    if(perm==='granted'){ACT.notifPrefSet('push|true');try{const n=new Notification(brandName(),{body:'Push notifications are on. You\'ll get alerts even when Mosaic is in the background.'});n.onclick=()=>{window.focus();n.close();};}catch(e){}}
+    else{ACT.notifPrefSet('push|false');UI.toast('Notifications are blocked — enable them in your browser\'s site settings','🔔');}
+  }else ACT.notifPrefSet('push|false');
+  if(ROUTE.mod==='settings')render();
+};
+/* ============================================================
+   DEMO REEL — a self-running, screen-recordable highlight tour
+   (captions are baked in; pairs with the voiceover script)
+   ============================================================ */
+const DEMO=[
+  {t:'card',cap:'The technology that powers work.',sub:'Everything work runs on — in one place.',dwell:5000},
+  {t:'scene',go:()=>nav('#/home'),cap:'Your whole company, live.',sub:'No mockups — every screen reads from one shared data spine.',dwell:3400},
+  {t:'montage',mods:['people','recruit','grow','pay','spend','flows','chat','insights'],cap:'25+ modules. One login. One source of truth.',sub:'People · Hiring · Performance · Pay · Spend · Work · Comms · Insight.',dwell:9200},
+  {t:'scene',go:()=>nav('#/recruit/R-104'),cap:'Now watch one action ripple across the company.',sub:'Alex Rivera is at the offer stage — and just accepted.',dwell:3200},
+  {t:'scene',go:()=>{try{ACT.openHire('C101');}catch(e){}},cap:'One click to hire.',sub:'',dwell:2600},
+  {t:'scene',go:()=>{try{ACT.confirmHire('C101');}catch(e){}},cap:'One action. Six modules update themselves.',sub:'HRIS record · onboarding journey · compliance courses · 30-60-90 goals · benefits · headcount — automatically.',dwell:6200},
+  {t:'scene',go:()=>{try{UI.closeModal();}catch(e){}ACT.switchRole('manager');},cap:'The same app, from a manager’s seat.',sub:'The entire interface re-permissions itself, live.',dwell:2900},
+  {t:'scene',go:()=>ACT.switchRole('employee'),cap:'…and an employee’s seat.',sub:'Security groups decide what each person sees — not hard-coded screens.',dwell:3000},
+  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}},cap:'Meet the AI copilot.',sub:'It doesn’t just answer questions — it gets work done.',dwell:3400},
+  {t:'scene',go:()=>{try{Assist.send('Create a task to prep the board deck');}catch(e){}},cap:'Plain English in. Real work staged out.',sub:'Every action waits for your confirmation first.',dwell:3400},
+  {t:'scene',go:()=>{try{[...(AI_PENDING||[])].forEach(a=>ACT.aiRunAction(a.id));}catch(e){}},cap:'Confirmed — done.',sub:'A meeting booked and a task created, in the right modules.',dwell:3000},
+  {t:'scene',go:()=>{try{if(Assist.open)Assist.toggle();}catch(e){}nav('#/command');},cap:'Everything that needs you, everywhere — one queue.',sub:'Approvals, tasks, signatures, cases — drawn live from every module.',dwell:3400},
+  {t:'scene',go:()=>nav('#/insights/dashboards'),cap:'Build any view of the business.',sub:'Drag-free dashboards, computed from the same live records.',dwell:3200},
+  {t:'scene',go:()=>nav('#/chat'),cap:'Craft in every corner.',sub:'Real-time messaging, desktop to mobile.',dwell:2600},
+  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}},cap:'Light or dark — instantly.',sub:'',dwell:2400},
+  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}nav('#/qa');},cap:'And it holds itself honest.',sub:'94 of 94 self-tests green — the same suite that runs after every change.',dwell:3800},
+  {t:'card',cap:'Mosaic',sub:'Created by Wes Griffin. One self-contained file. Zero dependencies. Designed & built with AI.',dwell:6500,close:true},
+];
+const Demo={
+  running:false,timers:[],i:0,
+  start(){
+    if(this.running)return;this.running=true;this.i=0;
+    try{DB=buildSeed();Store.save(true);}catch(e){}
+    try{if(Assist.open)Assist.toggle();UI.closeModal();UI.closeDrawer();closePopovers();}catch(e){}
+    document.body.classList.add('demo-mode');
+    location.hash='#/home';this.mount();render();
+    this.timers.push(setTimeout(()=>this.step(),400));
+  },
+  mount(){
+    let o=document.getElementById('demo-overlay');
+    if(!o){o=document.createElement('div');o.id='demo-overlay';document.body.appendChild(o);}
+    o.innerHTML=`<div id="demo-prog"><i></i></div>
+      <button id="demo-exit" onclick="Demo.stop()" title="Exit demo">✕ Exit</button>
+      <div id="demo-card"></div>
+      <div id="demo-cap"><div class="dc-main"></div><div class="dc-sub"></div></div>`;
+  },
+  caption(main,sub){const c=document.getElementById('demo-cap');if(!c)return;
+    if(!main){c.classList.remove('show');return;}
+    c.classList.remove('show');
+    setTimeout(()=>{const m=c.querySelector('.dc-main'),s=c.querySelector('.dc-sub');if(!m)return;m.innerHTML=main;s.innerHTML=sub||'';c.classList.toggle('has-sub',!!sub);c.classList.add('show');},170);
+  },
+  card(main,sub){const el=document.getElementById('demo-card');if(!el)return;
+    el.innerHTML=main?`<div class="demo-card-in">${logoSVG(60)}<h1>${main}</h1>${sub?`<p>${sub}</p>`:''}</div>`:'';
+    el.classList.toggle('show',!!main);
+  },
+  step(){
+    if(!this.running)return;
+    if(this.i>=DEMO.length){this.stop();return;}
+    const s=DEMO[this.i];
+    const total=DEMO.reduce((a,x)=>a+x.dwell,0),done=DEMO.slice(0,this.i+1).reduce((a,x)=>a+x.dwell,0);
+    const pr=document.querySelector('#demo-prog i');if(pr)pr.style.width=(done/total*100)+'%';
+    try{
+      if(s.t==='card'){this.caption('');this.card(s.cap,s.sub);}
+      else if(s.t==='montage'){this.card('');this.caption(s.cap,s.sub);this.montage(s.mods);}
+      else {this.card('');if(s.go)s.go();this.caption(s.cap,s.sub);}
+    }catch(e){}
+    this.i++;
+    this.timers.push(setTimeout(()=>this.step(),s.dwell));
+  },
+  montage(mods){let k=0;const adv=()=>{if(!this.running||k>=mods.length)return;try{nav('#/'+mods[k]);}catch(e){}k++;this.timers.push(setTimeout(adv,1120));};adv();},
+  stop(){
+    this.running=false;this.timers.forEach(clearTimeout);this.timers=[];
+    document.body.classList.remove('demo-mode');
+    const o=document.getElementById('demo-overlay');if(o)o.remove();
+    try{if(Assist.open)Assist.toggle();UI.closeModal();UI.closeDrawer();}catch(e){}
+    try{DB=buildSeed();Store.save(true);}catch(e){}
+    location.hash='#/home';render();
+    UI.toast('Demo reel ended — world reset','🎬');
+  }
+};
+ACT.demoPlay=()=>Demo.start();
 ACT.dataExport=eid=>{
   const e=emp(eid);if(!e||(e.id!==DB.me.employeeId&&!isAdmin()))return;
   const pkg={exportedAt:todayISO(),subject:e.name,note:'Your Mosaic data, on demand — the kind of access GDPR/CCPA require.',
@@ -7422,12 +7668,10 @@ function renderProxyBar(){
    MOBILE TAB BAR
    ============================================================ */
 function renderTabbar(){
-  const my=me();
-  const items=[['home','Home','home','var(--c-home)'],['time','Time','time','var(--c-time)'],['learn','Learn','learn','var(--c-learn)'],['grow','Grow','grow','var(--c-grow)']];
-  const onMe=ROUTE.mod==='people'&&ROUTE.param===my.id;
-  $('#tabbar').innerHTML=items.map(it=>`
-    <button class="${ROUTE.mod===it[0]&&!onMe?'on':''}" style="--mod:${it[3]}" data-act="nav" data-arg="#/${it[0]}">${I[it[2]]}${it[1]}</button>`).join('')+
-    `<button class="${onMe?'on':''}" style="--mod:var(--c-people)" data-act="nav" data-arg="#/people/${my.id}">${I.people}Me</button>`;
+  const items=[['home','Home'],['command','Command'],['people','People'],['chat','Messages'],['mail','Mail'],['cal','Calendar'],['flows','Workflows']].filter(it=>canSee(it[0]));
+  $('#tabbar').innerHTML=items.map(it=>{const m=modOf(it[0])||{};
+    return `<button class="${ROUTE.mod===it[0]?'on':''}" style="--mod:${m.color||'var(--brand)'}" data-act="nav" data-arg="#/${it[0]}">${I[m.icon]||I.home}<span>${it[1]}</span></button>`;}).join('')+
+    `<button style="--mod:var(--brand)" onclick="openPalette()" aria-label="Search Mosaic">${I.search}<span>Search</span></button>`;
 }
 
 /* ============================================================
@@ -8041,29 +8285,54 @@ function mentionNotify(text,ch){
     if(hit)notify(hit.id,'💬',`${me().name} mentioned you in ${ch.dm?'a DM':'#'+ch.name}`,'#/chat/'+ch.id);
   });
 }
-function msgHtml(m,inThread){
+/* iMessage-style bubble. prev = previous message (for clustering); inThread = flat thread view */
+function msgHtml(m,prev,inThread){
   const from=emp(m.fromId);if(!from)return'';
+  const mine=m.fromId===DB.me.employeeId;
+  const cur=byId(DB.channels,m.ch)||{};
   const st=statusOf(m.fromId);
   const replies=inThread?[]:threadOf(m.id);
-  const cur=byId(DB.channels,m.ch)||{};
-  const saved=((DB.saved||{})[DB.me.employeeId]||[]).includes(m.id);
-  const pinned=(cur.pins||[]).includes(m.id);
-  return `<div class="msg">${av(from,'md')}<div class="m-body">
-    <div class="row" style="gap:6px"><div class="m-meta"><b style="color:var(--ink);font-size:13px">${nameLink(from)}</b>${st?' '+st.emoji:''} · ${m.time}${m.edited?' · <i>edited</i>':''}${pinned?' · 📌':''}</div>
-      <span class="m-acts">
-        <button class="iconbtn" style="width:22px;height:22px" title="${saved?'Unsave':'Save for later'}" data-act="chatSave" data-arg="${m.id}">${saved?'🔖':'⭐'}</button>
-        ${inThread?'':`<button class="iconbtn" style="width:22px;height:22px" title="Reply in thread" data-act="openThread" data-arg="${m.id}">💬</button>`}
-        ${cur.dm?'':`<button class="iconbtn" style="width:22px;height:22px" title="${pinned?'Unpin':'Pin to channel'}" data-act="chatPin" data-arg="${m.id}">📌</button>`}
-        ${m.fromId===DB.me.employeeId?`<button class="iconbtn" style="width:22px;height:22px" title="Edit" data-act="chatEdit" data-arg="${m.id}">✏️</button>
-        <button class="iconbtn" style="width:22px;height:22px" title="Delete" data-act="chatDelete" data-arg="${m.id}">🗑️</button>`:''}
-      </span></div>
-    <div class="m-text">${renderMsgText(m.text)}</div>
-    ${m.file?`<div class="chip mt8" style="cursor:pointer" onclick="UI.toast('Demo: file preview/download','📎')">📎 ${esc(m.file.name)} <span class="faint">· ${m.file.size}</span></div>`:''}
-    <div class="m-reacts">${Object.entries(m.reactions||{}).map(([emo,n])=>`<span class="chip" data-act="chatReact" data-arg="${m.id}|${emo}">${emo} ${n}</span>`).join('')}
-      <button class="chip react-add" data-act="emojiFor" data-arg="react:${m.id}" title="Add a reaction" aria-label="Add a reaction">😊 +</button></div>
-    ${replies.length?`<span class="thread-chip" data-act="openThread" data-arg="${m.id}">💬 ${replies.length} repl${replies.length===1?'y':'ies'} <span class="faint">· latest ${replies[replies.length-1].time}</span></span>`:''}
-  </div></div>`;
+  const cont=!inThread&&prev&&prev.fromId===m.fromId&&prev.at===m.at;
+  const showName=!mine&&!cur.dm&&!cont;
+  const showAv=!mine&&!cont;
+  return `<div class="imsg ${mine?'me':'them'}${cont?' cont':''}">
+    <span class="imsg-gut">${showAv?av(from,'sm'):''}</span>
+    <div class="imsg-col">
+      ${showName?`<span class="imsg-name">${nameLink(from)}${st?' '+st.emoji:''} <span class="imsg-time">${m.time}</span></span>`:''}
+      <div class="imsg-line">
+        <div class="imsg-bubble">${renderMsgText(m.text)}${m.edited?' <span class="imsg-edited">· edited</span>':''}${(cur.pins||[]).includes(m.id)?' <span title="Pinned">📌</span>':''}
+          ${m.file?`<div class="imsg-file" onclick="event.stopPropagation();UI.toast('Demo: file preview','📎')">📎 ${esc(m.file.name)} <span class="faint">· ${m.file.size}</span></div>`:''}</div>
+        <span class="imsg-acts">
+          <button class="imsg-act" data-act="emojiFor" data-arg="react:${m.id}" title="React" aria-label="React">😊</button>
+          ${inThread?'':`<button class="imsg-act" data-act="openThread" data-arg="${m.id}" title="Reply in thread" aria-label="Reply">💬</button>`}
+          <button class="imsg-act" data-act="msgActions" data-arg="${m.id}" title="More" aria-label="More">⋯</button>
+        </span>
+      </div>
+      ${Object.keys(m.reactions||{}).length?`<div class="imsg-reacts">${Object.entries(m.reactions).map(([emo,n])=>`<span class="rpill" data-act="chatReact" data-arg="${m.id}|${emo}">${emo} ${n}</span>`).join('')}</div>`:''}
+      ${replies.length?`<span class="thread-chip" data-act="openThread" data-arg="${m.id}">💬 ${replies.length} repl${replies.length===1?'y':'ies'} · ${replies[replies.length-1].time}</span>`:''}
+    </div>
+  </div>`;
 }
+function chRow(c,cur){
+  const dm=!!c.dm;const o=dm?dmOther(c):null;
+  const last=DB.chatMsgs.filter(m=>m.ch===c.id).slice(-1)[0];
+  const un=cur&&c.id===cur.id?0:chUnread(c.id);
+  const prev=last?((last.fromId===DB.me.employeeId?'You: ':(dm?'':((emp(last.fromId)||{}).name||'').split(' ')[0]+': '))+last.text):'No messages yet';
+  const tm=last?(last.at===todayISO()?last.time:fmtDshort(last.at)):'';
+  return `<button class="ch-item ${cur&&c.id===cur.id?'on':''}${un?' has-unread':''}" data-act="nav" data-arg="#/chat/${c.id}">
+    <span class="ch-av">${dm?av(o,'md'):`<span class="ch-hash">#</span>`}</span>
+    <span class="ch-mid"><span class="ch-name">${dm?esc(o.name):esc(c.name)}${c.scope&&c.scope!=='*'?' <span title="Department-scoped">🔒</span>':''}${c.locked?' 📣':''}</span><span class="ch-prev">${esc(prev.slice(0,52))}</span></span>
+    <span class="ch-end"><span class="ch-time">${tm}</span>${un?`<span class="unread-dot">${un}</span>`:''}</span>
+  </button>`;
+}
+ACT.msgActions=mid=>{const m=byId(DB.chatMsgs,mid);if(!m)return;const cur=byId(DB.channels,m.ch)||{};
+  const saved=((DB.saved||{})[DB.me.employeeId]||[]).includes(m.id);const mine=m.fromId===DB.me.employeeId;const pinned=(cur.pins||[]).includes(m.id);
+  UI.modal({title:'Message',sub:esc((m.text||'').slice(0,60)),body:`<div class="col" style="gap:6px">
+    ${m.parentId?'':`<button class="btn ghost" style="justify-content:flex-start" onclick="UI.closeModal();ACT.openThread('${mid}')">💬 Reply in thread</button>`}
+    <button class="btn ghost" style="justify-content:flex-start" onclick="UI.closeModal();ACT.chatSave('${mid}')">${saved?'🔖 Unsave':'⭐ Save for later'}</button>
+    ${cur.dm?'':`<button class="btn ghost" style="justify-content:flex-start" onclick="UI.closeModal();ACT.chatPin('${mid}')">📌 ${pinned?'Unpin':'Pin to channel'}</button>`}
+    ${mine?`<button class="btn ghost" style="justify-content:flex-start" onclick="UI.closeModal();ACT.chatEdit('${mid}')">✏️ Edit</button><button class="btn ghost" style="justify-content:flex-start;color:var(--bad)" onclick="UI.closeModal();ACT.chatDelete('${mid}')">🗑️ Delete</button>`:''}
+  </div>`,foot:'<button class="btn ghost" data-act="closeModal">Cancel</button>'});};
 Views.chat=param=>{
   const myId=DB.me.employeeId;
   const chans=DB.channels.filter(chanVisible);
@@ -8081,47 +8350,45 @@ Views.chat=param=>{
   const myStatus=statusOf(myId);
   let lastDay=null;
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">Messages</h1><div class="page-sub">Threads, pins, mentions, saved items, search — your team's pulse, scoped by department</div></div>
+  <div class="page-head chat-ph"><div style="flex:1"><h1 class="page">Messages</h1><div class="page-sub">Threads, pins, mentions, saved items, search — your team's pulse, scoped by department</div></div>
     ${parityBtn('chat')}
     <button class="btn ghost" data-act="myStatus">${myStatus?myStatus.emoji+' '+esc(myStatus.text||''):'😶 Set status'}</button></div>
-  <div class="chat-wrap">
+  <div class="chat-wrap ${param?'conv-open':''}">
     <div class="chat-side">
-      <input id="chat-q" placeholder="🔎 Search messages…" autocomplete="off" style="width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;outline:none;font-size:12.5px;margin-bottom:4px" oninput="chatDoSearch(this.value)">
+      <input id="chat-q" placeholder="🔎 Search messages…" autocomplete="off" style="width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:8px 11px;outline:none;font-size:13px;margin-bottom:4px" oninput="chatDoSearch(this.value)">
       <div id="chat-search-res"></div>
       <div class="row between" style="padding:10px 10px 4px"><span class="nav-label" style="padding:0">Channels</span>
         <button class="iconbtn" style="width:20px;height:20px" title="Create a channel" data-act="newChannel">＋</button></div>
-      ${channels.map(c=>{const un=c.id===(cur||{}).id?0:chUnread(c.id);
-        return `<button class="ch-item ${cur&&c.id===cur.id?'on':''}" data-act="nav" data-arg="#/chat/${c.id}"><span class="hash">#</span>${c.name}${c.scope!=='*'?' <span title="Department-scoped">🔒</span>':''}${c.locked?' 📣':''}${un?`<span class="unread-dot">${un}</span>`:''}</button>`;}).join('')}
-      <div class="row between" style="padding:10px 10px 4px"><span class="nav-label" style="padding:0">Direct messages</span>
+      ${channels.map(c=>chRow(c,cur)).join('')}
+      <div class="row between" style="padding:12px 10px 4px"><span class="nav-label" style="padding:0">Direct messages</span>
         <button class="iconbtn" style="width:20px;height:20px" title="Start a direct message" data-act="dmNew">＋</button></div>
-      ${dms.map(c=>{const o=dmOther(c);const st=statusOf(o.id);const un=cur&&c.id===cur.id?0:chUnread(c.id);
-        return `<button class="ch-item ${cur&&c.id===cur.id?'on':''}" data-act="nav" data-arg="#/chat/${c.id}">${av(o,'xs')} ${esc(o.name.split(' ')[0])} ${esc(o.name.split(' ')[1]||'')}${st?' '+st.emoji:''}${un?`<span class="unread-dot">${un}</span>`:''}</button>`;}).join('')}
-      <button class="ch-item" data-act="dmNew" style="color:var(--ink3)">＋ New message</button>
+      ${dms.map(c=>chRow(c,cur)).join('')}
+      <button class="ch-item ch-new" data-act="dmNew">＋ New message</button>
       <div class="nav-label">Library</div>
-      <button class="ch-item ${savedMode?'on':''}" data-act="nav" data-arg="#/chat/saved">🔖 Saved items${savedIds.length?`<span class="unread-dot" style="background:var(--ink3)">${savedIds.length}</span>`:''}</button>
+      <button class="ch-item ${savedMode?'on':''}" data-act="nav" data-arg="#/chat/saved"><span class="ch-av"><span class="ch-hash">🔖</span></span><span class="ch-mid"><span class="ch-name">Saved items</span></span>${savedIds.length?`<span class="unread-dot" style="background:var(--ink3)">${savedIds.length}</span>`:''}</button>
     </div>
     <div class="chat-main">
       ${savedMode?`
-        <div class="chat-head"><b style="font-size:15px">🔖 Saved items</b><span class="tiny faint">your private library — only you see this</span></div>
+        <div class="chat-head"><button class="chat-back" data-act="nav" data-arg="#/chat" aria-label="Back">‹</button><b style="font-size:15px">🔖 Saved items</b><span class="tiny faint">your private library</span></div>
         <div class="chat-msgs" id="chat-scroll">${savedIds.map(id=>{const m=byId(DB.chatMsgs,id);if(!m)return'';
-          const c=byId(DB.channels,m.ch);return `<div class="tiny faint" style="margin:8px 8px 0">${c?(c.dm?'DM':'#'+c.name):''} · <a class="linklike" href="#/chat/${m.ch}">jump</a></div>`+msgHtml(m,true);}).join('')||'<div class="empty"><div class="big">🔖</div>Hover any message → ⭐ to save it here.</div>'}</div>`
+          const c=byId(DB.channels,m.ch);return `<div class="tiny faint" style="margin:8px 8px 0">${c?(c.dm?'DM':'#'+c.name):''} · <a class="linklike" href="#/chat/${m.ch}">jump</a></div>`+msgHtml(m,null,true);}).join('')||'<div class="empty"><div class="big">🔖</div>Tap ⋯ on any message → Save to keep it here.</div>'}</div>`
       :`
-      <div class="chat-head">${cur.dm?`${av(dmOther(cur),'sm')}<b>${esc(dmOther(cur).name)}</b><span class="tiny faint">${esc(dmOther(cur).title)}${statusOf(dmOther(cur).id)?' · '+statusOf(dmOther(cur).id).emoji+' '+esc(statusOf(dmOther(cur).id).text||''):''}</span>`
+      <div class="chat-head"><button class="chat-back" data-act="nav" data-arg="#/chat" aria-label="Back to messages">‹</button>${cur.dm?`${av(dmOther(cur),'sm')}<b>${esc(dmOther(cur).name)}</b><span class="tiny faint">${esc(dmOther(cur).title)}${statusOf(dmOther(cur).id)?' · '+statusOf(dmOther(cur).id).emoji+' '+esc(statusOf(dmOther(cur).id).text||''):''}</span>`
         :`<b style="font-size:15px"><span class="faint">#</span>${esc(cur.name)}</b><span class="tiny faint">${esc(cur.desc||'')}</span>${cur.scope!=='*'?`<span class="badge b-vio">🔒 ${deptName(cur.scope)} only</span>`:''}`}
         <span class="spacer"></span>
         <button class="btn xs ghost" data-act="meetJoin" data-arg="${cur.dm?'Huddle with '+esc(dmOther(cur).name.split(' ')[0]):'Huddle — #'+esc(cur.name)}">🎧 Huddle</button>
         <span class="tiny faint">${cur.dm?'':uniq(DB.chatMsgs.filter(m=>m.ch===cur.id).map(m=>m.fromId)).length+' active'}</span></div>
       ${pins.length?`<div class="pin-bar">📌 <b>${pins.length} pinned</b> — “${esc(pins[0].text.slice(0,70))}${pins[0].text.length>70?'…':''}”${pins.length>1?' +'+(pins.length-1)+' more':''}</div>`:''}
       <div class="chat-msgs" id="chat-scroll">
-        ${msgs.map(m=>{const day=m.at===todayISO()?'Today':fmtD(m.at,{weekday:'long',month:'short',day:'numeric'});
-          const div=day!==lastDay?`<div class="day-divider">${day}</div>`:'';lastDay=day;
-          return div+msgHtml(m);}).join('')||'<div class="empty"><div class="big">🌱</div>Quiet in here. Say something!</div>'}
+        ${msgs.map((m,i)=>{const day=m.at===todayISO()?'Today':fmtD(m.at,{weekday:'long',month:'short',day:'numeric'});
+          const div=day!==lastDay?`<div class="day-divider">${day}</div>`:'';const prev=day!==lastDay?null:msgs[i-1];lastDay=day;
+          return div+msgHtml(m,prev);}).join('')||'<div class="empty"><div class="big">🌱</div>Quiet in here. Say something!</div>'}
       </div>
       <div class="chat-foot">${canPost?`<div class="chat-input">
         <button class="iconbtn" title="Attach a file" data-act="chatAttach" data-arg="${cur.id}">📎</button>
         ${emojiBtn('ins:chat-in','Emoji')}
         <input id="chat-in" placeholder="Message ${cur.dm?esc(dmOther(cur).name.split(' ')[0]):'#'+esc(cur.name)} — @mention to notify" oninput="(UIS.chatDrafts=UIS.chatDrafts||{})['${cur.id}']=this.value" onkeydown="if(event.key==='Enter')ACT.chatSend('${cur.id}')">
-        <button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="chatSend" data-arg="${cur.id}">${I.send}</button></div>`
+        <button class="btn sm primary" data-act="chatSend" data-arg="${cur.id}">${I.send}</button></div>`
         :`<div class="tiny faint" style="text-align:center">📣 Only the People team posts in #announcements — reply in #general instead.</div>`}</div>`}
     </div>
   </div>`;
@@ -8157,10 +8424,10 @@ ACT.openThread=mid=>{
   const c=byId(DB.channels,parent.ch);
   const replies=threadOf(mid);
   UI.drawer({head:`<span class="notif-ic" style="background:color-mix(in srgb,#6d28d9 12%,transparent)">💬</span><div class="col" style="gap:1px"><b style="font-size:15px">Thread</b><span class="tiny muted">${c?(c.dm?'Direct message':'#'+c.name):''} · ${replies.length} repl${replies.length===1?'y':'ies'}</span></div>`,
-    body:`<div id="thread-body">${msgHtml(parent,true)}<div class="divider"></div>
-      ${replies.map(r=>msgHtml(r,true)).join('')||'<div class="tiny faint" style="padding:8px">No replies yet — start the thread.</div>'}</div>
+    body:`<div id="thread-body">${msgHtml(parent,null,true)}<div class="divider"></div>
+      ${replies.map(r=>msgHtml(r,null,true)).join('')||'<div class="tiny faint" style="padding:8px">No replies yet — start the thread.</div>'}</div>
       <div class="chat-input mt12">${emojiBtn('ins:thread-in','Emoji')}<input id="thread-in" placeholder="Reply in thread…" onkeydown="if(event.key==='Enter')ACT.threadReply('${mid}')">
-      <button class="btn sm primary" style="--brand:#6d28d9;--brand-deep:#5b21b6" data-act="threadReply" data-arg="${mid}">${I.send}</button></div>`,
+      <button class="btn sm primary" data-act="threadReply" data-arg="${mid}">${I.send}</button></div>`,
     foot:'<button class="btn ghost" data-act="closeDrawer">Close</button>'});
   setTimeout(()=>{const i=$('#thread-in');if(i)i.focus();},150);
 };

@@ -1186,6 +1186,7 @@ body.proxying #topbar{top:34px}
   /* ---------- Mobile streamline (UI/UX pass) ---------- */
   /* drop descriptive page subtitles — the module name already sits in the top bar */
   .page-head .page-sub{display:none}
+  .page-head .page-sub.keep-m{display:flex!important;flex-wrap:wrap;gap:6px 12px}
   /* presenter/demo chrome off the hero (the single ▶ Demo reel primary stays) */
   .page-head [data-act="parity"],.page-head [data-act="tourPick"],.page-head [data-act="resetDemo"]{display:none}
   /* declutter card headers: drop the de-emphasised right-side caption (links & counts stay) */
@@ -1203,6 +1204,14 @@ body.proxying #topbar{top:34px}
   /* tab strips: snap while scrolling */
   .tabs{scroll-snap-type:x proximity}
   .tabs>button{scroll-snap-align:start}
+  /* modals → bottom sheet on mobile (matches the drawer): full-width, primary action within thumb reach */
+  #modal{place-items:end center;padding:0}
+  #modal .box{width:100vw!important;max-width:100vw!important;max-height:92vh;border-radius:20px 20px 0 0;transform:translateY(105%)}
+  #modal.open .box{transform:none}
+  .modal-head{padding:16px 18px 0}
+  .modal-body{padding:13px 18px 18px}
+  .modal-foot{padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px))}
+  .field{margin-bottom:11px}
 }
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media print{#sidebar,#topbar{display:none}#main-wrap{margin:0}}
@@ -4280,7 +4289,7 @@ function reqView(rid){
   <div class="page-head">
     <div style="flex:1">
       <div class="row" style="gap:10px;flex-wrap:wrap"><h1 class="page">${esc(r.title)}</h1>${badge(r.status)}${r.target<todayISO()&&r.status==='open'?badge('b-bad','Past target'):''}</div>
-      <div class="page-sub row wrap" style="gap:12px">
+      <div class="page-sub keep-m row wrap" style="gap:12px">
         <span>${r.id}</span><span>·</span><span style="color:${deptColor(r.dept)};font-weight:650">${deptName(r.dept)}</span><span>·</span>
         <span>${esc(r.loc)}</span><span>·</span><span>${r.level}</span><span>·</span><span class="num">${fmtK(r.salary[0])}–${fmtK(r.salary[1])}</span><span>·</span>
         <span>open ${reqAge(r)}d</span></div>
@@ -5609,7 +5618,7 @@ Views.time=param=>{
     <div class="page-sub">Approvals land in the manager's inbox; balances update the moment they're approved${myDelegation()?` · <b style="color:#0f766e">approvals delegated to ${esc((emp(myDelegation().toId)||{}).name||'')} until ${fmtDshort(myDelegation().end)}</b>`:''}</div></div>
     <div class="seg"><button class="on">PTO & sick</button><button data-act="nav" data-arg="#/time/leaves">Leaves of absence</button></div>
     ${isManager()?(myDelegation()?`<button class="btn ghost" data-act="delegEnd" data-arg="${myDelegation().id}">🤝 End delegation</button>`:`<button class="btn ghost" data-act="delegNew">🤝 Delegate</button>`):''}
-    <button class="btn ghost" onclick="ACT.accrualInfo()">🧮 My accrual ledger</button>
+    <button class="btn ghost mhide" onclick="ACT.accrualInfo()">🧮 My accrual ledger</button>
     <button class="btn primary" style="--brand:var(--c-time);--brand-deep:#0284c7" data-act="openTimeReq">${I.plus} Request time off</button></div>
   <div class="grid g4 mb16">
     ${statCard('My vacation',my.pto.vacBalance+'d left',my.pto.vacUsed+' used of 20','var(--c-time)',undefined,'','#/people/'+my.id)}
@@ -8898,7 +8907,7 @@ Views.cal=()=>{
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Calendar</h1><div class="page-sub">1:1s, interviews, PTO and holidays flow in live — click any empty slot to create</div></div>
     ${parityBtn('cal')}
-    <button class="btn soft" style="--brand:#2d7ff0" data-act="schedOpen">🪄 Find a time</button>
+    <button class="btn soft mhide" style="--brand:#2d7ff0" data-act="schedOpen">🪄 Find a time</button>
     <div class="seg">${['day','week','month'].map(mm=>`<button class="${mode===mm?'on':''}" data-act="calMode" data-arg="${mm}">${cap(mm)}</button>`).join('')}</div>
     <div class="row" style="gap:7px"><button class="btn sm ghost" data-act="calNav" data-arg="-1">‹</button>
     <button class="btn sm ghost" data-act="calNav" data-arg="0">Today</button>
@@ -9315,7 +9324,7 @@ function meetStage(){
     :M.layout==='speaker'?`<div class="meet-present"><div class="present-stage" style="display:grid;place-items:center">${tile(others[0]||me(),true)}</div><div class="meet-thumbs">${allP.filter(p=>p.id!==(others[0]||me()).id).map(p=>tile(p)).join('')}</div></div>`
     :`<div class="meet-grid">${allP.map(p=>tile(p)).join('')}</div>`;
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(M.title)}</h1><div class="page-sub">🔴 <span id="meet-timer">00:00</span> · ${allP.length} participants · meet.meridianlabs.com/${M.code} <button class="chip" style="font-size:10px" onclick="UI.toast('Invite link copied','🔗')">copy invite</button></div></div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(M.title)}</h1><div class="page-sub keep-m">🔴 <span id="meet-timer">00:00</span> · ${allP.length} participants · meet.meridianlabs.com/${M.code} <button class="chip" style="font-size:10px" onclick="UI.toast('Invite link copied','🔗')">copy invite</button></div></div></div>
   <div class="meet-wrap">
     <div class="meet-stage" id="meet-stage" style="position:relative">
       ${M.rec?'<span class="rec-badge">REC</span>':''}

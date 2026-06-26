@@ -283,7 +283,7 @@ html.dark .delta.up{color:#4ade9d}html.dark .delta.down{color:#f87f7f}
 .b-ok{background:var(--ok-soft);color:#076b4c}.b-warn{background:var(--warn-soft);color:#8f5c03}
 .b-bad{background:var(--bad-soft);color:#b32222}.b-info{background:var(--info-soft);color:#07689a}
 .b-vio{background:var(--vio-soft);color:#6d3fd6}.b-rose{background:var(--rose-soft);color:#b32a60}
-.b-teal{background:var(--teal-soft);color:#0a7568}.b-mute{background:var(--bg2);color:var(--ink2)}
+.b-mute{background:var(--bg2);color:var(--ink2)}
 html.dark .b-ok{color:#4ade9d}html.dark .b-warn{color:#fbc34d}html.dark .b-bad{color:#f87f7f}
 html.dark .b-info{color:#5ec5f5}html.dark .b-vio{color:#b69af7}html.dark .b-rose{color:#f491bd}html.dark .b-teal{color:#46d6c4}
 .chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:550;color:var(--ink2)}
@@ -781,10 +781,10 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 .gt-kids{margin-left:26px;border-left:2px solid var(--line);padding-left:14px;position:relative}
 .gt-row .gt-elbow{position:absolute;left:-16px;top:50%;width:12px;height:2px;background:var(--line)}
 
-/* ---------- Ask Mosaic assistant ---------- */
+/* ---------- Mosy assistant ---------- */
 #assist-fab{position:fixed;right:22px;bottom:22px;z-index:88;width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:grid;place-items:center;box-shadow:0 12px 34px -6px rgba(99,102,241,.7),0 0 54px -14px rgba(168,85,247,.55);transition:transform .15s,box-shadow .2s}
 #assist-fab:hover{transform:scale(1.06)}
-#assist-fab svg{width:24px;height:24px}
+#assist-fab svg{width:34px;height:34px;overflow:visible;transform-origin:center;animation:mosyBreathe 4.4s ease-in-out infinite}
 #assist-panel{position:fixed;right:22px;bottom:88px;z-index:108;width:392px;max-width:calc(100vw - 28px);height:540px;max-height:calc(100vh - 120px);background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#6366f1,#ec4899 45%,#22d3ee) border-box;border:1.5px solid transparent;border-radius:22px;box-shadow:0 30px 80px -28px rgba(99,90,241,.5),0 0 60px -22px rgba(236,72,153,.32);display:none;flex-direction:column;overflow:hidden}
 #assist-panel.open{display:flex;animation:viewIn .2s ease}
 .as-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,color-mix(in srgb,#6366f1 16%,var(--card)),color-mix(in srgb,#ec4899 8%,var(--card)))}
@@ -793,6 +793,37 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 .as-msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--brand),#7c3aed);color:#fff;border-bottom-right-radius:5px}
 .as-msg.bot{align-self:flex-start;background:var(--card2);border:1px solid var(--line);border-bottom-left-radius:5px}
 .as-msg.bot b{color:var(--ink)}
+.as-row{display:flex;gap:8px;align-items:flex-start;max-width:92%;align-self:flex-start}
+.as-row .as-msg.bot{max-width:none}
+.as-av{flex:none;width:26px;height:26px;margin-top:1px}
+/* ===== Mosy comes alive (Round 21) — all FAB motion sequenced via classes over breathe; reduced-motion safe ===== */
+@keyframes mosyBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2.5px) scale(1.035)}}
+#assist-fab.m-hop svg{animation:mosyHop .7s ease-out}
+#assist-fab.m-sway svg{animation:mosySway .85s ease-in-out}
+#assist-fab.m-bob svg{animation:mosyBob 1.05s ease-in-out}
+#assist-fab.m-pulse svg{animation:mosyPulse 1.1s ease-in-out}
+#assist-fab.m-sleep svg{animation-duration:7s}
+@keyframes mosyHop{0%{transform:translateY(0)}28%{transform:translateY(-8px) scale(1.06)}55%{transform:translateY(1px) scale(.95)}78%{transform:translateY(-3px)}100%{transform:translateY(0)}}
+@keyframes mosySway{0%,100%{transform:rotate(0)}25%{transform:rotate(5deg)}75%{transform:rotate(-5deg)}}
+@keyframes mosyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes mosyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+.mosy-pupils{transition:transform .32s cubic-bezier(.4,0,.3,1)}
+.mosy-lid{fill:#fff;transform:scaleY(0);transform-origin:center;transform-box:fill-box}
+#assist-fab.m-blink .mosy-lid{animation:mosyBlink .16s ease-in-out}
+@keyframes mosyBlink{0%,100%{transform:scaleY(0)}50%{transform:scaleY(1)}}
+#assist-fab.m-think .mosy-spark{animation:mosyTwinkle 1s ease-in-out infinite}
+@keyframes mosyTwinkle{0%,100%{opacity:.35}50%{opacity:1}}
+.mosy-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#f59e0b;color:#fff;font-size:10.5px;font-weight:800;line-height:1;display:none;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(10,12,26,.4);pointer-events:none}
+.mosy-badge.show{display:flex}
+.mosy-badge.alert{background:#ef4444}
+#mosy-nudge{position:fixed;right:22px;bottom:90px;z-index:107;max-width:248px;background:var(--card);border:1px solid var(--line);border-radius:15px 15px 5px 15px;box-shadow:0 18px 44px -16px rgba(10,12,26,.45);padding:11px 13px;display:none}
+#mosy-nudge.show{display:block;animation:mosyNudgeIn .26s cubic-bezier(.3,.95,.35,1)}
+#mosy-nudge .mn-text{font-size:12.5px;line-height:1.5;color:var(--ink);padding-right:10px}
+#mosy-nudge .mn-row{display:flex;gap:6px;margin-top:9px}
+#mosy-nudge .mn-x{position:absolute;top:4px;right:6px;border:none;background:none;color:var(--ink3);font-size:16px;line-height:1;cursor:pointer;padding:2px}
+@keyframes mosyNudgeIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@media(max-width:640px){#mosy-nudge{right:14px;bottom:86px}}
+@media (prefers-reduced-motion: reduce){#assist-fab svg,#assist-fab.m-hop svg,#assist-fab.m-sway svg,#assist-fab.m-bob svg,#assist-fab.m-pulse svg{animation:none}#assist-fab.m-think .mosy-spark{animation:none}.mosy-pupils{transition:none;transform:none!important}.mosy-lid{display:none}#mosy-nudge.show{animation:none}}
 .as-actions{display:flex;gap:6px;flex-wrap:wrap;align-self:flex-start;margin-top:-4px}
 .as-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
 .as-chips .chip{cursor:pointer;font-size:11.5px}
@@ -933,7 +964,7 @@ html.dark .letter{background:#f4f4f6}
 /* ---------- mail ---------- */
 .mail-wrap{display:grid;grid-template-columns:190px 1fr;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-height:540px;box-shadow:var(--shadow)}
 .mail-side{border-right:1px solid var(--line);background:var(--card2);padding:12px 8px}
-.mail-row{display:grid;grid-template-columns:30px 200px 1fr auto;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.mail-row{display:grid;grid-template-columns:24px 24px 180px 1fr auto;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
 .mail-row:hover{background:var(--card2)}
 .mail-row.unread{background:color-mix(in srgb,#e25141 4%,var(--card))}
 .mail-row.unread .m-from,.mail-row.unread .m-subj{font-weight:750}
@@ -1079,6 +1110,66 @@ html.dark .letter{background:#f4f4f6}
 @media(max-width:640px){#splash h1{font-size:30px}.sp-tag{font-size:16px}.sp-tag .sp-rot{min-width:118px}.sp-stats{gap:18px}.sp-mods{gap:7px;max-width:340px}.sp-mod{width:auto;min-width:56px;max-width:30vw;padding-left:10px;padding-right:10px}}
 .confetti{position:fixed;top:-12px;z-index:400;width:9px;height:14px;border-radius:2px;animation:confFall 2.6s ease-in forwards;pointer-events:none}
 @keyframes confFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(105vh) rotate(540deg);opacity:.7}}
+/* ---- Tier-0 flair: cinematic overlay + typewriter (shared by hire reveal / Wrapped / Kiosk / Journey) ---- */
+.fx-overlay{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:24px;overflow:auto;opacity:0;transition:opacity .36s ease;
+  background:radial-gradient(125% 120% at 50% -8%, color-mix(in srgb,var(--mod,#6366f1) 42%, #0a0b1c) 0%, #0a0b1c 68%);color:#eef0fa}
+.fx-overlay.light{background:radial-gradient(125% 120% at 50% -8%, color-mix(in srgb,var(--mod,#6366f1) 18%, var(--bg)) 0%, var(--bg) 72%);color:var(--ink)}
+.fx-overlay.show{opacity:1}
+.fx-overlay .fx-inner{width:100%;max-width:560px;opacity:0;transform:translateY(16px) scale(.985);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.fx-overlay.show .fx-inner{opacity:1;transform:none}
+body.fx-lock{overflow:hidden}
+.tw-cursor::after{content:'▍';margin-left:1px;opacity:.75;font-weight:400;animation:twBlink 1.05s steps(1) infinite}
+@keyframes twBlink{50%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.fx-overlay,.fx-overlay .fx-inner{transition:none}.tw-cursor::after{animation:none}}
+/* ---- Tier-0 flair: chart entrance (lines draw via JS; bars/donut/areas via CSS) ---- */
+@media (prefers-reduced-motion: no-preference){
+  .chart-line polygon{opacity:0;animation:cFade .6s ease .45s forwards}
+  .chart-line circle{opacity:0;animation:cFade .5s ease .7s forwards}
+  .chart-bars rect{transform-box:fill-box;transform-origin:center bottom;animation:cBarGrow .75s cubic-bezier(.2,.85,.25,1) both}
+  .chart-bars text{opacity:0;animation:cFade .5s ease .4s forwards}
+  .chart-donut{animation:cDonutIn .65s cubic-bezier(.2,.8,.2,1) both}
+}
+@keyframes cFade{to{opacity:1}}
+@keyframes cBarGrow{from{transform:scaleY(0)}}
+@keyframes cDonutIn{from{opacity:0;transform:scale(.86) rotate(-9deg)}}
+/* ---- Theme Studio (Round 19) ---- */
+.ts-swatches{display:flex;flex-wrap:wrap;gap:9px}
+.ts-swatch{width:30px;height:30px;border-radius:9px;background:var(--sw);border:none;padding:0;cursor:pointer;box-shadow:0 0 0 1.5px var(--line);transition:transform .13s ease,box-shadow .13s ease}
+.ts-swatch:hover{transform:translateY(-2px) scale(1.07);box-shadow:0 6px 14px -5px var(--sw)}
+.ts-swatch.on{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--sw)}
+.ts-preview{display:flex;gap:13px;align-items:center;padding:13px;border-radius:13px;background:var(--bg2);border:1px solid var(--line)}
+.ts-aurora{flex:none;width:46px;height:46px;border-radius:50%;background:conic-gradient(from 130deg,var(--aur-a),var(--aur-b),var(--aur-a));box-shadow:0 5px 16px -4px var(--aur-a);animation:tsSpin 7s linear infinite}
+@keyframes tsSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.ts-aurora{animation:none}}
+/* ---- Cinematic hire (Round 19) ---- */
+.cine-wrap{text-align:center;color:#fff}
+.cine-badge{position:relative;width:120px;height:120px;margin:0 auto 18px}
+.cine-badge .av{position:absolute;inset:12px;width:96px;height:96px;box-shadow:0 10px 32px -10px rgba(0,0,0,.55)}
+.cine-ring{position:absolute;inset:0;width:120px;height:120px}
+.cine-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:5px 13px;border-radius:999px;margin-bottom:14px}
+.cine-name{font-family:var(--font-display);font-size:33px;font-weight:800;margin:0 0 8px;min-height:40px;color:#fff}
+.cine-sub{font-size:15.5px;opacity:.84;margin:0 auto 22px;max-width:450px;line-height:1.55;min-height:24px}
+.cine-mods{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:26px}
+.cine-mod{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.17);padding:8px 13px;border-radius:11px;opacity:0;transform:translateY(10px) scale(.96)}
+.cine-mods.go .cine-mod{animation:cineMod .5s cubic-bezier(.2,.85,.25,1) forwards;animation-delay:calc(var(--i)*.11s)}
+@keyframes cineMod{to{opacity:1;transform:none}}
+.cine-mi{font-size:15px}
+.cine-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cine-acts .cine-ghost{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.07)}
+.cine-acts .cine-ghost:hover{background:rgba(255,255,255,.15)}
+@media (prefers-reduced-motion: reduce){.cine-mod{opacity:1;transform:none;animation:none}}
+/* ---- Moment cards (Round 19) ---- */
+.moment-card{position:relative;overflow:hidden;border-radius:14px;padding:15px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,hsl(var(--mhue),72%,52%),hsl(calc(var(--mhue) + 42),66%,42%))}
+.moment-card.today{box-shadow:0 12px 28px -12px hsl(var(--mhue),72%,50%)}
+.moment-head{font-size:14.5px;font-weight:800;line-height:1.3;color:#fff}
+.moment-card .av{border:2px solid rgba(255,255,255,.55)}
+.moment-spark{position:absolute;top:9px;right:13px;font-size:13px;opacity:.55;animation:momSpark 3s ease-in-out infinite}
+@keyframes momSpark{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.3)}}
+.moment-btn{background:rgba(255,255,255,.94);color:hsl(var(--mhue),58%,30%);border:none;font-weight:700}
+.moment-btn:hover{background:#fff}
+.moment-btn.ghost{background:rgba(255,255,255,.16);color:#fff}
+.moment-btn.ghost:hover{background:rgba(255,255,255,.27)}
+@media (prefers-reduced-motion: reduce){.moment-spark{animation:none}}
 .qa-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px;align-items:center}
 .kbd-key{background:var(--bg2);border:1px solid var(--line2);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;font-family:inherit}
 .exp-line{display:grid;grid-template-columns:1fr 110px 90px 26px;gap:8px;margin-bottom:6px}
@@ -1127,7 +1218,6 @@ html.dark .letter{background:#f4f4f6}
 .meet-thumbs .meet-tile{min-height:80px;min-width:120px;flex:none}
 
 /* ---------- deep passes r2: gmail-tier mail + gcal-tier calendar ---------- */
-.mail-row{grid-template-columns:24px 24px 180px 1fr auto}
 .mail-row input[type=checkbox]{width:15px;height:15px;accent-color:#e25141}
 .bulk-bar{display:flex;gap:8px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--card2)}
 .lbl-dot{width:8px;height:8px;border-radius:3px;display:inline-block;flex:none}
@@ -1327,7 +1417,7 @@ body.proxying #topbar{top:34px}
 <div id="drawer-veil" onclick="UI.closeDrawer()"></div>
 <aside id="drawer" role="dialog" aria-label="Details panel" tabindex="-1"></aside>
 <div id="modal-veil" onclick="UI.closeModal()"></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="cglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="vsheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.26"/><stop offset="0.62" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="cglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="vsheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.26"/><stop offset="0.62" stop-color="#ffffff" stop-opacity="0"/></linearGradient><linearGradient id="mosyGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs></svg>
 <div id="modal" role="dialog" aria-modal="true"></div>
 <div id="palette"><div class="pal-box"></div></div>
 <div id="notif-pop"></div>
@@ -1336,8 +1426,8 @@ body.proxying #topbar{top:34px}
 <div id="banner-stack" role="status" aria-live="polite"></div>
 <div id="tour-veil"></div>
 <div id="tour-pop"></div>
-<button id="assist-fab" data-act="toggleAssist" title="Ask Mosaic" aria-label="Ask Mosaic assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L20 10l-6.1 1.4L12 17l-1.9-5.6L4 10l6.1-1.4L12 3Z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg></button>
-<aside id="assist-panel" role="dialog" aria-label="Ask Mosaic assistant"></aside>
+<button id="assist-fab" data-act="toggleAssist" title="Mosy" aria-label="Mosy assistant"><svg viewBox="0 0 100 100" width="34" height="34" aria-hidden="true"><g transform="translate(49,54)"><path d="M0,-44 C30,-48 50,-22 44,3 C40,25 25,42 0,40 C-25,42 -41,24 -45,-1 C-48,-27 -30,-40 0,-44 Z" fill="#ffffff"/><path transform="translate(24,-48)" d="M0,-7 L2.3,-2.3 L7,0 L2.3,2.3 L0,7 L-2.3,2.3 L-7,0 L-2.3,-2.3 Z" fill="#ffffff" opacity="0.92"/><circle cx="-13" cy="-3" r="4" fill="#2e2766"/><circle cx="13" cy="-3" r="4" fill="#2e2766"/><path d="M-11,12 Q0,21 11,12" stroke="#2e2766" stroke-width="3.4" fill="none" stroke-linecap="round"/></g></svg></button>
+<aside id="assist-panel" role="dialog" aria-label="Mosy assistant"></aside>
 <nav id="tabbar" aria-label="Mobile navigation"></nav>
 
 <script>
@@ -1464,6 +1554,160 @@ const I={
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 3.8 5.2 3.8 8.5s-1.3 6.2-3.8 8.5c-2.5-2.3-3.8-5.2-3.8-8.5s1.3-6.2 3.8-8.5Z"/></svg>',
 };
 const logoSVG=s=>`<svg class="logo-mark" style="width:${s||30}px;height:${s||30}px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="13" height="13" rx="4.2" fill="#6366f1"/><rect x="17" y="2" width="13" height="13" rx="4.2" fill="#f0648c"/><rect x="2" y="17" width="13" height="13" rx="4.2" fill="#14b8a6"/><rect x="17" y="17" width="13" height="13" rx="4.2" fill="#f59e0b"/></svg>`;
+const mosyMark=(s,o)=>{o=o||{};const z=s||28;const body=o.mono?'#ffffff':'url(#mosyGrad)';const sp=o.mono?'#ffffff':'#fde68a';const eyes=o.mono?'<circle cx="-13" cy="-3" r="4" fill="#2e2766"/><circle cx="13" cy="-3" r="4" fill="#2e2766"/>':'<ellipse cx="-14" cy="-4" rx="6" ry="8" fill="#fff"/><ellipse cx="14" cy="-4" rx="6" ry="8" fill="#fff"/><circle cx="-14" cy="-1" r="3" fill="#241c4a"/><circle cx="14" cy="-1" r="3" fill="#241c4a"/><circle cx="-16" cy="-6" r="1.3" fill="#fff"/><circle cx="12" cy="-6" r="1.3" fill="#fff"/>';const smile=o.mono?'#2e2766':'#ffffff';return `<svg class="mosy-mark" width="${z}" height="${z}" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(49,54)"><path d="M0,-44 C30,-48 50,-22 44,3 C40,25 25,42 0,40 C-25,42 -41,24 -45,-1 C-48,-27 -30,-40 0,-44 Z" fill="${body}"/><path transform="translate(24,-48)" d="M0,-7 L2.3,-2.3 L7,0 L2.3,2.3 L0,7 L-2.3,2.3 L-7,0 L-2.3,-2.3 Z" fill="${sp}"/><path transform="translate(-28,-28)" d="M0,-4 L1.4,-1.4 L4,0 L1.4,1.4 L0,4 L-1.4,1.4 L-4,0 L-1.4,-1.4 Z" fill="${sp}" opacity="0.82"/>${eyes}<path d="M-11,13 Q0,22 11,13" stroke="${smile}" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>`;};
+/* ===================== Mosy comes alive (Round 21) — one controller, transform/opacity-only, reduced-motion safe, never calls render() ===================== */
+const MosyLife={
+  _ready:false,_blinkIn:6,_driftIn:8,_idleAt:0,_lastBeat:0,_following:false,
+  s(){UIS.mosy=UIS.mosy||{seen:{},nudgeCount:0,lastNudgeAt:0,leanAt:0,prevW0:-1,prevCount:-1,celebZero:false};return UIS.mosy;},
+  chat(){return (typeof DB!=='undefined'&&DB.mosyChat)||'balanced';},
+  _now(){try{return performance.now();}catch(e){return 0;}},
+  _busy(){return document.hidden||this._blurred;},
+  init(){
+    if(this._ready)return;
+    const fab=document.getElementById('assist-fab');if(!fab)return;
+    const svg=fab.querySelector('svg');if(!svg)return;
+    try{this._rig(fab,svg);}catch(e){return;}
+    this._ready=true;this._idleAt=this._now();
+    this._iv=setInterval(()=>{try{this._beat();}catch(e){}},900);
+    document.addEventListener('visibilitychange',()=>{fab.classList.toggle('m-sleep',document.hidden);if(!document.hidden)this._idleAt=this._now();});
+    window.addEventListener('blur',()=>{this._blurred=true;});
+    window.addEventListener('focus',()=>{this._blurred=false;this._idleAt=this._now();});
+    window.addEventListener('resize',()=>{this._rect=null;},{passive:true});
+    ['pointerdown','keydown'].forEach(ev=>window.addEventListener(ev,()=>{this._idleAt=this._now();},{passive:true}));
+    if(matchMedia('(pointer:fine)').matches)window.addEventListener('pointermove',e=>{this._pm=e;if(!this._raf)this._raf=requestAnimationFrame(()=>{this._raf=0;this._follow();});},{passive:true});
+    try{this.syncMood();}catch(e){}
+  },
+  _rig(fab,svg){
+    const ns='http://www.w3.org/2000/svg',g=svg.querySelector('g');if(!g)return;
+    g.classList.add('mosy-inner');
+    const paths=g.querySelectorAll('path'),circles=g.querySelectorAll('circle');
+    if(paths[0])paths[0].classList.add('mosy-body');
+    if(paths[1])paths[1].classList.add('mosy-spark');
+    this._mouth=paths[paths.length-1];if(this._mouth)this._mouth.classList.add('mosy-mouth');
+    if(circles.length>=2){
+      const wrap=document.createElementNS(ns,'g');wrap.setAttribute('class','mosy-pupils');
+      circles[0].parentNode.insertBefore(wrap,circles[0]);wrap.appendChild(circles[0]);wrap.appendChild(circles[1]);
+      [circles[0],circles[1]].forEach(c=>{const cx=+c.getAttribute('cx'),cy=+c.getAttribute('cy');
+        const lid=document.createElementNS(ns,'rect');lid.setAttribute('class','mosy-lid');lid.setAttribute('x',cx-6);lid.setAttribute('y',cy-7);lid.setAttribute('width',12);lid.setAttribute('height',13);lid.setAttribute('rx',5);g.appendChild(lid);});
+      this._pupils=wrap;
+    }
+    this._fab=fab;
+    const b=document.createElement('span');b.className='mosy-badge';b.setAttribute('aria-hidden','true');fab.appendChild(b);this._badge=b;
+    let live=document.getElementById('mosy-live');
+    if(!live){live=document.createElement('div');live.id='mosy-live';live.setAttribute('aria-live','polite');live.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';document.body.appendChild(live);}
+    this._live=live;
+  },
+  _beat(){
+    if(!this._ready||this._busy()||_reduceMotion())return;
+    if(--this._blinkIn<=0){this.blink();this._blinkIn=4+Math.floor(Math.random()*7);if(Math.random()<0.18)setTimeout(()=>this.blink(),200);}
+    if(!this._following&&--this._driftIn<=0){this._driftIn=7+Math.floor(Math.random()*6);
+      const a=Math.random()*6.283,r=1+Math.random()*2.2;this._setGaze(Math.cos(a)*r,Math.sin(a)*r-0.4);
+      setTimeout(()=>{if(!this._following)this._setGaze(0,0);},2400);}
+  },
+  blink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-blink');void f.offsetWidth;f.classList.add('m-blink');setTimeout(()=>f.classList.remove('m-blink'),200);},
+  _setGaze(gx,gy){if(!this._ready||!this._pupils||_reduceMotion())return;this._pupils.style.transform='translate('+gx.toFixed(2)+'px,'+gy.toFixed(2)+'px)';},
+  _follow(){
+    if(!this._ready||_reduceMotion()||this.chat()!=='lively'||!this._pm)return;
+    if(!this._rect)this._rect=this._fab.getBoundingClientRect();
+    const r=this._rect,dx=this._pm.clientX-(r.left+r.width/2),dy=this._pm.clientY-(r.top+r.height/2);
+    if(Math.hypot(dx,dy)>90){if(this._following){this._following=false;this._setGaze(0,0);}return;}
+    this._following=true;this._setGaze(Math.max(-3.4,Math.min(3.4,dx/r.width*7)),Math.max(-3.4,Math.min(3.4,dy/r.height*7)));
+  },
+  _shot(cls,ms){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.add(cls);setTimeout(()=>f.classList.remove(cls),ms);},
+  MOUTH:{calm:'M-11,12 Q0,21 11,12',flat:'M-10,15 Q0,16 10,15',grin:'M-13,11 Q0,23 13,11'},
+  mouth(d){if(this._mouth)this._mouth.setAttribute('d',d);},
+  mood(name){if(!this._ready)return;const f=this._fab;
+    if(name==='think'){f.classList.add('m-think');this._setGaze(-2.4,-2.2);}
+    else{f.classList.remove('m-think');if(name==='attentive')this._setGaze(0,0);try{this.syncMood();}catch(e){}}},
+  onPaint(){
+    if(!this._ready){try{this.init();}catch(e){}if(!this._ready)return;}
+    try{this.onRoute(ROUTE.mod,ROUTE.param);}catch(e){}
+    const t=this._now();if(t-(this._syncAt||0)<2500)return;this._syncAt=t;
+    try{this.syncMood();}catch(e){}
+  },
+  onRoute(mod,param){
+    if(!this._ready)return;const key=mod+'/'+(param||'');
+    this._sensitive=/offboard|terminat|\bpip\b|flight/i.test(key);
+    this._quiet=(mod==='command'||mod==='time'||mod==='engage');
+    if(key!==this._routeKey){this._routeKey=key;this._idleAt=this._now();
+      if(this._sensitive){this._fab.classList.remove('m-think');this.mouth(this.MOUTH.calm);}
+      else if(!_reduceMotion()){const st=this.s(),t=this._now();if(t-(st.glanceAt||0)>90000){st.glanceAt=t;this.blink();this._setGaze(0,-2);setTimeout(()=>this._setGaze(0,0),700);}}
+    }
+  },
+  syncMood(){
+    if(!this._ready)return;let m2;try{m2=me();}catch(e){return;}
+    let inbox=[];try{inbox=inboxFor(m2.id)||[];}catch(e){}
+    let cele=[];try{cele=(celebrations(0)||[]).filter(c=>c.date===todayISO());}catch(e){}
+    const w0=inbox.filter(i=>i.weight===0).length,total=inbox.length,st=this.s(),f=this._fab,thinking=f.classList.contains('m-think');
+    if(!thinking)this.mouth(w0>0?this.MOUTH.flat:cele.length?this.MOUTH.grin:this.MOUTH.calm);
+    const b=this._badge;
+    if(w0>0){b.textContent=w0>9?'9+':w0;b.className='mosy-badge show alert';}
+    else if(total>0){b.textContent=total>9?'9+':total;b.className='mosy-badge show';}
+    else b.className='mosy-badge';
+    f.setAttribute('aria-label',total>0?('Mosy assistant, '+total+' item'+(total>1?'s':'')+' need attention'):'Mosy assistant');
+    if(st.prevW0>=0&&!_reduceMotion()){
+      if(w0>st.prevW0)this._shot('m-pulse',1100);
+      if(total>0&&st.prevCount===0)this._shot('m-bob',1050);
+      if(st.prevCount>0&&total===0&&!st.celebZero){st.celebZero=true;this._shot('m-bob',1050);}
+    }
+    if(total>0)st.celebZero=false;
+    st.prevW0=w0;st.prevCount=total;
+    try{this._maybeNudge(inbox,cele);}catch(e){}
+  },
+  react(kind,data){
+    if(!this._ready)return;const t=this._now();
+    if(kind==='cheer'&&t-this._lastBeat<1500)return;
+    this._lastBeat=t;
+    if(_reduceMotion()){if(kind==='hire'&&data)this.nudge({kind:'hire'+(data.name||''),text:'Welcome aboard, '+esc(data.name||'')+'! Want their onboarding plan?',act:{label:'Open onboarding',act:'nav',arg:'#/onboard'},force:true});return;}
+    if(kind==='hire'){this.mouth(this.MOUTH.grin);this._shot('m-hop',700);this.blink();if(data)setTimeout(()=>this.nudge({kind:'hire'+(data.name||''),text:'Welcome aboard, '+esc(data.name||'')+'! Want me to open their onboarding plan?',act:{label:'Open onboarding',act:'nav',arg:'#/onboard'},force:true}),1500);}
+    else if(kind==='cheer')this._shot('m-sway',850);
+    else if(kind==='panelOpen'){this.blink();this._setGaze(0,2);setTimeout(()=>this._setGaze(0,0),600);this.dismiss();}
+    else if(kind==='qaGreen'){this.mouth(this.MOUTH.grin);this._shot('m-bob',1050);setTimeout(()=>{try{this.syncMood();}catch(e){}},1500);}
+    else if(kind==='showoff'){this._shot('m-sway',850);this.blink();}
+  },
+  _gates(){
+    const st=this.s(),c=this.chat();
+    if(c==='off'||c==='quiet'||st.muted)return false;
+    if(this._busy()||this._sensitive||this._quiet)return false;
+    if(document.body.classList.contains('public-mode'))return false;
+    if(document.querySelector('#assist-panel.open,#palette.open,#modal.open,#drawer.open,#fx-overlay'))return false;
+    const ae=document.activeElement;if(ae&&(/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)||ae.isContentEditable))return false;
+    const t=this._now();
+    if(t<45000)return false;
+    if(t-this._idleAt<8000)return false;
+    if(st.lastNudgeAt&&t-st.lastNudgeAt<480000)return false;
+    if(st.nudgeCount>=(c==='lively'?3:2))return false;
+    return true;
+  },
+  _maybeNudge(inbox,cele){
+    const st=this.s();if(!this._gates())return;
+    let pick=null;
+    const sig=inbox.find(i=>i.kind==='Signature'&&i.acts&&i.acts.length);
+    const w0=inbox.find(i=>i.weight===0&&i.acts&&i.acts.length);
+    if(sig)pick={kind:'sig:'+sig.text,lean:true,text:sig.text.replace(/^Sign: /,'')+' is waiting on your signature.',act:sig.acts[0]};
+    else if(w0)pick={kind:'w0:'+w0.text,text:w0.text+'.',act:w0.acts[0]};
+    else if(cele.length){const c=cele[0],fn=esc(c.emp.name.split(' ')[0]);pick={kind:'cele:'+c.emp.id,text:(c.kind==='birthday'?'It’s '+fn+'’s birthday today':fn+' hits '+c.label+' today')+' — send a cheer?',act:{label:'🎉 Celebrate',act:'celebrate',arg:c.emp.id}};}
+    if(!pick)return;
+    const dk=pick.kind.split(':')[0]+'|'+todayISO();
+    if(st.seen[pick.kind]||st.seen[dk])return;
+    st.seen[pick.kind]=1;st.seen[dk]=1;
+    if(pick.lean&&!_reduceMotion()&&this._now()-st.leanAt>480000){st.leanAt=this._now();this._setGaze(0,-2.6);this._shot('m-bob',1050);setTimeout(()=>this.nudge(pick),750);}
+    else this.nudge(pick);
+  },
+  nudge(o){
+    if(!this._ready||(!o.force&&!this._gates()))return;
+    const st=this.s();let el=document.getElementById('mosy-nudge');
+    if(!el){el=document.createElement('div');el.id='mosy-nudge';document.body.appendChild(el);}
+    const chip=o.act?'<button class="btn xs soft" data-act="'+o.act.act+'" data-arg="'+(o.act.arg||'')+'" onclick="MosyLife.dismiss()">'+o.act.label+'</button>':'';
+    el.innerHTML='<button class="mn-x" aria-label="Dismiss" onclick="MosyLife.dismiss()">×</button><div class="mn-text">'+o.text+'</div>'+(chip?'<div class="mn-row">'+chip+'</div>':'');
+    el.classList.add('show');
+    if(this._live)this._live.textContent=String(o.text).replace(/<[^>]+>/g,'');
+    st.lastNudgeAt=this._now();st.nudgeCount=(st.nudgeCount||0)+1;
+    clearTimeout(this._ndT);this._ndT=setTimeout(()=>this.dismiss(),o.act?15000:12000);
+  },
+  dismiss(){const el=document.getElementById('mosy-nudge');if(el)el.classList.remove('show');if(this._live)this._live.textContent='';clearTimeout(this._ndT);},
+};
+window.MosyLife=MosyLife;
 
 /* ============================================================
    SEED WORLD — Meridian Labs (fictional, ~70 people)
@@ -2951,7 +3195,16 @@ function inboxFor(empId){
    ============================================================ */
 let _mountQ=[];
 const onMount=fn=>_mountQ.push(fn);
-function runMounts(){const q=_mountQ;_mountQ=[];q.forEach(f=>{try{f();}catch(e){console.error(e);}});}
+function runMounts(){const q=_mountQ;_mountQ=[];q.forEach(f=>{try{f();}catch(e){console.error(e);}});try{chartIntro();}catch(e){}try{if(window.MosyLife)MosyLife.onPaint();}catch(e){}}
+/* additive chart entrance: draw line series in via stroke-dashoffset; bars/donut/areas animate via CSS. Purely cosmetic, reduced-motion safe, never changes the Chart API. */
+function chartIntro(){
+  if(typeof _reduceMotion==='function'&&_reduceMotion())return;
+  document.querySelectorAll('.chart-line:not([data-drawn])').forEach(svg=>{
+    svg.setAttribute('data-drawn','1');
+    svg.querySelectorAll('polyline:not([stroke-dasharray])').forEach((p,i)=>{try{svgPathDraw(p,1000,{delay:i*140});}catch(e){}});
+    svg.querySelectorAll('polyline[stroke-dasharray]').forEach(p=>{if(p.animate){p.style.opacity='0';p.animate([{opacity:0},{opacity:1}],{duration:600,delay:650,fill:'forwards'});}});
+  });
+}
 
 let _focusReturnM=null,_focusReturnD=null;
 const _restoreFocus=el=>{if(el&&document.contains(el)){try{el.focus();}catch(e){}}};
@@ -3056,7 +3309,7 @@ const Chart={
       g+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#cglow)"${s.dash?' stroke-dasharray="5 4"':''}/>`;
       s.data.forEach((v,i)=>g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="2.7" fill="${s.color}"/>`);
     });
-    return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" ${opts.alt?`role="img" aria-label="${esc(opts.alt)}"`:'aria-hidden="true"'}>${g}</svg>`;
+    return `<svg class="chart-svg chart-line" viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" ${opts.alt?`role="img" aria-label="${esc(opts.alt)}"`:'aria-hidden="true"'}>${g}</svg>`;
   },
   bars(items,opts={}){
     const w=opts.w||560,h=opts.h||200,pad={l:opts.money?44:30,r:8,t:10,b:42};
@@ -3074,7 +3327,7 @@ const Chart={
       g+=`<text x="${x+bw/2}" y="${h-pad.b+13}" text-anchor="middle" style="font:550 9.5px var(--font-ui);fill:var(--ink3)">${lab.length>9?lab.slice(0,8)+'…':lab}</text>`;
       if(it.sub)g+=`<text x="${x+bw/2}" y="${h-pad.b+25}" text-anchor="middle" style="font:500 9px var(--font-ui);fill:var(--ink3)">${it.sub}</text>`;
     });
-    return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" ${opts.alt?`role="img" aria-label="${esc(opts.alt)}"`:'aria-hidden="true"'}>${g}</svg>`;
+    return `<svg class="chart-svg chart-bars" viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" ${opts.alt?`role="img" aria-label="${esc(opts.alt)}"`:'aria-hidden="true"'}>${g}</svg>`;
   },
   donut(items,size=170,inner=0.62,alt){
     const total=sum(items.map(i=>i.v))||1;const r=size/2-6;const cx=size/2,cy=size/2;
@@ -3089,7 +3342,7 @@ const Chart={
       g+=`<path d="M${x0},${y0} A${r},${r} 0 ${large} 1 ${x1},${y1} L${xi1},${yi1} A${ri},${ri} 0 ${large} 0 ${xi0},${yi0} Z" fill="${it.color}" opacity="0.92"><title>${esc(it.label)}: ${it.v}</title></path>`;
       a0=a1;
     });
-    return `<svg viewBox="0 0 ${size} ${size}" style="width:${size}px;height:${size}px;max-width:100%" ${alt?`role="img" aria-label="${esc(alt)}"`:'aria-hidden="true"'}><g filter="url(#cglow)">${g}</g></svg>`;
+    return `<svg class="chart-svg chart-donut" viewBox="0 0 ${size} ${size}" style="width:${size}px;height:${size}px;max-width:100%" ${alt?`role="img" aria-label="${esc(alt)}"`:'aria-hidden="true"'}><g filter="url(#cglow)">${g}</g></svg>`;
   },
   funnel(items){
     const mx=Math.max(...items.map(i=>i.v))||1;
@@ -3234,6 +3487,7 @@ function render(){
   renderSidebar();renderTopbar();renderTabbar();renderProxyBar();
   /* paint = the #main content swap; on cross-page nav it's wrapped in a View Transition so #main morphs */
   const paint=()=>{
+    try{applyBrand();}catch(e){} /* keep --brand in sync with committed brand; reverts un-applied Theme Studio previews on nav */
     const v=Views[ROUTE.mod];
     $('#main').innerHTML=v?v(ROUTE.param):Views.home();
     const _modC=((MODULES.find(m=>m.id===ROUTE.mod)||{}).color)||'var(--brand)';
@@ -3346,7 +3600,7 @@ function palRender(query){
     const tokens=ql.split(/\s+/).filter(Boolean);
     const groups=tokens.map(t=>[t].concat((SEARCH_SYN[t]||'').split(',').filter(Boolean)));
     res=ix.map(x=>({x,s:palScore(x,groups)})).filter(o=>o.s>=0).sort((a,b)=>b.s-a.s).map(o=>o.x).slice(0,15);
-    res.unshift({type:'ask',label:'Ask Mosaic: “'+query.trim()+'”',sub:AI.enabled()?'Answer with live AI — it can act too':'Answer from your live data, with sources',icon:'zap',color:'var(--brand)',ask:query.trim()});
+    res.unshift({type:'ask',label:'Mosy: “'+query.trim()+'”',sub:AI.enabled()?'Answer with live AI — it can act too':'Answer from your live data, with sources',icon:'zap',color:'var(--brand)',ask:query.trim()});
   }
   else{
     const rec=(UIS.palRecent||[]).map(r2=>({...r2,type:'recent'}));
@@ -3504,6 +3758,29 @@ function celebrations(days=21){
   });
   return out.sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);
 }
+/* Moment cards (Round 19 flair) — feature the headline celebration as a hero card */
+function pickMoment(list){
+  if(!list||!list.length)return null;
+  const today=list.filter(c=>c.date===todayISO());
+  const pool=today.length?today:[list[0]];
+  return pool.slice().sort((a,b)=>((b.kind==='anniversary'?parseInt(b.label)||1:0)-(a.kind==='anniversary'?parseInt(a.label)||1:0)))[0];
+}
+function momentCard(c){
+  if(!c||between(todayISO(),c.date)>10)return '';
+  const e=c.emp,first=esc(e.name.split(' ')[0]),isToday=c.date===todayISO(),hue=e.hue!=null?e.hue:hueOf(e.name);
+  const head=c.kind==='birthday'
+    ? `🎂 ${isToday?"It's "+first+"'s birthday today!":first+"'s birthday is "+fmtDshort(c.date)}`
+    : `🎉 ${first} ${isToday?'celebrates '+c.label+' at '+esc(brandName().split(' ')[0])+' today!':'hits '+c.label+' at '+esc(brandName().split(' ')[0])+' on '+fmtDshort(c.date)}`;
+  return `<div class="moment-card${isToday?' today':''}" style="--mhue:${hue}">
+    <span class="moment-spark">✦</span>
+    <div class="row" style="gap:12px;align-items:center">${av(e,'lg')}
+      <div class="col" style="gap:2px;flex:1;min-width:0"><b class="moment-head">${head}</b>
+      <span class="tiny" style="color:rgba(255,255,255,.85)">${esc(String(e.title).split(',')[0])} · ${deptName(e.dept)}</span></div></div>
+    <div class="row mt12" style="gap:8px">
+      <button class="btn xs moment-btn" data-act="celebrate" data-arg="${e.id}">🎉 Celebrate</button>
+      <button class="btn xs moment-btn ghost" data-act="celebrateCheer" data-arg="${e.id}">Say something →</button></div>
+  </div>`;
+}
 TO_TYPES.leave={label:'Leave of absence',color:'#8b5cf6'};
 function whosOut(days=7){
   const from=todayISO(),to=daysAhead(days);
@@ -3535,7 +3812,7 @@ Views.command=()=>{
   <div class="page-head"><div style="flex:1"><h1 class="page">Command Center</h1>
     <div class="page-sub">Everything that needs you — across every module — in one prioritized queue.</div></div>
     <button class="btn ghost" data-act="cmdDigest">📬 Daily digest</button>
-    ${Assist?`<button class="btn primary" style="--brand:#6366f1;--brand-deep:#4f46e5" data-act="toggleAssist">✨ Ask the Copilot</button>`:''}</div>
+    ${Assist?`<button class="btn primary" style="--brand:#6366f1;--brand-deep:#4f46e5" data-act="toggleAssist">✨ Ask Mosy</button>`:''}</div>
   <div class="grid g4 mb16">
     ${[['🔴 Now',items.filter(i=>tierOf(i)===0).length,'var(--bad)'],['☀️ Today',items.filter(i=>tierOf(i)===1).length,'var(--warn)'],['📅 This week',items.filter(i=>tierOf(i)===2).length,'var(--brand)'],['📅 On calendar',evs.length,'var(--ink2)']].map(s=>`<div class="card pad" style="text-align:center"><div style="font-size:26px;font-weight:800;font-family:var(--font-display);color:${s[2]}">${s[1]}</div><div class="tiny faint">${s[0]}</div></div>`).join('')}</div>
   <div class="row wrap mb14" style="gap:6px"><button class="vchip ${!filt?'on':''}" data-act="cmdFilter" data-arg="">All ${items.length}</button>${kinds.map(k=>`<button class="vchip ${filt===k?'on':''}" data-act="cmdFilter" data-arg="${esc(k)}">${esc(k)} ${items.filter(i=>i.kind===k).length}</button>`).join('')}</div>
@@ -3556,6 +3833,7 @@ Views.home=()=>{
   const greet=h<5?'Up late':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
   const inbox=inboxFor(my.id);
   const cele=celebrations();
+  const moment=cele.length?pickMoment(cele):null;
   const out=whosOut();
   const team=reportsOf(my.id);
   const cyc=DB.cycles.find(c=>c.stage!=='done');
@@ -3664,12 +3942,12 @@ Views.home=()=>{
         return `<div class="card pad" style="background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 7%,var(--card)),var(--card))">
         <b class="small">☀️ Your brief — ${now().toLocaleDateString('en-US',{weekday:'long'})}</b>
         <div class="col mt12" style="gap:8px">${lines.slice(0,5).map(l=>`<span class="small" style="line-height:1.55">${l}</span>`).join('')||'<span class="small faint">Nothing pressing. Genuinely.</span>'}</div>
-        <span class="tiny faint" style="display:block;margin-top:10px">narrated from the same records as everything else · ask “brief me” in Ask Mosaic for the full version</span></div>`;})()}
+        <span class="tiny faint" style="display:block;margin-top:10px">narrated from the same records as everything else · ask “brief me” in Mosy for the full version</span></div>`;})()}
       <div class="card">
         <div class="card-head"><h3>🎉 Celebrations</h3></div>
-        <div class="card-body" style="padding-top:10px">${cele.map(c=>`
+        <div class="card-body" style="padding-top:10px">${momentCard(moment)}${cele.filter(c=>c!==moment).map(c=>`
           <div class="row mb12 hovercard" style="gap:10px;cursor:pointer;padding:4px 6px;border-radius:9px" data-act="nav" data-arg="#/people/${c.emp.id}">${av(c.emp,'sm')}<span class="col" style="gap:0;flex:1"><b class="small">${esc(c.emp.name)}</b>
-          <span class="tiny faint">${c.kind==='birthday'?'🎂 Birthday':'🏅 '+c.label}</span></span><span class="tiny num muted">${fmtDshort(c.date)}</span></div>`).join('')||'<div class="faint small">Nothing in the next 3 weeks.</div>'}</div>
+          <span class="tiny faint">${c.kind==='birthday'?'🎂 Birthday':'🏅 '+c.label}</span></span><span class="tiny num muted">${fmtDshort(c.date)}</span></div>`).join('')||(moment?'':'<div class="faint small">Nothing in the next 3 weeks.</div>')}</div>
       </div>
       <div class="card">
         <div class="card-head"><h3>🌴 Who's out</h3><span class="spacer"></span><a class="small linklike" href="#/time">Calendar</a></div>
@@ -4081,7 +4359,7 @@ const DEMO=[
   {t:'scene',go:()=>{try{ACT.confirmHire('C101');}catch(e){}},cap:'One action. Six modules update themselves.',sub:'HRIS record · onboarding journey · compliance courses · 30-60-90 goals · benefits · headcount — automatically.',dwell:6200},
   {t:'scene',go:()=>{try{UI.closeModal();}catch(e){}ACT.switchRole('manager');},cap:'The same app, from a manager’s seat.',sub:'The entire interface re-permissions itself, live.',dwell:2900},
   {t:'scene',go:()=>ACT.switchRole('employee'),cap:'…and an employee’s seat.',sub:'Security groups decide what each person sees — not hard-coded screens.',dwell:3000},
-  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}},cap:'Meet the AI copilot.',sub:'It doesn’t just answer questions — it gets work done.',dwell:3400},
+  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}},cap:'Meet Mosy.',sub:'It doesn’t just answer questions — it gets work done.',dwell:3400},
   {t:'scene',go:()=>{try{Assist.send('Create a task to prep the board deck');}catch(e){}},cap:'Plain English in. Real work staged out.',sub:'Every action waits for your confirmation first.',dwell:3400},
   {t:'scene',go:()=>{try{[...(AI_PENDING||[])].forEach(a=>ACT.aiRunAction(a.id));}catch(e){}},cap:'Confirmed — done.',sub:'A meeting booked and a task created, in the right modules.',dwell:3000},
   {t:'scene',go:()=>{try{if(Assist.open)Assist.toggle();}catch(e){}nav('#/command');},cap:'Everything that needs you, everywhere — one queue.',sub:'Approvals, tasks, signatures, cases — drawn live from every module.',dwell:3400},
@@ -4761,9 +5039,8 @@ ACT.confirmHire=cid=>{
   audit('Hire completed',`${c.name} → ${newId} · ${title} · starts ${start}`);
   chatPost('c-people-updates','🎉 Offer accepted! '+c.name+' joins as '+title+' on '+fmtDshort(start)+'. Onboarding journey is live — say hi when they land!');
   Store.save();UI.closeModal();
-  /* 8 — the receipts */
-  confetti(80);
-  UI.modal({title:'🧩 One action. Six modules. Zero re-entry.',sub:`${c.name} is wired into everything:`,body:`
+  /* 8 — celebrate: cinematic reveal; the boxed breakdown is reused via showReceipts() */
+  const showReceipts=()=>UI.modal({title:'🧩 One action. Six modules. Zero re-entry.',sub:`${c.name} is wired into everything:`,body:`
     <div class="col" style="gap:9px">
       ${[['🪪','People',`Employee <b>${newId}</b> created — profile, comp record, manager chain`,'#/people/'+newId],
         ['✅','Onboarding','10-task journey scheduled around their start date','#/onboard'],
@@ -4776,10 +5053,46 @@ ACT.confirmHire=cid=>{
         <span class="spacer"></span>${I.chev}</a>`).join('')}
     </div>`,
     foot:`<button class="btn ghost" data-act="genOfferLetter" data-arg="${c.id}">${I.doc} Offer letter PDF</button><button class="btn ghost" data-act="closeModal">Stay here</button><button class="btn primary" data-act="goNewHire" data-arg="${newId}">Meet ${esc(c.name.split(' ')[0])} →</button>`});
+  confetti(80);
+  /* branch: cinematic full-screen reveal for real hires; keep the boxed receipts for the demo reel */
+  if(typeof Demo!=='undefined'&&Demo.running){showReceipts();render();return;}
+  cinematicHire(c,newId,r,showReceipts);
   render();
 };
 ACT.closeModalSoft=()=>UI.closeModal();
 ACT.goNewHire=id=>{UI.closeModal();nav('#/people/'+id);};
+/* Round 19 flair — the golden-thread hire, told cinematically (reuses overlay + typewriter + svgPathDraw + confetti) */
+function cinematicHire(c,newId,r,showReceipts){
+  const e=emp(newId),first=(c.name||'').split(' ')[0];
+  const modC=((MODULES.find(m=>m.id==='recruit')||{}).color)||'var(--c-recruit)';
+  const mods=[['🪪','People'],['✅','Onboarding'],['📚','Learning'],['🎯','Performance'],['🧾','Benefits'],['📈','Insights']];
+  const ctrl=overlay(`<div class="cine-wrap">
+    <div class="cine-badge">${e?av(e,'xxl'):''}
+      <svg class="cine-ring" width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="55" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="3"/>
+        <circle id="cine-ringp" cx="60" cy="60" r="55" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+      </svg></div>
+    <span class="cine-tag">✦ Offer accepted</span>
+    <h1 class="cine-name" id="cine-name"></h1>
+    <p class="cine-sub" id="cine-sub"></p>
+    <div class="cine-mods" id="cine-mods">${mods.map((m,i)=>`<span class="cine-mod" style="--i:${i}"><span class="cine-mi">${m[0]}</span>${m[1]}</span>`).join('')}</div>
+    <div class="cine-acts">
+      <button class="btn primary" id="cine-breakdown">See the full breakdown</button>
+      <button class="btn ghost cine-ghost" id="cine-meet">Meet ${esc(first)} →</button>
+      <button class="btn ghost cine-ghost" id="cine-done">Done</button>
+    </div></div>`,{label:'New hire — '+c.name});
+  const root=ctrl.el;root.style.setProperty('--mod',modC);
+  const on=(id,fn)=>{const b=root.querySelector(id);if(b)b.onclick=fn;};
+  on('#cine-breakdown',()=>{ctrl.close();showReceipts();});
+  on('#cine-meet',()=>{ctrl.close();nav('#/people/'+newId);});
+  on('#cine-done',()=>ctrl.close());
+  setTimeout(()=>confetti(70),320);
+  try{if(window.MosyLife)MosyLife.react('hire',{name:first});}catch(e){}
+  svgPathDraw(root.querySelector('#cine-ringp'),950,{delay:180});
+  typewriter(root.querySelector('#cine-name'),`Welcome aboard, ${first}.`,{speed:34,startDelay:340})
+    .then(()=>typewriter(root.querySelector('#cine-sub'),`Hired as ${e?String(e.title).split(',')[0]:r.title} — and already wired into all six systems.`,{speed:15}))
+    .then(()=>{const m=root.querySelector('#cine-mods');if(m)m.classList.add('go');});
+}
 
 /* ============================================================
    VIEW: ONBOARDING — journeys & template
@@ -5329,6 +5642,9 @@ window.cheerPreview=()=>{
   const p=parseCheer(v);
   el.innerHTML=`${p.pts?`<span class="tok" style="background:var(--ok-soft);color:#076b4c">+${p.pts} pts${p.recips.length>1?' each':''}</span> `:'<span class="tok" style="background:var(--bg2)">no points</span> '}→ ${p.recips.length?p.recips.map(id=>esc((emp(id)||{}).name)).join(', '):'<span style="color:var(--bad);font-weight:700">tag someone with @</span>'}${p.values.length?' · '+p.values.map(x=>'#'+x.toLowerCase().replace(/[^a-z]/g,'')).join(' '):''}${p.pts*Math.max(p.recips.length,1)>ptsLeft(DB.me.employeeId)?' · <span style="color:var(--bad);font-weight:700">over your allowance</span>':''}`;
 };
+/* Moment-card actions — instant confetti, optional cheers */
+ACT.celebrate=eid=>{const e=emp(eid);if(!e)return;confetti(80);UI.toast('🎉 Celebrating '+e.name.split(' ')[0]+'!','🎉',{label:'Send cheers',fn:()=>ACT.celebrateCheer(eid)});};
+ACT.celebrateCheer=eid=>{const e=emp(eid);if(!e)return;nav('#/cheers');setTimeout(()=>{const inp=$('#cheer-in');if(inp){inp.value='+25 @'+e.name.split(' ')[0].toLowerCase()+' #together ';inp.focus();try{cheerPreview();}catch(_){}}},150);};
 ACT.cheerSend=()=>{
   const inp=$('#cheer-in');if(!inp||!inp.value.trim())return;
   const p=parseCheer(inp.value);
@@ -6939,14 +7255,25 @@ function adminCompany(){
           <td class="r num">${DB.reqs.filter(r=>r.status==='open'&&r.dept===d.id).length}</td></tr>`;}).join('')}</tbody></table></div>
     </div>
     <div class="col" style="gap:16px">
-      <div class="card pad"><b class="small">🎨 Branding</b>
-        <p class="tiny muted" style="margin-top:6px;line-height:1.6">White-label the workspace, live. <b>Mosaic</b> stays the product name; the display name renames <b>the company</b> (currently ${esc(brandName())}) everywhere it appears — sidebar, headers, careers site, letters and paystubs. The accent color flows through buttons, links, highlights and the active state across every module.</p>
+      <div class="card pad"><b class="small">🎨 Theme Studio</b>
+        <p class="tiny muted" style="margin-top:6px;line-height:1.6">White-label the workspace, live. <b>Mosaic</b> stays the product name; the display name renames <b>the company</b> (currently ${esc(brandName())}) everywhere it appears — sidebar, headers, careers site, letters and paystubs. The accent flows through every button, link, highlight and the living aurora.</p>
+        <div class="ts-swatches mt12">${THEME_SWATCHES.map(s=>`<button class="ts-swatch${(((DB.brand&&DB.brand.color)||'#6366f1').toLowerCase()===s.c.toLowerCase())?' on':''}" data-act="brandPreview" data-arg="${s.c}" style="--sw:${s.c}" title="${s.name}" aria-label="Use ${s.name}"></button>`).join('')}</div>
         <div class="row mt12" style="gap:10px;align-items:center">
-          <input type="color" id="br-color" value="${(DB.brand&&DB.brand.color)||'#6366f1'}" aria-label="Accent color" style="width:46px;height:34px;padding:2px;border:1px solid var(--line);border-radius:9px;background:var(--card)">
+          <input type="color" id="br-color" value="${(DB.brand&&DB.brand.color)||'#6366f1'}" oninput="ACT.brandPreview(this.value)" aria-label="Accent color" style="width:46px;height:34px;padding:2px;border:1px solid var(--line);border-radius:9px;background:var(--card)">
           <input id="br-name" placeholder="Company display name (e.g. ${esc(brandName())})" value="${esc((DB.brand&&DB.brand.name&&DB.brand.name!==COMPANY.name)?DB.brand.name:'')}" style="flex:1">
         </div>
+        <div class="ts-preview mt12">
+          <span class="ts-aurora" aria-hidden="true"></span>
+          <div class="col" style="gap:7px;flex:1;min-width:0">
+            <div class="row" style="gap:7px;align-items:center;flex-wrap:wrap">
+              <button class="btn xs primary" type="button" tabindex="-1" style="pointer-events:none">Primary</button>
+              <span class="chip" style="background:var(--brand-soft);color:var(--brand-deep);border-color:transparent;font-weight:700">Active</span>
+              <a class="tiny" style="color:var(--brand);font-weight:800">A link</a></div>
+            <span class="tiny faint">Live preview — drag the picker or tap a swatch, then Apply</span>
+          </div>
+        </div>
         <div class="row mt12" style="gap:8px">
-          <button class="btn sm primary" data-act="brandSave">Apply</button>
+          <button class="btn sm primary" data-act="brandSave">Apply across ${esc(brandName().split(' ')[0])}</button>
           <button class="btn sm ghost" data-act="brandReset">Reset</button></div></div>
       <div class="card pad"><b class="small">Locations</b>
         <div class="col mt12" style="gap:10px">${LOCS.map(l=>`<div class="row between"><span class="row small" style="gap:8px">${I.pin}${l}</span><b class="num small">${activeEmps().filter(e=>e.location===l).length}</b></div>`).join('')}</div></div>
@@ -6979,7 +7306,7 @@ function adminIntegrations(){
     <div class="row" style="gap:12px;align-items:flex-start;flex-wrap:wrap">
       <span style="font-size:26px">✨</span>
       <div class="col" style="gap:3px;flex:1;min-width:240px">
-        <b class="small">Ask Mosaic — bring your own brain ${AI.enabled()?'<span class="badge b-ok">live</span>':'<span class="badge b-mute">built-in engine</span>'}</b>
+        <b class="small">Mosy — bring your own brain ${AI.enabled()?'<span class="badge b-ok">live</span>':'<span class="badge b-mute">built-in engine</span>'}</b>
         <p class="tiny muted" style="line-height:1.6">Paste a Claude API key and the assistant switches from the built-in rules engine to <b>real Claude calls with tool use over your live demo data</b> — it can look up people, metrics and records, respecting the same permission gates as the UI. Drafting buttons (JDs, reviews, case replies, survey themes) upgrade too.</p>
         <p class="tiny faint">The key is stored only in this browser's localStorage and sent only to api.anthropic.com. Reset demo clears it.</p>
       </div>
@@ -7419,7 +7746,7 @@ function goalTree(){
 }
 
 /* ============================================================
-   ASK MOSAIC — assistant (rule-based demo; swap for Claude API in prod)
+   MOSY — assistant (rule-based demo; swap for Claude API in prod)
    ============================================================ */
 /* ============================================================
    AI CORE — bring-your-own-key Claude API (Round 8 #4/#5)
@@ -7515,34 +7842,34 @@ function aiToolExec(name,input){
       const due=aiParseDate(input.due);
       return aiStage('task','Create task: '+input.title,
         `${asg?'Assignee '+asg.name.split(' ')[0]:'Unassigned'}${due?' · due '+fmtDshort(due):''} · ${proj?proj.name:'My Tasks'}${input.priority?' · '+input.priority:''}`,
-        ()=>{const t=newTask({title:input.title,assigneeId:asg?asg.id:null,dueDate:due,priority:input.priority||'medium',projectId:proj?proj.id:null,sectionId:proj?(proj.sections[0]||{}).id:null});audit('Task created (Copilot)',t.id+' · '+t.title);if(asg&&asg.id!==my.id)notify(asg.id,'✅',`${my.name} assigned you: ${t.title}`,'#/flows');return 'Task created: '+t.title;});
+        ()=>{const t=newTask({title:input.title,assigneeId:asg?asg.id:null,dueDate:due,priority:input.priority||'medium',projectId:proj?proj.id:null,sectionId:proj?(proj.sections[0]||{}).id:null});audit('Task created (Mosy)',t.id+' · '+t.title);if(asg&&asg.id!==my.id)notify(asg.id,'✅',`${my.name} assigned you: ${t.title}`,'#/flows');return 'Task created: '+t.title;});
     }
     if(name==='create_project'){
       const secs=input.sections&&input.sections.length?input.sections:['To do','In progress','Done'];
       return aiStage('project','Create project: '+input.name,
         `${input.description||'New project'} · ${secs.join(' / ')}`,
-        ()=>{const id=uid('PRJ');DB.projects.unshift({id,name:input.name,icon:'🗂',color:'#6366f1',ownerId:my.id,members:[my.id],sections:secs.map(s=>({id:uid('SEC'),name:s})),status:'on-track',description:input.description||'',createdAt:todayISO(),archived:false,startDate:todayISO(),dueDate:daysAhead(30),fields:[],privacy:'team',updates:[{at:todayISO(),by:my.id,status:'on-track',text:'Project created via Copilot.'}]});audit('Project created (Copilot)',id+' · '+input.name);return 'Project created: '+input.name;});
+        ()=>{const id=uid('PRJ');DB.projects.unshift({id,name:input.name,icon:'🗂',color:'#6366f1',ownerId:my.id,members:[my.id],sections:secs.map(s=>({id:uid('SEC'),name:s})),status:'on-track',description:input.description||'',createdAt:todayISO(),archived:false,startDate:todayISO(),dueDate:daysAhead(30),fields:[],privacy:'team',updates:[{at:todayISO(),by:my.id,status:'on-track',text:'Project created via Mosy.'}]});audit('Project created (Mosy)',id+' · '+input.name);return 'Project created: '+input.name;});
     }
     if(name==='schedule_meeting'){
       const who=(input.withWhom||[]).map(aiFindPerson).filter(Boolean);
       const d=aiParseDate(input.date)||daysAhead(1),t=aiParseTime(input.time);
       return aiStage('event','Schedule: '+input.title,
         `${fmtDshort(d)} · ${t}${who.length?' · with '+who.map(w=>w.name.split(' ')[0]).join(', '):''}`,
-        ()=>{const ev={id:uid('EV'),title:input.title,date:d,time:t,durMin:input.durationMin||30,kind:'meeting',attendees:[my.id,...who.map(w=>w.id)],organizer:my.id,color:'#2d7ff0',rsvp:{},meet:true};(DB.events=DB.events||[]).push(ev);who.forEach(w=>notify(w.id,'📅',`${my.name} scheduled: ${input.title}`,'#/cal'));audit('Event created (Copilot)',ev.id+' · '+input.title);return 'Meeting scheduled: '+input.title;});
+        ()=>{const ev={id:uid('EV'),title:input.title,date:d,time:t,durMin:input.durationMin||30,kind:'meeting',attendees:[my.id,...who.map(w=>w.id)],organizer:my.id,color:'#2d7ff0',rsvp:{},meet:true};(DB.events=DB.events||[]).push(ev);who.forEach(w=>notify(w.id,'📅',`${my.name} scheduled: ${input.title}`,'#/cal'));audit('Event created (Mosy)',ev.id+' · '+input.title);return 'Meeting scheduled: '+input.title;});
     }
     if(name==='post_message'){
       const key=String(input.channel||'').toLowerCase().replace(/^#/,'');
       const ch=(DB.channels||[]).filter(c=>!c.dm&&chanVisible(c)).find(c=>(c.name||'').toLowerCase()===key)||(DB.channels||[]).filter(c=>!c.dm&&chanVisible(c)).find(c=>(c.name||'').toLowerCase().includes(key));
       if(!ch)return {error:'No channel matched "'+input.channel+'". Visible channels: '+(DB.channels||[]).filter(c=>!c.dm&&chanVisible(c)).map(c=>'#'+c.name).slice(0,8).join(', ')};
       return aiStage('message','Post to #'+ch.name,'“'+String(input.text).slice(0,90)+(input.text.length>90?'…':'')+'”',
-        ()=>{chatPost(ch.id,input.text);audit('Message posted (Copilot)','#'+ch.name);return 'Posted to #'+ch.name;});
+        ()=>{chatPost(ch.id,input.text);audit('Message posted (Mosy)','#'+ch.name);return 'Posted to #'+ch.name;});
     }
   }catch(e){return {error:e.message};}
   return {error:'unknown tool'};
 }
 async function aiAnswer(raw){
   const my=me();
-  const system=`You are Ask Mosaic, the AI copilot inside Mosaic — the technology that powers work at ${brandName()} (a fictional demo company; all data is fictional). The current user is ${my.name}, ${my.title}, persona role: ${myRole()}. Today is ${fmtD(todayISO())}. Answer from the live data via tools — never invent records. Keep answers under 120 words, friendly and direct. Use the read tools for ANY factual question about people, metrics or records, and respect the permission notes they return. You can also TAKE ACTIONS: when the user asks you to create a task/project, schedule a meeting, or post a message, call the matching write-tool — it STAGES the action and the user sees a Confirm card; nothing happens until they confirm. After staging, tell the user plainly what you prepared (e.g. "I've drafted a task to … — confirm it below"). Do not claim something is done; it is only proposed until confirmed.`;
+  const system=`You are Mosy, the AI assistant inside Mosaic — the technology that powers work at ${brandName()} (a fictional demo company; all data is fictional). The current user is ${my.name}, ${my.title}, persona role: ${myRole()}. Today is ${fmtD(todayISO())}. Answer from the live data via tools — never invent records. Keep answers under 120 words, friendly and direct. Use the read tools for ANY factual question about people, metrics or records, and respect the permission notes they return. You can also TAKE ACTIONS: when the user asks you to create a task/project, schedule a meeting, or post a message, call the matching write-tool — it STAGES the action and the user sees a Confirm card; nothing happens until they confirm. After staging, tell the user plainly what you prepared (e.g. "I've drafted a task to … — confirm it below"). Do not claim something is done; it is only proposed until confirmed.`;
   let messages=[{role:'user',content:raw}];
   for(let i=0;i<5;i++){
     const resp=await AI.call(messages,{system,tools:AI_TOOLS,max_tokens:1024});
@@ -7568,9 +7895,9 @@ ACT.aiSaveKey=()=>{
   const k=($('#ai-key')||{value:''}).value.trim();
   DB.aiKey=k||null;DB.aiModel=($('#ai-model')||{}).value||'claude-opus-4-8';
   Store.save();render();
-  UI.toast(k?'Key saved (this browser only) — Ask Mosaic is now live AI':'Key removed — back to the built-in engine','✨');
+  UI.toast(k?'Key saved (this browser only) — Mosy is now live AI':'Key removed — back to the built-in engine','✨');
 };
-ACT.aiRemoveKey=()=>{DB.aiKey=null;Store.save();render();UI.toast('Key removed — Ask Mosaic uses the built-in engine','✨');};
+ACT.aiRemoveKey=()=>{DB.aiKey=null;Store.save();render();UI.toast('Key removed — Mosy uses the built-in engine','✨');};
 ACT.aiTest=async()=>{
   if(!AI.enabled()){UI.toast('Save a key first','✨');return;}
   UI.toast('Testing…','✨');
@@ -7627,10 +7954,10 @@ ACT.aiThemes=async()=>{
 };
 const Assist={
   open:false,hist:[],
-  toggle(){this.open=!this.open;if(this.open&&!this.hist.length)this.greet();this.render();},
+  toggle(){this.open=!this.open;if(this.open&&!this.hist.length)this.greet();this.render();try{if(window.MosyLife)MosyLife.react(this.open?'panelOpen':'panelClose');}catch(e){}},
   greet(){
     const my=me();
-    this.hist.push({who:'bot',html:`Hey ${esc(my.name.split(' ')[0])} 👋 I'm <b>Ask Mosaic</b>, your copilot. I can answer from your live workplace data — balances, approvals, people, policies — <b>and take actions</b>: “create a task to…”, “schedule a sync with Priya”, “post an update to #people-updates”. You confirm everything before it happens.`});
+    this.hist.push({who:'bot',html:`Hey ${esc(my.name.split(' ')[0])} 👋 I'm <b>Mosy</b>, your AI assistant. I can answer from your live workplace data — balances, approvals, people, policies — <b>and take actions</b>: “create a task to…”, “schedule a sync with Priya”, “post an update to #people-updates”. You confirm everything before it happens.`});
   },
   chips(){
     const role=myRole();
@@ -7644,16 +7971,16 @@ const Assist={
     this.hist.push({who:'user',html:esc(q)});
     if(AI.enabled()){
       const ph={who:'bot',html:'<span class="faint">✨ thinking…</span>',typing:true};
-      this.hist.push(ph);this.render();
+      this.hist.push(ph);this.render();try{if(window.MosyLife)MosyLife.mood('think');}catch(e){}
       aiAnswer(q).then(txt=>{
         ph.html=esc(txt).replace(/\n/g,'<br>');delete ph.typing;
         ph.sources=[{label:'Live AI · '+AI.model(),link:'#/admin/integrations'}];
-        this.render();
+        this.render();try{if(window.MosyLife)MosyLife.mood('attentive');}catch(e){}
       }).catch(e=>{
         const a=this.answer(q.toLowerCase(),q);
         ph.html=(a.html||'')+`<br><span class="tiny faint">⚠️ live AI failed (${esc(e.message.slice(0,60))}) — built-in engine answered</span>`;
         Object.assign(ph,{sources:a.sources,actions:a.actions});delete ph.typing;
-        this.render();
+        this.render();try{if(window.MosyLife)MosyLife.mood('attentive');}catch(e){}
       });
       return;
     }
@@ -7777,10 +8104,10 @@ const Assist={
     const p=$('#assist-panel');
     if(!this.open){p.classList.remove('open');return;}
     p.innerHTML=`
-      <div class="as-head">${logoSVG(26)}<div class="col" style="gap:0;flex:1"><b style="font-size:14px">Ask Mosaic ${AI.enabled()?'<span class="chip" style="font-size:9px;padding:1px 7px;vertical-align:1px" title="Answering with '+AI.model()+' over your live demo data">✨ live AI</span>':''}</b><span class="tiny faint">${AI.enabled()?'real Claude calls with tools over your demo data':'grounded answers, with sources — across every module'}</span></div>
+      <div class="as-head">${mosyMark(30)}<div class="col" style="gap:0;flex:1"><b style="font-size:14px">Mosy ${AI.enabled()?'<span class="chip" style="font-size:9px;padding:1px 7px;vertical-align:1px" title="Answering with '+AI.model()+' over your live demo data">✨ live AI</span>':''}</b><span class="tiny faint">${AI.enabled()?'real Claude calls with tools over your demo data':'grounded answers, with sources — across every module'}</span></div>
         <button class="iconbtn" data-act="assistBig" title="Expand" aria-label="Expand assistant">⤢</button>
         <button class="iconbtn" data-act="toggleAssist" aria-label="Close assistant">${I.x}</button></div>
-      <div class="as-body" id="as-body">${this.hist.map(msg=>`<div class="as-msg ${msg.who}">${msg.html}</div>
+      <div class="as-body" id="as-body">${this.hist.map(msg=>`${msg.who==='bot'?`<div class="as-row"><span class="as-av">${mosyMark(26)}</span><div class="as-msg bot">${msg.html}</div></div>`:`<div class="as-msg user">${msg.html}</div>`}
         ${msg.actions&&msg.actions.length?`<div class="as-actions">${msg.actions.map(a=>`<button class="btn xs soft" data-act="${a.act}" ${a.arg?`data-arg="${a.arg}"`:''}>${a.label}</button>`).join('')}</div>`:''}
         ${msg.sources&&msg.sources.length?`<div class="as-sources"><span class="tiny faint" style="align-self:center">Sources:</span>${msg.sources.map((s,i)=>`<span class="chip" data-act="nav" data-arg="${s.link}">[${i+1}] ${esc(s.label)}</span>`).join('')}</div>`:''}`).join('')}
         ${AI_PENDING.length?`<div class="ai-pending">${AI_PENDING.map(a=>`<div class="ai-act-card"><div class="row" style="gap:7px"><span class="ai-act-ic">⚡</span><b class="small" style="flex:1">${esc(a.label)}</b></div><div class="tiny faint" style="margin:3px 0 8px 25px">${esc(a.detail)}</div><div class="row" style="gap:6px;margin-left:25px"><button class="btn xs primary" data-act="aiRunAction" data-arg="${a.id}">✓ Confirm</button><button class="btn xs ghost" data-act="aiDiscardAction" data-arg="${a.id}">Discard</button></div></div>`).join('')}</div>`:''}</div>
@@ -10876,12 +11203,86 @@ ACT.saveCourse=()=>{
 /* #18 delight */
 function confetti(n){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  try{if(window.MosyLife)MosyLife.react('cheer');}catch(e){}
   const cols=['#6366f1','#f0648c','#14b8a6','#f59e0b','#22c55e','#8b5cf6'];
   for(let i=0;i<(n||60);i++){const c=document.createElement('span');c.className='confetti';
     c.style.left=Math.random()*100+'vw';c.style.background=pick(cols);
     c.style.animationDelay=(Math.random()*0.6)+'s';c.style.animationDuration=(2+Math.random()*1.4)+'s';
     document.body.appendChild(c);setTimeout(()=>c.remove(),4200);}
 }
+/* ============================================================================
+   Tier-0 flair helpers — dependency-free, shared across the cinematic features.
+   ============================================================================ */
+const _reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* fullscreen cinematic overlay (distinct from the boxed UI.modal); returns a controller */
+function overlay(html,opts={}){
+  let el=$('#fx-overlay');if(el)el.remove();
+  el=document.createElement('div');el.id='fx-overlay';
+  el.className='fx-overlay'+(opts.theme==='light'?' light':'');
+  el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
+  if(opts.label)el.setAttribute('aria-label',opts.label);
+  el.innerHTML=`<div class="fx-inner">${html}</div>`;
+  document.body.appendChild(el);document.body.classList.add('fx-lock');
+  const ctrl={el,
+    set(h){const inner=el.querySelector('.fx-inner');if(inner)inner.innerHTML=h;runMounts();},
+    close(){el.classList.remove('show');document.body.classList.remove('fx-lock');
+      document.removeEventListener('keydown',onKey,true);
+      setTimeout(()=>el.remove(),_reduceMotion()?0:380);
+      if(opts.onClose){try{opts.onClose();}catch(e){}}}};
+  const onKey=e=>{if(e.key==='Escape'&&opts.dismissable!==false){e.stopPropagation();ctrl.close();}};
+  document.addEventListener('keydown',onKey,true);
+  if(opts.dismissable!==false)el.addEventListener('click',e=>{if(e.target===el)ctrl.close();});
+  el._ctrl=ctrl;requestAnimationFrame(()=>el.classList.add('show'));
+  runMounts();return ctrl;
+}
+function closeOverlay(){const el=$('#fx-overlay');if(el&&el._ctrl)el._ctrl.close();else if(el)el.remove();}
+/* type text into an element char-by-char; resolves when finished (instant under reduced-motion) */
+function typewriter(el,text,opts={}){
+  if(!el)return Promise.resolve();
+  text=String(text);el.textContent='';
+  if(_reduceMotion()){el.textContent=text;return Promise.resolve();}
+  const speed=opts.speed||26;el.classList.add('tw-cursor');
+  if(el._tw)clearTimeout(el._tw);
+  return new Promise(res=>{let i=0;
+    const tick=()=>{if(!el.isConnected){res();return;}
+      el.textContent=text.slice(0,i);i++;
+      if(i<=text.length){const prev=text[i-2];el._tw=setTimeout(tick,prev&&/[.,!?;:]/.test(prev)?speed*6:prev===' '?speed*0.6:speed);}
+      else{if(opts.keepCursor!==true)el.classList.remove('tw-cursor');res();}};
+    el._tw=setTimeout(tick,opts.startDelay||0);});
+}
+/* animate an SVG <path> drawing itself in via stroke-dashoffset; resolves when done */
+function svgPathDraw(path,ms,opts={}){
+  if(!path)return Promise.resolve();
+  let len;try{len=path.getTotalLength();}catch(e){return Promise.resolve();}
+  if(_reduceMotion()){path.style.strokeDasharray='';path.style.strokeDashoffset='';return Promise.resolve();}
+  const dur=ms||900;path.style.transition='none';
+  path.style.strokeDasharray=len;path.style.strokeDashoffset=len;path.getBoundingClientRect();
+  return new Promise(res=>setTimeout(()=>{
+    path.style.transition=`stroke-dashoffset ${dur}ms ${opts.ease||'cubic-bezier(.5,0,.2,1)'}`;
+    path.style.strokeDashoffset='0';setTimeout(res,dur);},opts.delay||0));
+}
+/* rasterize a self-contained <svg> string to a PNG data URL (reliable — no external refs) */
+function svgToPNG(svg,w,h,scale){
+  return new Promise((res,rej)=>{scale=scale||2;
+    const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}));
+    const img=new Image();
+    img.onload=()=>{try{const cv=document.createElement('canvas');cv.width=w*scale;cv.height=h*scale;
+      const cx=cv.getContext('2d');cx.scale(scale,scale);cx.drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);res(cv.toDataURL('image/png'));}catch(e){URL.revokeObjectURL(url);rej(e);}};
+    img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};img.src=url;});
+}
+/* render a DOM node to a PNG data URL by inlining computed styles into an SVG foreignObject */
+function domToPNG(node,opts={}){
+  const r=node.getBoundingClientRect(),w=Math.ceil(r.width),h=Math.ceil(r.height);
+  const clone=node.cloneNode(true),src=[node,...node.querySelectorAll('*')],dst=[clone,...clone.querySelectorAll('*')];
+  const PROPS=['color','background','background-color','background-image','background-size','background-position','-webkit-background-clip','-webkit-text-fill-color','font-family','font-size','font-weight','font-style','letter-spacing','line-height','text-align','padding','margin','border','border-radius','box-shadow','width','height','min-width','max-width','display','flex','flex-direction','align-items','justify-content','gap','opacity','white-space','text-transform','overflow'];
+  src.forEach((s,i)=>{const cs=getComputedStyle(s),d=dst[i];if(!d||!d.style)return;let css='';PROPS.forEach(p=>{const v=cs.getPropertyValue(p);if(v)css+=p+':'+v+';';});d.setAttribute('style',css);});
+  const xml=new XMLSerializer().serializeToString(clone),bg=opts.bg||'transparent';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;height:${h}px;background:${bg}">${xml}</div></foreignObject></svg>`;
+  return svgToPNG(svg,w,h,opts.scale||2);
+}
+/* user-initiated save of a generated data URL (e.g. a Wrapped share card) */
+function downloadDataURL(data,filename){const a=document.createElement('a');a.href=data;a.download=filename||'mosaic.png';document.body.appendChild(a);a.click();a.remove();}
 function countUpStats(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   $$('#main .stat .val').forEach(el=>{
@@ -11110,7 +11511,7 @@ Views.qa=()=>{
   T('shift hours positive',()=>{const s=(DB.shifts||[])[0];return s?shiftHrs(s)>0:true;});
   T('succession bench ≤ 3',()=>{const e=DB.employees.find(x=>reportsOf(x.id).length>0);return e?successorsFor(e).length<=3:true;});
   T('semantic search ranks a person',()=>{const ix=buildIndex();return ix.some(x=>x.type==='person'&&palScore(x,[['priya']])>0);});
-  T('copilot stages, never mutates',()=>{const n=(DB.tasks||[]).length;AI_PENDING=[];const r=aiToolExec('create_task',{title:'qa probe'});const ok=!!r.staged&&(DB.tasks||[]).length===n;AI_PENDING=[];return ok;});
+  T('Mosy stages, never mutates',()=>{const n=(DB.tasks||[]).length;AI_PENDING=[];const r=aiToolExec('create_task',{title:'qa probe'});const ok=!!r.staged&&(DB.tasks||[]).length===n;AI_PENDING=[];return ok;});
   T('dashboard widgets all render',()=>Object.values(DASH_W).every(w=>(w.gate&&!w.gate())?true:typeof w.render()==='string'));
   T('automations seeded',()=>(DB.automations||[]).length>=4);
   T('retention schedule defined',()=>(DB.retention||[]).length>=4);
@@ -11267,6 +11668,17 @@ ACT.brandSave=()=>{
   Store.save();render();UI.toast('Rebranded live — every accent in the app just changed','🎨');
 };
 ACT.brandReset=()=>{DB.brand=null;applyBrand();Store.save();render();UI.toast('Back to Mosaic indigo','🎨');};
+/* Theme Studio (Round 19 flair) — curated palette + live, uncommitted preview that also drives the aurora */
+const THEME_SWATCHES=[{name:'Mosaic indigo',c:'#6366f1'},{name:'Violet',c:'#8b5cf6'},{name:'Royal blue',c:'#3b82f6'},{name:'Sky',c:'#0ea5e9'},{name:'Teal',c:'#14b8a6'},{name:'Emerald',c:'#22c55e'},{name:'Amber',c:'#f59e0b'},{name:'Coral',c:'#f43f5e'},{name:'Crimson',c:'#e11d48'},{name:'Fuchsia',c:'#d946ef'},{name:'Slate',c:'#64748b'}];
+ACT.brandPreview=(color)=>{
+  const c=(color||($('#br-color')||{}).value||'#6366f1');
+  const bc=$('#br-color');if(bc&&color)bc.value=c;
+  const dark=document.documentElement.classList.contains('dark'),rs=document.documentElement.style;
+  rs.setProperty('--brand',c);rs.setProperty('--brand-deep',shade(c,0.82));
+  rs.setProperty('--brand-soft',dark?shade(c,0.30):tint(c,0.90));
+  rs.setProperty('--mod',c);rs.setProperty('--aur-a',c);rs.setProperty('--aur-b',auroraComplement(c));
+  $$('.ts-swatch').forEach(s=>s.classList.toggle('on',(s.getAttribute('data-arg')||'').toLowerCase()===c.toLowerCase()));
+};
 /* #16 keyboard help */
 ACT.kbHelp=()=>{
   UI.modal({title:'Keyboard shortcuts ⌨️',body:`

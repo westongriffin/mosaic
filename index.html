@@ -810,9 +810,66 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 .mosy-pupils{transition:transform .32s cubic-bezier(.4,0,.3,1)}
 .mosy-lid{fill:#fff;transform:scaleY(0);transform-origin:center;transform-box:fill-box}
 #assist-fab.m-blink .mosy-lid{animation:mosyBlink .16s ease-in-out}
+#assist-fab.m-wink .mosy-lid:first-of-type{animation:mosyBlink .34s ease-in-out}
 @keyframes mosyBlink{0%,100%{transform:scaleY(0)}50%{transform:scaleY(1)}}
 #assist-fab.m-think .mosy-spark{animation:mosyTwinkle 1s ease-in-out infinite}
 @keyframes mosyTwinkle{0%,100%{opacity:.35}50%{opacity:1}}
+/* ===== Mosy the host — arms + gesture repertoire (Round 24) ===== */
+.mosy-arm{transform-box:fill-box;will-change:transform}
+.mosy-arm-r{transform-origin:0 0}
+.mosy-arm-l{transform-origin:100% 0}
+#assist-fab[class*=" g-"] .mosy-arm{filter:drop-shadow(0 0 1.2px rgba(46,39,102,.32))}
+#assist-fab.g-wave .mosy-arm-r{animation:mosyWaveR .95s ease-in-out}
+@keyframes mosyWaveR{0%{transform:rotate(0)}15%{transform:rotate(-115deg)}30%{transform:rotate(-100deg)}45%{transform:rotate(-122deg)}60%{transform:rotate(-103deg)}80%{transform:rotate(-114deg)}100%{transform:rotate(0)}}
+#assist-fab.g-clap .mosy-arm-l{animation:mosyClapL .85s ease-in-out}
+#assist-fab.g-clap .mosy-arm-r{animation:mosyClapR .85s ease-in-out}
+@keyframes mosyClapL{0%,100%{transform:rotate(0)}25%{transform:rotate(-46deg)}40%{transform:rotate(-20deg)}65%{transform:rotate(-46deg)}80%{transform:rotate(-22deg)}}
+@keyframes mosyClapR{0%,100%{transform:rotate(0)}25%{transform:rotate(46deg)}40%{transform:rotate(20deg)}65%{transform:rotate(46deg)}80%{transform:rotate(22deg)}}
+#assist-fab.g-cheer .mosy-arm-l{animation:mosyCheerL .9s cubic-bezier(.3,.9,.3,1)}
+#assist-fab.g-cheer .mosy-arm-r{animation:mosyCheerR .9s cubic-bezier(.3,.9,.3,1)}
+@keyframes mosyCheerL{0%{transform:rotate(0)}35%{transform:rotate(118deg)}55%{transform:rotate(108deg)}75%{transform:rotate(118deg)}100%{transform:rotate(0)}}
+@keyframes mosyCheerR{0%{transform:rotate(0)}35%{transform:rotate(-118deg)}55%{transform:rotate(-108deg)}75%{transform:rotate(-118deg)}100%{transform:rotate(0)}}
+#assist-fab.g-point .mosy-arm-r{animation:mosyPoint 1.2s ease-out}
+@keyframes mosyPoint{0%{transform:rotate(0)}22%{transform:rotate(-112deg)}72%{transform:rotate(-112deg)}100%{transform:rotate(0)}}
+#assist-fab.g-thumb .mosy-arm-r{animation:mosyThumb .9s cubic-bezier(.34,1.4,.5,1)}
+@keyframes mosyThumb{0%{transform:rotate(0)}30%{transform:rotate(-124deg)}48%{transform:rotate(-110deg)}70%{transform:rotate(-118deg)}100%{transform:rotate(0)}}
+#assist-fab.g-dance .mosy-arm-l{animation:mosyDanceL 1.4s ease-in-out}
+#assist-fab.g-dance .mosy-arm-r{animation:mosyDanceR 1.4s ease-in-out}
+@keyframes mosyDanceL{0%,100%{transform:rotate(8deg)}25%{transform:rotate(-35deg)}50%{transform:rotate(12deg)}75%{transform:rotate(-25deg)}}
+@keyframes mosyDanceR{0%,100%{transform:rotate(-8deg)}25%{transform:rotate(25deg)}50%{transform:rotate(-12deg)}75%{transform:rotate(35deg)}}
+#assist-fab.g-laugh .mosy-arm-l{animation:mosyLaughL .7s ease-in-out}
+#assist-fab.g-laugh .mosy-arm-r{animation:mosyLaughR .7s ease-in-out}
+@keyframes mosyLaughL{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-9deg) translateY(-2px)}50%{transform:rotate(0) translateY(0)}75%{transform:rotate(-9deg) translateY(-2px)}}
+@keyframes mosyLaughR{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(9deg) translateY(-2px)}50%{transform:rotate(0) translateY(0)}75%{transform:rotate(9deg) translateY(-2px)}}
+#assist-fab.g-think-arm .mosy-arm-r{transform:rotate(-104deg)}
+#assist-fab.g-nod svg{animation:mosyNod .7s ease-in-out}
+@keyframes mosyNod{0%,100%{transform:translateY(0)}30%{transform:translateY(3px)}60%{transform:translateY(-1px)}}
+/* ===== Mosy expressiveness v2 (Round 25): body dynamics + eye expressions + emote particles ===== */
+.mosy-stage{transform-box:fill-box;transform-origin:50% 100%;will-change:transform}
+#assist-fab.b-jump .mosy-stage{animation:mosyLeap .72s cubic-bezier(.3,.7,.3,1)}
+@keyframes mosyLeap{0%{transform:translateY(0) scale(1,1)}18%{transform:translateY(6px) scale(1.12,.86)}46%{transform:translateY(-38px) scale(.9,1.14)}74%{transform:translateY(4px) scale(1.16,.84)}88%{transform:translateY(-9px) scale(.98,1.02)}100%{transform:translateY(0) scale(1,1)}}
+#assist-fab.b-pop .mosy-stage{animation:mosyPop .5s cubic-bezier(.34,1.56,.5,1)}
+@keyframes mosyPop{0%{transform:scale(1)}30%{transform:scale(1.18)}55%{transform:scale(.95)}100%{transform:scale(1)}}
+#assist-fab.b-lean .mosy-stage{animation:mosyLean 1.1s ease-in-out}
+@keyframes mosyLean{0%{transform:rotate(0)}25%{transform:rotate(-8deg)}70%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
+#assist-fab.b-wobble .mosy-stage{animation:mosyWobble 1.4s ease-in-out}
+@keyframes mosyWobble{0%,100%{transform:rotate(0)}20%{transform:rotate(6deg) scale(1.04,.96)}50%{transform:rotate(-6deg) scale(1.04,.96)}80%{transform:rotate(5deg) scale(1.03,.97)}}
+.mosy-eye{opacity:0;transition:opacity .12s}
+#assist-fab.e-happy .mosy-eye-happy{opacity:1}#assist-fab.e-happy .mosy-pupils{opacity:0}
+#assist-fab.e-soft .mosy-eye-soft{opacity:1}#assist-fab.e-soft .mosy-pupils{opacity:0}
+#assist-fab.e-star .mosy-eye-star{opacity:1}#assist-fab.e-star .mosy-pupils{opacity:0}
+#assist-fab.e-heart .mosy-eye-heart{opacity:1}#assist-fab.e-heart .mosy-pupils{opacity:0}
+.mosy-pupil-scale{transform-box:fill-box;transform-origin:center;transition:transform .12s}
+#assist-fab.e-wide .mosy-pupil-scale{transform:scale(1.5)}
+.mosy-eye-star,.mosy-eye-heart{transform-box:fill-box;transform-origin:center}
+#assist-fab.e-star .mosy-eye-star{animation:mosyEyeStar .6s ease-out}
+@keyframes mosyEyeStar{0%{opacity:0;transform:scale(.4)}45%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:scale(1)}}
+#assist-fab.e-heart .mosy-eye-heart{animation:mosyHeartBeat .55s ease-out}
+@keyframes mosyHeartBeat{0%{transform:scale(.4)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
+.mosy-emote{position:absolute;left:50%;top:6px;width:0;height:0;pointer-events:none;overflow:visible;z-index:1}
+.mosy-glyph{position:absolute;left:0;top:0;font:800 13px/1 system-ui,-apple-system,sans-serif;opacity:0;color:#a855f7;text-shadow:0 1px 4px rgba(10,12,26,.35);will-change:transform,opacity;transform:translate(-50%,-50%)}
+.mfx-heart{color:#ec4899}.mfx-note{color:#6366f1}.mfx-spark{color:#f59e0b}.mfx-confetti{color:#f59e0b}.mfx-excl{color:#ef4444;font-weight:900}.mfx-ha{color:#8b5cf6}.mfx-huh{color:#64748b}
+@keyframes mosyRise{0%{opacity:0;transform:translate(-50%,4px) scale(.5)}20%{opacity:1;transform:translate(calc(-50% + (var(--dx,0px) * .4)),-12px) scale(1.05)}100%{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),-42px) scale(1) rotate(var(--rot,0deg))}}
 .mosy-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#f59e0b;color:#fff;font-size:10.5px;font-weight:800;line-height:1;display:none;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(10,12,26,.4);pointer-events:none}
 .mosy-badge.show{display:flex}
 .mosy-badge.alert{background:#ef4444}
@@ -823,7 +880,7 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 #mosy-nudge .mn-x{position:absolute;top:4px;right:6px;border:none;background:none;color:var(--ink3);font-size:16px;line-height:1;cursor:pointer;padding:2px}
 @keyframes mosyNudgeIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
 @media(max-width:640px){#mosy-nudge{right:14px;bottom:86px}}
-@media (prefers-reduced-motion: reduce){#assist-fab svg,#assist-fab.m-hop svg,#assist-fab.m-sway svg,#assist-fab.m-bob svg,#assist-fab.m-pulse svg{animation:none}#assist-fab.m-think .mosy-spark{animation:none}.mosy-pupils{transition:none;transform:none!important}.mosy-lid{display:none}#mosy-nudge.show{animation:none}}
+@media (prefers-reduced-motion: reduce){#assist-fab svg,#assist-fab.m-hop svg,#assist-fab.m-sway svg,#assist-fab.m-bob svg,#assist-fab.m-pulse svg{animation:none}#assist-fab.m-think .mosy-spark{animation:none}.mosy-pupils{transition:none;transform:none!important}.mosy-lid{display:none}#mosy-nudge.show{animation:none}.mosy-arm{animation:none!important;transition:none}#assist-fab.gp-wave .mosy-arm-r{transform:rotate(-114deg)}#assist-fab.gp-clap .mosy-arm-l{transform:rotate(-44deg)}#assist-fab.gp-clap .mosy-arm-r{transform:rotate(44deg)}#assist-fab.gp-cheer .mosy-arm-l{transform:rotate(118deg)}#assist-fab.gp-cheer .mosy-arm-r{transform:rotate(-118deg)}#assist-fab.gp-point .mosy-arm-r{transform:rotate(-112deg)}#assist-fab.gp-thumb .mosy-arm-r{transform:rotate(-118deg)}}
 .as-actions{display:flex;gap:6px;flex-wrap:wrap;align-self:flex-start;margin-top:-4px}
 .as-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
 .as-chips .chip{cursor:pointer;font-size:11.5px}
@@ -1132,6 +1189,11 @@ body.fx-lock{overflow:hidden}
 @keyframes cFade{to{opacity:1}}
 @keyframes cBarGrow{from{transform:scaleY(0)}}
 @keyframes cDonutIn{from{opacity:0;transform:scale(.86) rotate(-9deg)}}
+/* living data-viz: a pulsing "now" point on line charts */
+.chart-pulse{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion: no-preference){.chart-pulse{animation:chartPulse 2.3s ease-out infinite}}
+@media (prefers-reduced-motion: reduce){.chart-pulse{display:none}}
+@keyframes chartPulse{0%{transform:scale(.5);opacity:.7}70%{opacity:0}100%{transform:scale(3.6);opacity:0}}
 /* ---- Theme Studio (Round 19) ---- */
 .ts-swatches{display:flex;flex-wrap:wrap;gap:9px}
 .ts-swatch{width:30px;height:30px;border-radius:9px;background:var(--sw);border:none;padding:0;cursor:pointer;box-shadow:0 0 0 1.5px var(--line);transition:transform .13s ease,box-shadow .13s ease}
@@ -1170,6 +1232,62 @@ body.fx-lock{overflow:hidden}
 .moment-btn.ghost{background:rgba(255,255,255,.16);color:#fff}
 .moment-btn.ghost:hover{background:rgba(255,255,255,.27)}
 @media (prefers-reduced-motion: reduce){.moment-spark{animation:none}}
+/* ---- Atlas (Round 22) ---- */
+.atlas-map{width:100%;height:auto;display:block}
+.atlas-link{stroke:var(--line2);stroke-width:1.5}
+.atlas-link.dash{stroke-dasharray:4 5;opacity:.65}
+.atlas-bubble{fill:color-mix(in srgb,var(--c) 22%,var(--card));stroke:var(--c);stroke-width:2.5}
+.atlas-num{font-weight:800;font-size:15px;fill:var(--c)}
+.atlas-lbl{font-weight:600;font-size:11px;fill:var(--ink2)}
+.atlas-card{border-top:3px solid var(--c)}
+.atlas-bar{display:flex;height:8px;border-radius:5px;overflow:hidden;background:var(--bg2)}
+.atlas-bar span{display:block;height:100%}
+@media (prefers-reduced-motion: no-preference){
+  .atlas-link{animation:atlasFade .6s ease both}
+  .atlas-node{transform-box:fill-box;transform-origin:center;animation:atlasPop .5s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--i)*.12s + .15s)}
+}
+@keyframes atlasPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes atlasFade{from{opacity:0}to{opacity:1}}
+/* ---- Wrapped (Round 22) ---- */
+.wrap-card{text-align:center;color:#fff;max-width:430px;margin:0 auto}
+.wrap-dots{display:flex;gap:6px;justify-content:center;margin-bottom:28px}
+.wrap-dot{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.28);transition:width .3s,background .3s}
+.wrap-dot.on{background:#fff;width:22px}
+.wrap-emoji{font-size:54px;line-height:1;margin-bottom:10px}
+.wrap-big{display:flex;flex-direction:column;align-items:center;gap:2px;margin-bottom:14px}
+.wrap-num{font-family:var(--font-display);font-size:86px;font-weight:800;line-height:1;color:#fff}
+.wrap-unit{font-size:16px;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.09em}
+.wrap-bigtext{font-family:var(--font-display);font-size:46px;font-weight:800;margin-bottom:14px;line-height:1.1;color:#fff}
+.wrap-cap{font-size:16px;line-height:1.55;opacity:.92;max-width:380px;margin:0 auto 28px;min-height:52px}
+.wrap-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.wrap-acts .wrap-ghost{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.07)}
+.wrap-acts .wrap-ghost:hover{background:rgba(255,255,255,.15)}
+/* ---- Kiosk (Round 22) ---- */
+.kiosk{text-align:center;color:#fff;width:100%;max-width:780px;margin:0 auto}
+.kiosk-top{display:flex;align-items:center;gap:12px;justify-content:space-between;opacity:.92;margin-bottom:6vh;font-size:14px}
+.kiosk-clock{font-family:var(--font-display);font-size:22px;font-weight:800}
+.kiosk-exit{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
+.kiosk-stage{min-height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;animation:kioskIn .55s ease}
+.kiosk-emoji{font-size:48px;line-height:1;margin-bottom:14px}
+.kiosk-h{font-family:var(--font-display);font-size:46px;font-weight:800;margin-bottom:8px;color:#fff}
+.kiosk-sub{font-size:18px;opacity:.85;margin-bottom:14px}
+.kiosk-stat{font-size:13px;opacity:.7;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.kiosk-people{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;margin-top:12px}
+.kiosk-person{display:flex;flex-direction:column;align-items:center;gap:8px;width:120px}
+.kiosk-person .av{width:64px!important;height:64px!important;font-size:23px!important;border:2px solid rgba(255,255,255,.45)}
+.kiosk-pname{font-weight:700;font-size:14px}
+.kiosk-pmeta{font-size:11px;opacity:.78;line-height:1.3}
+.kiosk-dots{display:flex;gap:7px;justify-content:center;margin-top:7vh}
+.kiosk-dot{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.3);transition:width .4s}
+.kiosk-dot.on{background:#fff;width:24px}
+@keyframes kioskIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.kiosk-stage{animation:none}}
+/* ---- Journey map (Round 22) ---- */
+.journey-wrap{padding:8px 14px 4px}
+.journey-map{width:100%;height:auto;display:block;overflow:visible}
+.journey-node{transform-box:fill-box}
+@media(prefers-reduced-motion:no-preference){.journey-node{transform-origin:center;animation:jnPop .42s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--i)*.07s + .45s)}}
+@keyframes jnPop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
 .qa-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px;align-items:center}
 .kbd-key{background:var(--bg2);border:1px solid var(--line2);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;font-family:inherit}
 .exp-line{display:grid;grid-template-columns:1fr 110px 90px 26px;gap:8px;margin-bottom:6px}
@@ -1558,7 +1676,7 @@ const mosyMark=(s,o)=>{o=o||{};const z=s||28;const body=o.mono?'#ffffff':'url(#m
 /* ===================== Mosy comes alive (Round 21) — one controller, transform/opacity-only, reduced-motion safe, never calls render() ===================== */
 const MosyLife={
   _ready:false,_blinkIn:6,_driftIn:8,_idleAt:0,_lastBeat:0,_following:false,
-  s(){UIS.mosy=UIS.mosy||{seen:{},nudgeCount:0,lastNudgeAt:0,leanAt:0,prevW0:-1,prevCount:-1,celebZero:false};return UIS.mosy;},
+  s(){UIS.mosy=UIS.mosy||{seen:{},nudgeCount:0,lastNudgeAt:0,leanAt:0,prevW0:-1,prevCount:-1,celebZero:false,welcomed:false};return UIS.mosy;},
   chat(){return (typeof DB!=='undefined'&&DB.mosyChat)||'balanced';},
   _now(){try{return performance.now();}catch(e){return 0;}},
   _busy(){return document.hidden||this._blurred;},
@@ -1580,22 +1698,33 @@ const MosyLife={
   _rig(fab,svg){
     const ns='http://www.w3.org/2000/svg',g=svg.querySelector('g');if(!g)return;
     g.classList.add('mosy-inner');
+    const stage=document.createElementNS(ns,'g');stage.setAttribute('class','mosy-stage');g.parentNode.insertBefore(stage,g);stage.appendChild(g);this._stage=stage;
     const paths=g.querySelectorAll('path'),circles=g.querySelectorAll('circle');
     if(paths[0])paths[0].classList.add('mosy-body');
     if(paths[1])paths[1].classList.add('mosy-spark');
     this._mouth=paths[paths.length-1];if(this._mouth)this._mouth.classList.add('mosy-mouth');
     if(circles.length>=2){
       const wrap=document.createElementNS(ns,'g');wrap.setAttribute('class','mosy-pupils');
-      circles[0].parentNode.insertBefore(wrap,circles[0]);wrap.appendChild(circles[0]);wrap.appendChild(circles[1]);
+      circles[0].parentNode.insertBefore(wrap,circles[0]);const pscale=document.createElementNS(ns,'g');pscale.setAttribute('class','mosy-pupil-scale');wrap.appendChild(pscale);pscale.appendChild(circles[0]);pscale.appendChild(circles[1]);
       [circles[0],circles[1]].forEach(c=>{const cx=+c.getAttribute('cx'),cy=+c.getAttribute('cy');
         const lid=document.createElementNS(ns,'rect');lid.setAttribute('class','mosy-lid');lid.setAttribute('x',cx-6);lid.setAttribute('y',cy-7);lid.setAttribute('width',12);lid.setAttribute('height',13);lid.setAttribute('rx',5);g.appendChild(lid);});
       this._pupils=wrap;
     }
+    const mkArm=(cls,d)=>{const a=document.createElementNS(ns,'path');a.setAttribute('class','mosy-arm '+cls);a.setAttribute('d',d);a.setAttribute('fill','none');a.setAttribute('stroke','#ffffff');a.setAttribute('stroke-width','9');a.setAttribute('stroke-linecap','round');g.appendChild(a);return a;};
+    this._armL=mkArm('mosy-arm-l','M-38,10 q-7,8 -10,17');this._armR=mkArm('mosy-arm-r','M38,10 q7,8 10,17');
     this._fab=fab;
     const b=document.createElement('span');b.className='mosy-badge';b.setAttribute('aria-hidden','true');fab.appendChild(b);this._badge=b;
     let live=document.getElementById('mosy-live');
     if(!live){live=document.createElement('div');live.id='mosy-live';live.setAttribute('aria-live','polite');live.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';document.body.appendChild(live);}
     this._live=live;
+    const mkEyeP=(cls,d)=>{const p=document.createElementNS(ns,'path');p.setAttribute('class','mosy-eye '+cls);p.setAttribute('d',d);p.setAttribute('stroke','#2e2766');p.setAttribute('stroke-width','3.4');p.setAttribute('fill','none');p.setAttribute('stroke-linecap','round');g.appendChild(p);return p;};
+    mkEyeP('mosy-eye-happy','M-18,-2 Q-13,-7 -8,-2');mkEyeP('mosy-eye-happy','M8,-2 Q13,-7 18,-2');
+    mkEyeP('mosy-eye-soft','M-18,-3 Q-13,1 -8,-3');mkEyeP('mosy-eye-soft','M8,-3 Q13,1 18,-3');
+    const mkEyeF=(cls,d)=>{const p=document.createElementNS(ns,'path');p.setAttribute('class','mosy-eye '+cls);p.setAttribute('d',d);p.setAttribute('fill','#2e2766');g.appendChild(p);return p;};
+    mkEyeF('mosy-eye-star','M-13,-10 L-11.6,-6.6 L-8,-3 L-11.6,-.4 L-13,3 L-14.4,-.4 L-18,-3 L-14.4,-6.6 Z');mkEyeF('mosy-eye-star','M13,-10 L14.4,-6.6 L18,-3 L14.4,-.4 L13,3 L11.6,-.4 L8,-3 L11.6,-6.6 Z');
+    mkEyeF('mosy-eye-heart','M-13,-6 C-15,-9 -19,-7 -19,-4 C-19,-1 -13,3 -13,3 C-13,3 -7,-1 -7,-4 C-7,-7 -11,-9 -13,-6 Z');mkEyeF('mosy-eye-heart','M13,-6 C11,-9 7,-7 7,-4 C7,-1 13,3 13,3 C13,3 19,-1 19,-4 C19,-7 15,-9 13,-6 Z');
+    const em=document.createElement('div');em.className='mosy-emote';em.setAttribute('aria-hidden','true');fab.appendChild(em);this._emote=em;this._fxPool=[];
+    for(let i=0;i<8;i++){const s=document.createElement('span');s.className='mosy-glyph';s._busy=false;s.addEventListener('animationend',()=>{s._busy=false;s.style.animation='none';s.textContent='';});em.appendChild(s);this._fxPool.push(s);}
   },
   _beat(){
     if(!this._ready||this._busy()||_reduceMotion())return;
@@ -1605,6 +1734,7 @@ const MosyLife={
       setTimeout(()=>{if(!this._following)this._setGaze(0,0);},2400);}
   },
   blink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-blink');void f.offsetWidth;f.classList.add('m-blink');setTimeout(()=>f.classList.remove('m-blink'),200);},
+  wink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-wink');void f.offsetWidth;f.classList.add('m-wink');setTimeout(()=>f.classList.remove('m-wink'),380);},
   _setGaze(gx,gy){if(!this._ready||!this._pupils||_reduceMotion())return;this._pupils.style.transform='translate('+gx.toFixed(2)+'px,'+gy.toFixed(2)+'px)';},
   _follow(){
     if(!this._ready||_reduceMotion()||this.chat()!=='lively'||!this._pm)return;
@@ -1614,11 +1744,21 @@ const MosyLife={
     this._following=true;this._setGaze(Math.max(-3.4,Math.min(3.4,dx/r.width*7)),Math.max(-3.4,Math.min(3.4,dy/r.height*7)));
   },
   _shot(cls,ms){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.add(cls);setTimeout(()=>f.classList.remove(cls),ms);},
+  _routeBlocked(){const k=(ROUTE.mod||'')+'/'+(ROUTE.param||'');return /offboard|terminat|\bpip\b|flight/i.test(k)||/^(command|time|engage)$/.test(ROUTE.mod||'');},
+  gesture(name,ms){if(!this._ready||this._busy()||_reduceMotion()||this._routeBlocked())return;const f=this._fab;if(name!=='g-think-arm')f.classList.remove('g-think-arm');f.classList.remove(name);void f.offsetWidth;f.classList.add(name);this._gT=this._gT||{};clearTimeout(this._gT[name]);this._gT[name]=setTimeout(()=>f.classList.remove(name),ms||1200);},
+  pose(cls,ms){if(!this._ready||this._busy()||this._routeBlocked())return;const f=this._fab;f.classList.add(cls);this._pT=this._pT||{};clearTimeout(this._pT[cls]);this._pT[cls]=setTimeout(()=>f.classList.remove(cls),ms||1100);},
+  act(m,p,ms){if(_reduceMotion())this.pose(p,ms);else this.gesture(m,ms);},
+  _body(cls,ms){if(!this._ready||this._busy()||_reduceMotion()||this._routeBlocked())return;const f=this._fab;f.classList.remove(cls);void f.offsetWidth;f.classList.add(cls);this._bT=this._bT||{};clearTimeout(this._bT[cls]);this._bT[cls]=setTimeout(()=>f.classList.remove(cls),ms);},
+  _jump(ms){this._body('b-jump',ms||720);},
+  _bigOK(){const t=this._now();if(t-(this._lastBig||0)<2000)return false;this._lastBig=t;return true;},
+  eyes(name,ms){if(!this._ready)return;const f=this._fab;['e-happy','e-wide','e-star','e-heart','e-soft'].forEach(c=>f.classList.remove(c));if(!name)return;void f.offsetWidth;f.classList.add('e-'+name);clearTimeout(this._eT);if(ms||name!=='soft')this._eT=setTimeout(()=>{f.classList.remove('e-'+name);try{this.syncMood();}catch(e){}},ms||1200);},
+  emote(kind,n){if(!this._ready||_reduceMotion()||this._busy()||this._routeBlocked())return;if(document.querySelector('#assist-panel.open,#palette.open,#modal.open,#drawer.open,#fx-overlay'))return;const t=this._now();this._fxAt=this._fxAt||{};if(t-(this._fxAt[kind]||0)<1200)return;this._fxAt[kind]=t;const G={note:['♪','♫','♩'],heart:['♥'],spark:['✦','✦','✧'],confetti:['✦','●','✧','●'],excl:['!'],ha:['ha'],huh:['?']};const set=G[kind]||['✦'];n=Math.min(n||set.length,4);let used=0;for(const s of this._fxPool){if(used>=n)break;if(s._busy)continue;s._busy=true;const gl=set[used%set.length],idx=used;used++;setTimeout(()=>{s.textContent=gl;const dx=((idx-(n-1)/2)*15)+(Math.random()*8-4),rot=(Math.random()*30-15),dur=900+Math.random()*300;s.style.setProperty('--dx',dx.toFixed(0)+'px');s.style.setProperty('--rot',rot.toFixed(0)+'deg');s.className='mosy-glyph mfx-'+kind;if(kind==='confetti')s.style.color=['#6366f1','#8b5cf6','#f0648c','#14b8a6','#f59e0b'][idx%5];s.style.animation='none';void s.offsetWidth;s.style.animation='mosyRise '+dur+'ms ease-out forwards';},idx*80);}},
+  emoteBurst(kind){this.emote(kind,4);},
   MOUTH:{calm:'M-11,12 Q0,21 11,12',flat:'M-10,15 Q0,16 10,15',grin:'M-13,11 Q0,23 13,11'},
   mouth(d){if(this._mouth)this._mouth.setAttribute('d',d);},
   mood(name){if(!this._ready)return;const f=this._fab;
-    if(name==='think'){f.classList.add('m-think');this._setGaze(-2.4,-2.2);}
-    else{f.classList.remove('m-think');if(name==='attentive')this._setGaze(0,0);try{this.syncMood();}catch(e){}}},
+    if(name==='think'){f.classList.add('m-think','g-think-arm');this._setGaze(-2.4,-2.2);}
+    else{f.classList.remove('m-think','g-think-arm');if(name==='attentive')this._setGaze(0,0);try{this.syncMood();}catch(e){}}},
   onPaint(){
     if(!this._ready){try{this.init();}catch(e){}if(!this._ready)return;}
     try{this.onRoute(ROUTE.mod,ROUTE.param);}catch(e){}
@@ -1630,8 +1770,17 @@ const MosyLife={
     this._sensitive=/offboard|terminat|\bpip\b|flight/i.test(key);
     this._quiet=(mod==='command'||mod==='time'||mod==='engage');
     if(key!==this._routeKey){this._routeKey=key;this._idleAt=this._now();
-      if(this._sensitive){this._fab.classList.remove('m-think');this.mouth(this.MOUTH.calm);}
-      else if(!_reduceMotion()){const st=this.s(),t=this._now();if(t-(st.glanceAt||0)>90000){st.glanceAt=t;this.blink();this._setGaze(0,-2);setTimeout(()=>this._setGaze(0,0),700);}}
+      if(this._sensitive){this._fab.classList.remove('m-think','g-think-arm','g-point');this.mouth(this.MOUTH.calm);this.eyes('soft');}
+      else{const st=this.s(),t=this._now();st.gkeys=st.gkeys||{};this._fab.classList.remove('e-soft');
+        const G={home:'wave',people:'wave',cheers:'clap',recruit:'point',onboard:'point',grow:'point',learn:'point',insights:'point',atlas:'point'};
+        const gname=this._quiet?null:G[mod];
+        const doG=g=>{ if(g==='wave'){this.mouth(this.MOUTH.grin);this.eyes('happy',1100);this.act('g-wave','gp-wave',950);setTimeout(()=>this.blink(),420);}
+          else if(g==='clap'){this.mouth(this.MOUTH.grin);this.eyes('happy',1100);this.act('g-clap','gp-clap',850);}
+          else if(g==='point'){this._setGaze(0,-2);this._body('b-lean',1100);this.act('g-point','gp-point',1100);setTimeout(()=>this._setGaze(0,0),1050);}
+          setTimeout(()=>{try{this.syncMood();}catch(e){}},1500); };
+        if(!st.welcomed&&mod==='home'){st.welcomed=true;st.gkeys[mod]=t;doG('wave');}
+        else if(gname&&t-(st.gkeys[mod]||0)>60000){st.gkeys[mod]=t;doG(gname);}
+        else if(t-(st.glanceAt||0)>20000){st.glanceAt=t;this.blink();this._setGaze(0,-2);setTimeout(()=>this._setGaze(0,0),700);}}
     }
   },
   syncMood(){
@@ -1646,9 +1795,9 @@ const MosyLife={
     else b.className='mosy-badge';
     f.setAttribute('aria-label',total>0?('Mosy assistant, '+total+' item'+(total>1?'s':'')+' need attention'):'Mosy assistant');
     if(st.prevW0>=0&&!_reduceMotion()){
-      if(w0>st.prevW0)this._shot('m-pulse',1100);
+      if(w0>st.prevW0){this._shot('m-pulse',1100);this.act('g-point','gp-point',900);this.eyes('wide',700);this.emote('excl',1);}
       if(total>0&&st.prevCount===0)this._shot('m-bob',1050);
-      if(st.prevCount>0&&total===0&&!st.celebZero){st.celebZero=true;this._shot('m-bob',1050);}
+      if(st.prevCount>0&&total===0&&!st.celebZero){st.celebZero=true;if(this._bigOK())this._jump(720);else this._body('b-pop',500);this.mouth(this.MOUTH.grin);this.act('g-cheer','gp-cheer',900);this.eyes('happy',1500);this.emote('confetti',3);}
     }
     if(total>0)st.celebZero=false;
     st.prevW0=w0;st.prevCount=total;
@@ -1658,12 +1807,15 @@ const MosyLife={
     if(!this._ready)return;const t=this._now();
     if(kind==='cheer'&&t-this._lastBeat<1500)return;
     this._lastBeat=t;
-    if(_reduceMotion()){if(kind==='hire'&&data)this.nudge({kind:'hire'+(data.name||''),text:'Welcome aboard, '+esc(data.name||'')+'! Want their onboarding plan?',act:{label:'Open onboarding',act:'nav',arg:'#/onboard'},force:true});return;}
-    if(kind==='hire'){this.mouth(this.MOUTH.grin);this._shot('m-hop',700);this.blink();if(data)setTimeout(()=>this.nudge({kind:'hire'+(data.name||''),text:'Welcome aboard, '+esc(data.name||'')+'! Want me to open their onboarding plan?',act:{label:'Open onboarding',act:'nav',arg:'#/onboard'},force:true}),1500);}
-    else if(kind==='cheer')this._shot('m-sway',850);
-    else if(kind==='panelOpen'){this.blink();this._setGaze(0,2);setTimeout(()=>this._setGaze(0,0),600);this.dismiss();}
-    else if(kind==='qaGreen'){this.mouth(this.MOUTH.grin);this._shot('m-bob',1050);setTimeout(()=>{try{this.syncMood();}catch(e){}},1500);}
-    else if(kind==='showoff'){this._shot('m-sway',850);this.blink();}
+    const sens=/offboard|terminat|\bpip\b|flight/i.test((ROUTE.mod||'')+'/'+(ROUTE.param||''));
+    if(sens&&kind!=='panelOpen'&&kind!=='panelClose')return;
+    if(kind==='hire'){this.mouth(this.MOUTH.grin);if(this._bigOK())this._jump(720);else this._body('b-pop',500);this.blink();this.act('g-cheer','gp-cheer',900);this.eyes('happy',1400);this.emoteBurst('confetti');if(data)setTimeout(()=>this.nudge({kind:'hire'+(data.name||''),text:'Welcome aboard, '+esc(data.name||'')+'! Want me to open their onboarding plan?',act:{label:'Open onboarding',act:'nav',arg:'#/onboard'},force:true}),1500);}
+    else if(kind==='cheer'){this._shot('m-bob',1050);this.mouth(this.MOUTH.grin);this.blink();this.act('g-clap','gp-clap',850);this.eyes('heart',1400);this.emote('heart',3);setTimeout(()=>{try{this.syncMood();}catch(e){}},1600);}
+    else if(kind==='panelOpen'){this.blink();this._setGaze(0,2);setTimeout(()=>this._setGaze(0,0),600);this.dismiss();this._body('b-lean',1100);this.act('g-point','gp-point',1200);}
+    else if(kind==='panelClose'){this._fab.classList.remove('g-point','g-think-arm');}
+    else if(kind==='qaGreen'){this.mouth(this.MOUTH.grin);this._body('b-pop',500);this.act('g-clap','gp-clap',850);this.eyes('star',1300);this.emoteBurst('spark');setTimeout(()=>{try{this.syncMood();}catch(e){}},1600);}
+    else if(kind==='showoff'){this.mouth(this.MOUTH.grin);this.wink();if(this._bigOK())this._body('b-wobble',1400);this.act('g-dance','gp-cheer',1400);this.eyes('star',1300);this.emote('note',3);setTimeout(()=>{try{this.syncMood();}catch(e){}},1700);}
+    else if(kind==='done'){this.mouth(this.MOUTH.grin);this._body('b-pop',500);this.act('g-thumb','gp-thumb',900);this.eyes('happy',900);this.emote('spark',1);setTimeout(()=>{try{this.syncMood();}catch(e){}},1300);}
   },
   _gates(){
     const st=this.s(),c=this.chat();
@@ -3044,7 +3196,7 @@ const canSee=mod=>{
     intranet:['admin','manager','employee'],chat:['admin','manager','employee'],mail:['admin','manager','employee'],
     cal:['admin','manager','employee'],drive:['admin','manager','employee'],meet:['admin','manager','employee'],
     sign:['admin','manager','employee'],flows:['admin','manager','employee'],cheers:['admin','manager','employee'],benefits:['admin','manager','employee'],
-    spend:['admin','manager','employee'],schedule:['admin','manager','employee'],dept:['admin','manager','employee'],map:['admin','manager','employee'],careers:['admin','manager','employee'],team:['admin','manager','employee'],command:['admin','manager','employee'],settings:['admin','manager','employee'],qa:['admin']};
+    spend:['admin','manager','employee'],schedule:['admin','manager','employee'],dept:['admin','manager','employee'],map:['admin','manager','employee'],atlas:['admin','manager','employee'],careers:['admin','manager','employee'],team:['admin','manager','employee'],command:['admin','manager','employee'],settings:['admin','manager','employee'],qa:['admin']};
   if((map[mod]||[]).includes(role))return true;
   /* group grants stack on top of the role baseline */
   return groupsOf(DB.me.employeeId).some(g=>g.modules&&g.modules.includes(mod));
@@ -3204,6 +3356,7 @@ function chartIntro(){
     svg.querySelectorAll('polyline:not([stroke-dasharray])').forEach((p,i)=>{try{svgPathDraw(p,1000,{delay:i*140});}catch(e){}});
     svg.querySelectorAll('polyline[stroke-dasharray]').forEach(p=>{if(p.animate){p.style.opacity='0';p.animate([{opacity:0},{opacity:1}],{duration:600,delay:650,fill:'forwards'});}});
   });
+  document.querySelectorAll('.journey-line:not([data-drawn])').forEach(p=>{p.setAttribute('data-drawn','1');try{svgPathDraw(p,1100);}catch(e){}});
 }
 
 let _focusReturnM=null,_focusReturnD=null;
@@ -3309,6 +3462,8 @@ const Chart={
       g+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#cglow)"${s.dash?' stroke-dasharray="5 4"':''}/>`;
       s.data.forEach((v,i)=>g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="2.7" fill="${s.color}"/>`);
     });
+    const _lv=series.find(s=>!s.dash)||series[0];
+    if(_lv&&_lv.data.length){const _i=_lv.data.length-1,_x=X(_i),_y=Y(_lv.data[_i]);g+=`<circle class="chart-pulse" cx="${_x}" cy="${_y}" r="4" fill="none" stroke="${_lv.color}" stroke-width="2"/><circle cx="${_x}" cy="${_y}" r="3.6" fill="${_lv.color}"/>`;}
     return `<svg class="chart-svg chart-line" viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" ${opts.alt?`role="img" aria-label="${esc(opts.alt)}"`:'aria-hidden="true"'}>${g}</svg>`;
   },
   bars(items,opts={}){
@@ -3381,6 +3536,7 @@ const MODULES=[
   {id:'benefits',label:'Benefits',icon:'shield',color:'#0d9488',group:'Talent',desc:'Plans, elections, life events — plus the admin console'},
   {id:'engage',label:'Engagement',icon:'engage',color:'var(--c-engage)',group:'Operations',desc:'Pulse surveys & eNPS'},
   {id:'insights',label:'Insights',icon:'insights',color:'var(--c-insights)',group:'Company',desc:'Cross-module analytics'},
+  {id:'atlas',label:'Atlas',icon:'globe',color:'#0ea5e9',group:'Company',desc:'Where everyone works — offices & remote'},
   {id:'help',label:'Help Center',icon:'help',color:'var(--c-help)',group:'Company',desc:'Answers & support for every work question'},
   {id:'askpeople',label:'Ask People',icon:'chat',color:'#ff5e00',group:'Company',desc:'People-team ticketing console (security-group gated)'},
   {id:'admin',label:'Admin',icon:'admin',color:'var(--c-admin)',group:'Company',desc:'Settings, roles & audit'},
@@ -3535,6 +3691,8 @@ function palCommands(){
     {label:'Ask People — log a case',sub:'HR helpdesk ticket',cmd:'openNewCase'},
     {label:'Pick a guided tour 🧭',sub:'Four scripted stories through Mosaic',cmd:'tourPick'},
     {label:'Capability map',sub:'Everything Mosaic replaces, in one grid',cmd:'nav',arg:'#/map'},
+    {label:'My '+now().getFullYear()+' Wrapped',sub:'Your year in review',cmd:'wrapped'},
+    {label:'Kiosk / lobby display',sub:'Full-screen reception screen',cmd:'kiosk'},
     {label:'▶ Play the demo reel',sub:'Self-running 60-second highlight tour — hit record',cmd:'demoPlay'},
     {label:'Notification & app settings',sub:'Push, in-app banners, categories, appearance',cmd:'nav',arg:'#/settings'},
     {label:'Toggle dark mode',sub:'Easier on the eyes',cmd:'toggleTheme'},
@@ -3572,7 +3730,7 @@ function buildIndex(){
 }
 function openPalette(){
   const p=$('#palette');
-  p.querySelector('.pal-box').innerHTML=`<div class="pal-input">${I.search}<input id="pal-q" placeholder="Search anything — or ask in plain English…" autocomplete="off"><kbd class="chip">esc</kbd></div><div class="pal-results" id="pal-res"></div>`;
+  p.querySelector('.pal-box').innerHTML=`<div class="pal-input">${I.search}<input id="pal-q" placeholder="${AI.enabled()?'Ask Mosy or run a command — “create a task to…”':'Search anything — or ask in plain English…'}" autocomplete="off"><kbd class="chip">esc</kbd></div><div class="pal-results" id="pal-res"></div>`;
   p.classList.add('open');
   const q=$('#pal-q');q.focus();
   q.addEventListener('input',()=>palRender(q.value));
@@ -3600,7 +3758,7 @@ function palRender(query){
     const tokens=ql.split(/\s+/).filter(Boolean);
     const groups=tokens.map(t=>[t].concat((SEARCH_SYN[t]||'').split(',').filter(Boolean)));
     res=ix.map(x=>({x,s:palScore(x,groups)})).filter(o=>o.s>=0).sort((a,b)=>b.s-a.s).map(o=>o.x).slice(0,15);
-    res.unshift({type:'ask',label:'Mosy: “'+query.trim()+'”',sub:AI.enabled()?'Answer with live AI — it can act too':'Answer from your live data, with sources',icon:'zap',color:'var(--brand)',ask:query.trim()});
+    res.unshift({type:'ask',label:(AI.enabled()?'✨ Ask Mosy: “':'Mosy: “')+query.trim()+'”',sub:AI.enabled()?'Live AI — answers and takes actions (you confirm)':'Answer from your live data, with sources',icon:'zap',color:'var(--brand)',ask:query.trim()});
   }
   else{
     const rec=(UIS.palRecent||[]).map(r2=>({...r2,type:'recent'}));
@@ -3878,7 +4036,7 @@ Views.home=()=>{
           ${out.length?`<span class="hb-pill">🌴 ${out.length} out this week</span>`:''}
         </div>
         <button class="btn hb-cta" data-act="demoPlay" title="Self-running highlight reel — hit record">▶ Play the demo reel</button>
-        <div class="hb-foot"><button data-act="tourPick">${I.spark} Guided tours</button><span>·</span><button data-act="resetDemo">${I.refresh} Reset demo</button></div>
+        <div class="hb-foot"><button data-act="wrapped">✨ ${now().getFullYear()} Wrapped</button><span>·</span><button data-act="tourPick">${I.spark} Guided tours</button><span>·</span><button data-act="resetDemo">${I.refresh} Reset demo</button></div>
       </div>
     </div>
     ${statsHtml}
@@ -4359,14 +4517,14 @@ const DEMO=[
   {t:'scene',go:()=>{try{ACT.confirmHire('C101');}catch(e){}},cap:'One action. Six modules update themselves.',sub:'HRIS record · onboarding journey · compliance courses · 30-60-90 goals · benefits · headcount — automatically.',dwell:6200},
   {t:'scene',go:()=>{try{UI.closeModal();}catch(e){}ACT.switchRole('manager');},cap:'The same app, from a manager’s seat.',sub:'The entire interface re-permissions itself, live.',dwell:2900},
   {t:'scene',go:()=>ACT.switchRole('employee'),cap:'…and an employee’s seat.',sub:'Security groups decide what each person sees — not hard-coded screens.',dwell:3000},
-  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}},cap:'Meet Mosy.',sub:'It doesn’t just answer questions — it gets work done.',dwell:3400},
+  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}setTimeout(()=>{try{if(window.MosyLife)MosyLife.react('showoff');}catch(e){}},600);},cap:'Meet Mosy.',sub:'It doesn’t just answer questions — it gets work done.',dwell:3400},
   {t:'scene',go:()=>{try{Assist.send('Create a task to prep the board deck');}catch(e){}},cap:'Plain English in. Real work staged out.',sub:'Every action waits for your confirmation first.',dwell:3400},
   {t:'scene',go:()=>{try{[...(AI_PENDING||[])].forEach(a=>ACT.aiRunAction(a.id));}catch(e){}},cap:'Confirmed — done.',sub:'A meeting booked and a task created, in the right modules.',dwell:3000},
   {t:'scene',go:()=>{try{if(Assist.open)Assist.toggle();}catch(e){}nav('#/command');},cap:'Everything that needs you, everywhere — one queue.',sub:'Approvals, tasks, signatures, cases — drawn live from every module.',dwell:3400},
   {t:'scene',go:()=>nav('#/insights/dashboards'),cap:'Build any view of the business.',sub:'Drag-free dashboards, computed from the same live records.',dwell:3200},
   {t:'scene',go:()=>nav('#/chat'),cap:'Craft in every corner.',sub:'Real-time messaging, desktop to mobile.',dwell:2600},
   {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}},cap:'Light or dark — instantly.',sub:'',dwell:2400},
-  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}nav('#/qa');},cap:'And it holds itself honest.',sub:'94 of 94 self-tests green — the same suite that runs after every change.',dwell:3800},
+  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}nav('#/qa');},cap:'And it holds itself honest.',sub:'Every self-test green — the same suite that runs after every change.',dwell:3800},
   {t:'card',cap:'Mosaic',sub:'Created by Wes Griffin. One self-contained file. Zero dependencies. Designed & built with AI.',dwell:6500,close:true},
 ];
 const Demo={
@@ -5095,6 +5253,78 @@ function cinematicHire(c,newId,r,showReceipts){
 }
 
 /* ============================================================
+   Wrapped (Round 22) — cinematic year-in-review overlay (OUT of MODULES)
+   ============================================================ */
+function countUpEl(el,target){if(!el)return;if(typeof target!=='number'||_reduceMotion()){el.textContent=target;return;}const t0=performance.now();const step=t=>{const p=Math.min((t-t0)/650,1);el.textContent=Math.round(target*(0.12+0.88*p));if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
+function shareWrapped(e,st){
+  const W=540,H=540;
+  const row=(y,label,val)=>`<text x="58" y="${y}" fill="rgba(255,255,255,.8)" font-family="Inter,system-ui,sans-serif" font-size="19" font-weight="500">${label}</text><text x="482" y="${y}" text-anchor="end" fill="#ffffff" font-family="Inter,system-ui,sans-serif" font-size="27" font-weight="800">${val}</text>`;
+  const tenure=st.tenureY>0?st.tenureY+' year'+(st.tenureY>1?'s':'')+' at '+esc(brandName()):'First year at '+esc(brandName());
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="0.55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f0648c"/></linearGradient></defs><rect width="${W}" height="${H}" rx="34" fill="url(#wg)"/><text x="58" y="92" fill="rgba(255,255,255,.85)" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="3">${esc(brandName().toUpperCase())} WRAPPED</text><text x="56" y="156" fill="#ffffff" font-family="Georgia,serif" font-size="62" font-weight="800">${st.yr}</text><text x="58" y="200" fill="rgba(255,255,255,.95)" font-family="Inter,system-ui,sans-serif" font-size="23" font-weight="700">${esc(e.name)}</text><line x1="58" y1="236" x2="482" y2="236" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>${row(296,'Days off taken',st.pto)}${row(356,'Courses completed',st.done)}${row(416,'Goals shipped',st.goalsDone)}${row(476,'Cheers received',st.cheersRecv)}<text x="58" y="516" fill="rgba(255,255,255,.62)" font-family="Inter,system-ui,sans-serif" font-size="13.5">${tenure} &#183; made with Mosy</text></svg>`;
+  svgToPNG(svg,W,H,2).then(d=>{downloadDataURL(d,'mosaic-wrapped-'+st.yr+'.png');UI.toast('Your Wrapped card saved 🎉','✨');}).catch(()=>UI.toast('Couldn\'t generate the card','😕'));
+}
+function openWrapped(){
+  const e=me(),yr=now().getFullYear();
+  const fb=(DB.feedback||[]).filter(f=>f.toId===e.id);
+  const cheersRecv=fb.length,cheerPts=sum(fb.map(f=>f.pts||0)),cheersGiven=(DB.feedback||[]).filter(f=>f.fromId===e.id).length;
+  const valCount={};fb.forEach(f=>(f.values||[]).forEach(v=>valCount[v]=(valCount[v]||0)+1));
+  const topVal=Object.entries(valCount).sort((a,b)=>b[1]-a[1])[0];
+  const ens=(DB.enrollments||[]).filter(x=>x.employeeId===e.id),done=ens.filter(x=>x.progress===100||x.completedAt).length;
+  const goals=(DB.goals||[]).filter(g=>g.ownerId===e.id),goalsDone=goals.filter(g=>g.status==='done').length;
+  const pto=(e.pto&&e.pto.vacUsed)||0,tenureY=Math.max(0,Math.floor(between(e.hireDate,todayISO())/365));
+  const total=activeEmps().length,hiresYr=activeEmps().filter(x=>(''+(x.hireDate||'')).slice(0,4)===(''+yr)).length;
+  const st={pto,done,goalsDone,cheersRecv,tenureY,yr};
+  const slides=[
+    {emoji:'✨',big:yr,cap:`${esc(e.name.split(' ')[0])}, here's your year at ${esc(brandName())}.`,glow:true},
+    {emoji:'🌴',big:pto,unit:pto===1?'day off':'days off',cap:pto>0?'You actually took your time off — we love to see it.':'Plenty of balance banked for next year.'},
+    {emoji:'📚',big:done,unit:done===1?'course done':'courses done',cap:done>0?'Always leveling up.':'A fresh learning path is waiting.'},
+    {emoji:'🎯',big:goalsDone,unit:goalsDone===1?'goal shipped':'goals shipped',cap:`${goals.length} set this year, ${goalsDone} across the line.`},
+    {emoji:'💜',big:cheersRecv,unit:cheersRecv===1?'cheer received':'cheers received',cap:cheerPts>0?`That's ${cheerPts} recognition points — and you gave ${cheersGiven} back.`:`And you sent ${cheersGiven} cheers to teammates.`},
+    topVal?{emoji:'⭐',big:topVal[0],text:true,cap:'The value your teammates tagged you with most.'}:null,
+    {emoji:'🧩',big:total,unit:'people strong',cap:`You're one of ${total} at ${esc(brandName())} — ${hiresYr} joined in ${yr}.`},
+    {emoji:'🎉',big:tenureY>0?tenureY:'Year one',unit:tenureY>0?(tenureY===1?'year in':'years in'):'',cap:tenureY>0?`Here's to year ${tenureY+1}.`:'Welcome aboard — this is just the start.',glow:true},
+  ].filter(Boolean);
+  let i=0;const ctrl=overlay('',{label:yr+' Wrapped'});
+  ctrl.el.classList.add('wrap-ov');ctrl.el.style.setProperty('--mod','#6366f1');
+  const draw=()=>{
+    const s=slides[i],last=i===slides.length-1;
+    const dots=slides.map((_,k)=>`<span class="wrap-dot${k===i?' on':''}"></span>`).join('');
+    const big=s.text?`<div class="wrap-bigtext">${esc(s.big)}</div>`:`<div class="wrap-big"><span class="wrap-num">${typeof s.big==='number'?'0':esc(s.big)}</span>${s.unit?`<span class="wrap-unit">${esc(s.unit)}</span>`:''}</div>`;
+    ctrl.set(`<div class="wrap-card"><div class="wrap-dots">${dots}</div><div class="wrap-emoji">${s.emoji}</div>${big}<p class="wrap-cap" id="wrap-cap"></p><div class="wrap-acts">${last?`<button class="btn primary" id="wrap-share">⬇️ Save my card</button><button class="btn ghost wrap-ghost" data-act="closeWrapped">Done</button>`:`<button class="btn primary" id="wrap-next">Next →</button>`}</div></div>`);
+    typewriter(document.getElementById('wrap-cap'),s.cap,{speed:15});
+    if(typeof s.big==='number')countUpEl(ctrl.el.querySelector('.wrap-num'),s.big);
+    if(s.glow)confetti(55);
+    const nx=document.getElementById('wrap-next');if(nx)nx.onclick=()=>{i++;draw();};
+    const sh=document.getElementById('wrap-share');if(sh)sh.onclick=()=>shareWrapped(e,st);
+  };
+  draw();
+}
+ACT.wrapped=()=>{try{openWrapped();}catch(e){}};
+ACT.closeWrapped=()=>closeOverlay();
+
+/* Kiosk (Round 22) — full-screen auto-rotating lobby/reception display (OUT of MODULES) */
+function openKiosk(){
+  const total=activeEmps().length,cele=celebrations(7);
+  const newHires=activeEmps().filter(e=>e.status==='onboarding'||between(e.hireDate,todayISO())<=30).sort((a,b)=>(''+b.hireDate).localeCompare(''+a.hireDate)).slice(0,8);
+  const out=(typeof whosOut==='function'?whosOut(0):[]);
+  const date=now().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const tm=()=>now().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const person=(e,meta)=>`<div class="kiosk-person">${av(e,'xl')}<span class="kiosk-pname">${esc(e.name)}</span><span class="kiosk-pmeta">${esc(meta||'')}</span></div>`;
+  const panels=[{html:`<div class="kiosk-emoji">${logoSVG(60)}</div><div class="kiosk-h">Welcome to ${esc(brandName())}</div><div class="kiosk-sub">${esc((typeof COMPANY!=='undefined'&&COMPANY.tagline)||'')}</div><div class="kiosk-stat">${total} people · one platform · every piece</div>`}];
+  if(cele.length)panels.push({html:`<div class="kiosk-emoji">🎉</div><div class="kiosk-h">Celebrating this week</div><div class="kiosk-people">${cele.slice(0,6).map(c=>person(c.emp,(c.kind==='birthday'?'🎂 Birthday':'🎊 '+c.label)+' · '+fmtDshort(c.date))).join('')}</div>`});
+  if(newHires.length)panels.push({html:`<div class="kiosk-emoji">👋</div><div class="kiosk-h">Please welcome</div><div class="kiosk-people">${newHires.map(e=>person(e,String(e.title).split(',')[0]+' · '+deptName(e.dept))).join('')}</div>`});
+  if(out.length)panels.push({html:`<div class="kiosk-emoji">🌴</div><div class="kiosk-h">Out today</div><div class="kiosk-people">${out.slice(0,8).map(o=>person(o.emp,(TO_TYPES[o.type]?TO_TYPES[o.type].label:'Out'))).join('')}</div>`});
+  let i=0,iv=null;
+  const ctrl=overlay('',{label:'Kiosk display',onClose:()=>{if(iv)clearInterval(iv);}});
+  ctrl.el.classList.add('kiosk-ov');
+  const draw=()=>ctrl.set(`<div class="kiosk"><div class="kiosk-top"><span>${date}</span><b class="kiosk-clock">${tm()}</b><button class="btn xs kiosk-exit" data-act="closeKiosk">✕ Exit</button></div><div class="kiosk-stage">${panels[i].html}</div><div class="kiosk-dots">${panels.map((_,k)=>`<span class="kiosk-dot${k===i?' on':''}"></span>`).join('')}</div></div>`);
+  draw();
+  if(panels.length>1)iv=setInterval(()=>{i=(i+1)%panels.length;draw();},_reduceMotion()?9000:6500);
+}
+ACT.kiosk=()=>{try{openKiosk();}catch(e){}};
+ACT.closeKiosk=()=>closeOverlay();
+
+/* ============================================================
    VIEW: ONBOARDING — journeys & template
    ============================================================ */
 Views.onboard=param=>{
@@ -5155,6 +5385,20 @@ function offboardCard(j){
     </div></div>`;
 }
 const ownerChip=o=>({employee:'<span class="badge b-info">New hire</span>',manager:'<span class="badge b-vio">Manager</span>',hr:'<span class="badge b-ok">People team</span>',it:'<span class="badge b-rose">IT</span>'}[o]||o);
+/* Journey map (Round 22) — winding onboarding timeline; line draws in via chartIntro, nodes pop via CSS */
+function journeyMap(j){
+  const tasks=j.tasks.slice().sort((a,b)=>(''+a.due).localeCompare(''+b.due));
+  const n=tasks.length;if(!n)return '';
+  const W=680,H=118,padX=26;
+  const xs=i=>padX+(i/((n-1)||1))*(W-padX*2),ys=i=>59+Math.sin(i/((n-1)||1)*Math.PI*2.4)*28;
+  const pts=tasks.map((t,i)=>[xs(i),ys(i)]);
+  let d=`M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for(let i=1;i<n;i++){const mx=(pts[i-1][0]+pts[i][0])/2,my=(pts[i-1][1]+pts[i][1])/2;d+=` Q${pts[i-1][0].toFixed(1)},${pts[i-1][1].toFixed(1)} ${mx.toFixed(1)},${my.toFixed(1)}`;}
+  d+=` T${pts[n-1][0].toFixed(1)},${pts[n-1][1].toFixed(1)}`;
+  const nodes=tasks.map((t,i)=>{const overdue=!t.done&&t.due<todayISO(),c=t.done?'#22c55e':overdue?'#ef4444':'var(--c-onboard)',x=xs(i),y=ys(i);
+    return `<g class="journey-node" style="--i:${i}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="${t.done?c:'var(--card)'}" stroke="${c}" stroke-width="2.5"/>${t.done?`<path d="M${(x-3.2).toFixed(1)},${y.toFixed(1)} l2,2.2 l4.2,-4.4" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`:''}<title>${esc(t.title)} — ${t.done?'done':(overdue?'overdue':'due '+fmtDshort(t.due))}</title></g>`;}).join('');
+  return `<svg class="journey-map" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Onboarding journey timeline"><path class="journey-line" d="${d}" fill="none" stroke="var(--line2)" stroke-width="3" stroke-linecap="round"/>${nodes}</svg>`;
+}
 function onboardCard(j){
   const doneN=j.tasks.filter(t=>t.done).length;
   const p=doneN/j.tasks.length*100;
@@ -5165,6 +5409,7 @@ function onboardCard(j){
       <div class="col" style="gap:1px"><a href="#/people/${j.emp.id}" style="color:inherit"><h3>${esc(j.emp.name)}</h3></a>
       <span class="tiny faint">${esc(j.emp.title)} · ${deptName(j.emp.dept)} · ${j.startDate<=todayISO()?'started':'starts'} ${rel(j.startDate)}${mgr?' · manager '+esc(mgr.name):''}${buddy?' · buddy '+esc(buddy.name):''}</span></div>
       <span class="spacer"></span><button class="btn xs soft" style="--brand:#e0457b" data-act="journeyToProject" data-arg="${j.id}" title="Create a Workflows project from this journey">🗂 Track as project</button>${ring(p,56,'var(--c-onboard)')}</div>
+    <div class="journey-wrap"><span class="tiny faint" style="display:block;padding:0 4px 2px">Onboarding journey · ${doneN}/${j.tasks.length} milestones</span>${journeyMap(j)}</div>
     <div class="card-body grid g2" style="gap:6px 22px">
       ${j.tasks.map(t=>{const overdue=!t.done&&t.due<todayISO();
         return `<label class="row" style="gap:9px;padding:5px 0;cursor:pointer">
@@ -11448,6 +11693,41 @@ Views.map=()=>{
       ${PARITY[m.id]||PARITY[{recruit:'greenhouse',learn:'hownow',grow:'lattice',engage:'cultureamp',flows:'asana',intranet:'hub'}[m.id]]?'<span class="chip" style="font-size:10px">📋</span>':''}</div>
       <div class="col mt12" style="gap:4px">${(MAP_FEATURES[m.id]||[]).map(f=>`<span class="tiny muted">▸ ${f}</span>`).join('')}</div>
     </div>`).join('')}</div>`;
+};
+/* Atlas (Round 22) — where everyone works */
+const ATLAS_POS={'San Francisco HQ':[108,148],'Austin':[300,182],'New York':[566,104],'Remote':[372,60]};
+const ATLAS_ACCENT={'San Francisco HQ':'#6366f1','Austin':'#f59e0b','New York':'#8b5cf6','Remote':'#14b8a6'};
+Views.atlas=()=>{
+  const data=LOCS.map(l=>{const ppl=activeEmps().filter(e=>e.location===l);const byDept={};ppl.forEach(e=>byDept[e.dept]=(byDept[e.dept]||0)+1);
+    const top=Object.entries(byDept).sort((a,b)=>b[1]-a[1]).slice(0,4);const ci=CITY_BY_LOC[l]||['—','',''];
+    return {l,ppl,count:ppl.length,top,city:ci[0],state:ci[1]};});
+  const total=activeEmps().length||1,remote=(data.find(d=>d.l==='Remote')||{count:0}).count;
+  const pts=data.map((d,i)=>({...d,x:ATLAS_POS[d.l][0],y:ATLAS_POS[d.l][1],r:Math.min(46,12+Math.sqrt(d.count)*3.8),c:ATLAS_ACCENT[d.l],i}));
+  const byName={};pts.forEach(p=>byName[p.l]=p);
+  const link=(a,b,cls)=>{const A=byName[a],B=byName[b];return A&&B?`<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" class="atlas-link${cls||''}"/>`:'';};
+  const svg=`<svg viewBox="0 0 680 240" width="680" height="240" class="atlas-map" role="img" aria-label="Where ${esc(brandName())} works">
+    ${link('San Francisco HQ','Austin')}${link('Austin','New York')}${link('Remote','Austin',' dash')}
+    ${pts.map(p=>`<g class="atlas-node" style="--i:${p.i};--c:${p.c}">
+      <circle cx="${p.x}" cy="${p.y}" r="${p.r}" class="atlas-bubble"/>
+      <text x="${p.x}" y="${p.y+5}" text-anchor="middle" class="atlas-num">${p.count}</text>
+      <text x="${p.x}" y="${p.y+p.r+15}" text-anchor="middle" class="atlas-lbl">${p.l==='San Francisco HQ'?'SF HQ':esc(p.l)}</text></g>`).join('')}
+  </svg>`;
+  const cards=data.map(d=>`<div class="card pad atlas-card" style="--c:${ATLAS_ACCENT[d.l]}">
+    <div class="row between"><div class="col" style="gap:1px;min-width:0"><b>${esc(d.l)}</b><span class="tiny faint">${esc(d.city)}${d.state?', '+esc(d.state):''}</span></div>
+      <div class="col" style="align-items:flex-end;gap:0"><b class="num" style="font-size:23px;color:var(--c)">${d.count}</b><span class="tiny faint">${Math.round(d.count/total*100)}%</span></div></div>
+    <div class="atlas-bar mt12">${d.top.map(([dep,n])=>`<span style="width:${(n/(d.count||1)*100).toFixed(1)}%;background:${deptColor(dep)}" title="${esc(deptName(dep))}: ${n}"></span>`).join('')}</div>
+    <div class="row wrap mt8" style="gap:5px">${d.top.map(([dep,n])=>`<span class="chip" style="font-size:10.5px"><i style="width:7px;height:7px;border-radius:2px;background:${deptColor(dep)};display:inline-block;margin-right:5px"></i>${esc(deptName(dep))} ${n}</span>`).join('')}</div>
+    <div class="avstack mt12">${d.ppl.slice(0,8).map(e=>av(e,'sm')).join('')}${d.count>8?`<span class="tiny faint" style="align-self:center;margin-left:8px">+${d.count-8}</span>`:''}</div>
+  </div>`).join('');
+  return `<div class="page-head"><div style="flex:1"><h1 class="page">🌍 Atlas</h1>
+    <div class="page-sub">Where ${esc(brandName())} works — ${total} people across ${LOCS.length} locations, ${Math.round(remote/total*100)}% fully remote.</div></div></div>
+  <div class="grid g3 mb16">
+    <div class="card pad stat"><span class="lbl">People</span><b class="val">${total}</b><span class="tiny faint">active across all sites</span></div>
+    <div class="card pad stat"><span class="lbl">Locations</span><b class="val">${LOCS.length}</b><span class="tiny faint">offices + remote</span></div>
+    <div class="card pad stat"><span class="lbl">Remote</span><b class="val">${Math.round(remote/total*100)}%</b><span class="tiny faint">${remote} fully remote</span></div>
+  </div>
+  <div class="card pad mb16">${svg}</div>
+  <div class="grid g2">${cards}</div>`;
 };
 /* #11 department pages */
 const deptLink=id=>`<a href="#/dept/${id}" onclick="event.stopPropagation()" style="color:inherit;font-weight:inherit">${deptName(id)}</a>`;

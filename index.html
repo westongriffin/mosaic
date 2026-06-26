@@ -821,6 +821,9 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 #assist-fab[class*=" g-"] .mosy-arm{filter:drop-shadow(0 0 1.2px rgba(46,39,102,.32))}
 #assist-fab.g-wave .mosy-arm-r{animation:mosyWaveR .95s ease-in-out}
 @keyframes mosyWaveR{0%{transform:rotate(0)}15%{transform:rotate(-115deg)}30%{transform:rotate(-100deg)}45%{transform:rotate(-122deg)}60%{transform:rotate(-103deg)}80%{transform:rotate(-114deg)}100%{transform:rotate(0)}}
+/* pronounced load greeting — arm shoots up and waves ~4 big cycles */
+#assist-fab.g-hello .mosy-arm-r{animation:mosyHelloR 1.9s ease-in-out}
+@keyframes mosyHelloR{0%{transform:rotate(0)}8%{transform:rotate(-122deg)}20%{transform:rotate(-94deg)}32%{transform:rotate(-128deg)}44%{transform:rotate(-94deg)}56%{transform:rotate(-128deg)}68%{transform:rotate(-98deg)}80%{transform:rotate(-124deg)}92%{transform:rotate(-106deg)}100%{transform:rotate(0)}}
 #assist-fab.g-clap .mosy-arm-l{animation:mosyClapL .85s ease-in-out}
 #assist-fab.g-clap .mosy-arm-r{animation:mosyClapR .85s ease-in-out}
 @keyframes mosyClapL{0%,100%{transform:rotate(0)}25%{transform:rotate(-46deg)}40%{transform:rotate(-20deg)}65%{transform:rotate(-46deg)}80%{transform:rotate(-22deg)}}
@@ -1717,12 +1720,13 @@ const MosyLife={
     this._iv=setInterval(()=>{try{this._beat();}catch(e){}},900);
     document.addEventListener('visibilitychange',()=>{fab.classList.toggle('m-sleep',document.hidden);if(!document.hidden)this._idleAt=this._now();});
     window.addEventListener('blur',()=>{this._blurred=true;});
-    window.addEventListener('focus',()=>{this._blurred=false;this._idleAt=this._now();});
+    window.addEventListener('focus',()=>{this._blurred=false;this._idleAt=this._now();try{this.helloOnLoad();}catch(e){}});
     window.addEventListener('resize',()=>{this._rect=null;},{passive:true});
     ['pointerdown','keydown'].forEach(ev=>window.addEventListener(ev,()=>{this._idleAt=this._now();},{passive:true}));
     if(matchMedia('(pointer:fine)').matches)window.addEventListener('pointermove',e=>{this._pm=e;if(!this._raf)this._raf=requestAnimationFrame(()=>{this._raf=0;this._follow();});},{passive:true});
     if(matchMedia('(pointer:fine)').matches)document.addEventListener('pointerdown',e=>this._onClickGaze(e),{capture:true,passive:true});
     try{this.syncMood();}catch(e){}
+    setTimeout(()=>{try{this.helloOnLoad();}catch(e){}},700);  /* pronounced wave once the page settles (skips while splash is up) */
   },
   _rig(fab,svg){
     const ns='http://www.w3.org/2000/svg',g=svg.querySelector('g');if(!g)return;
@@ -1800,6 +1804,25 @@ const MosyLife={
   eyes(name,ms){if(!this._ready)return;const f=this._fab;['e-happy','e-wide','e-star','e-heart','e-soft'].forEach(c=>f.classList.remove(c));if(!name)return;void f.offsetWidth;f.classList.add('e-'+name);clearTimeout(this._eT);if(ms||name!=='soft')this._eT=setTimeout(()=>{f.classList.remove('e-'+name);try{this.syncMood();}catch(e){}},ms||1200);},
   emote(kind,n){if(!this._ready||_reduceMotion()||this._busy()||this._routeBlocked())return;if(document.querySelector('#assist-panel.open,#palette.open,#modal.open,#drawer.open,#fx-overlay'))return;const t=this._now();this._fxAt=this._fxAt||{};if(t-(this._fxAt[kind]||0)<1200)return;this._fxAt[kind]=t;const G={note:['♪','♫','♩'],heart:['♥'],spark:['✦','✦','✧'],confetti:['✦','●','✧','●'],excl:['!'],ha:['ha'],huh:['?']};const set=G[kind]||['✦'];n=Math.min(n||set.length,4);let used=0;for(const s of this._fxPool){if(used>=n)break;if(s._busy)continue;s._busy=true;const gl=set[used%set.length],idx=used;used++;setTimeout(()=>{s.textContent=gl;const dx=((idx-(n-1)/2)*15)+(Math.random()*8-4),rot=(Math.random()*30-15),dur=900+Math.random()*300;s.style.setProperty('--dx',dx.toFixed(0)+'px');s.style.setProperty('--rot',rot.toFixed(0)+'deg');s.className='mosy-glyph mfx-'+kind;if(kind==='confetti')s.style.color=['#6366f1','#8b5cf6','#f0648c','#14b8a6','#f59e0b'][idx%5];s.style.animation='none';void s.offsetWidth;s.style.animation='mosyRise '+dur+'ms ease-out forwards';},idx*80);}},
   emoteBurst(kind){this.emote(kind,4);},
+  /* pronounced "hello" — fires once per site load (after the splash clears). Bounce-in + big 4-cycle wave. */
+  hello(){
+    if(!this._ready||this._silent()||this._routeBlocked())return;
+    const f=this._fab;
+    this.mouth(this.MOUTH.grin);this.eyes('happy',2100);
+    if(_reduceMotion()){this.pose('gp-wave',1400);return;}  /* static friendly raised arm under reduced-motion */
+    if(this._bigOK())this._jump(800);else this._body('b-pop',560);
+    f.classList.remove('g-hello','g-wave','gp-wave');void f.offsetWidth;f.classList.add('g-hello');
+    clearTimeout(this._helloT);this._helloT=setTimeout(()=>f.classList.remove('g-hello'),1960);
+    this.emote('spark',2);
+    setTimeout(()=>this.blink(),520);
+    setTimeout(()=>{try{this.syncMood();}catch(e){}},2200);
+  },
+  helloOnLoad(){
+    if(this._helloDone||!this._ready||this._silent())return;
+    if(document.getElementById('splash'))return;  /* wait until past the splash — _spEnter re-calls */
+    if(this._busy())return;                        /* tab hidden/blurred — retry on focus */
+    this._helloDone=true;this.hello();
+  },
   MOUTH:{calm:'M-11,12 Q0,21 11,12',flat:'M-10,15 Q0,16 10,15',grin:'M-13,11 Q0,23 13,11'},
   mouth(d){if(this._mouth)this._mouth.setAttribute('d',d);},
   mood(name){if(!this._ready)return;const f=this._fab;
@@ -1828,7 +1851,7 @@ const MosyLife={
           else if(g==='point'){this._gazeHold(0,-2,1100);this._body('b-lean',1100);this.act('g-point','gp-point',1100);}
           else if(g==='peek'){this.blink();this._gazeHold(0,2,900);}
           setTimeout(()=>{try{this.syncMood();}catch(e){}},1500); };
-        if(!st.welcomed&&mod==='home'){st.welcomed=true;st.gkeys[mod]=t;doG('wave');}
+        if(!st.welcomed&&mod==='home'){st.welcomed=true;st.gkeys[mod]=t;/* pronounced load greeting handled by helloOnLoad() */}
         else if(gname&&t-(st.gkeys[mod]||0)>this._cfg().greet){st.gkeys[mod]=t;doG(gname);}
         else if(t-(st.glanceAt||0)>20000){st.glanceAt=t;this.blink();this._gazeHold(0,-2,700);}}
     }
@@ -4586,7 +4609,7 @@ Views.settings=()=>{
         </div>
         <div class="row mt12" style="gap:8px"><button class="btn xs soft" data-act="notifTest">🔔 Preview a banner</button>${p.push&&perm==='granted'?`<button class="btn xs soft" data-act="notifTestPush">📲 Preview a push</button>`:''}</div>
       </div>
-      <div class="card pad"><b class="small">🤖 Mosy, your guide</b>
+      <div class="card pad"><b class="small" style="display:inline-flex;align-items:center;gap:7px">${mosyMark(20)} Mosy, your guide</b>
         <p class="tiny faint mt6">How present your assistant is — from a still, silent button to an enthusiastic host who walks you to what needs you.</p>
         <div class="seg mt12">${[['off','Off'],['quiet','Calm'],['balanced','Balanced'],['lively','Lively']].map(o=>`<button class="${(DB.mosyChat||'balanced')===o[0]?'on':''}" data-act="mosySetEngage" data-arg="${o[0]}">${o[1]}</button>`).join('')}</div>
         <p class="tiny faint mt10">${MOSY_ENGAGE_SUB[DB.mosyChat||'balanced']||MOSY_ENGAGE_SUB.balanced}</p>
@@ -4625,7 +4648,7 @@ ACT.notifPushToggle=async checked=>{
   if(ROUTE.mod==='settings')render();
 };
 ACT.mosySetEngage=v=>{DB.mosyChat=v;try{audit('Mosy engagement',v);}catch(e){}Store.save();
-  const L={off:'Off',quiet:'Calm',balanced:'Balanced',lively:'Lively'};UI.toast('Mosy set to '+(L[v]||v),'🤖');
+  const L={off:'Off',quiet:'Calm',balanced:'Balanced',lively:'Lively'};UI.toast('Mosy set to '+(L[v]||v),mosyMark(16));
   try{if(window.MosyLife){const st=MosyLife.s();st.nudgeCount=0;st.tripCount=0;st.lastNudgeAt=0;st.lastTripAt=0; /* reset caps AND cooldowns so turning the dial up takes effect this session */
     if(v==='off'||v==='quiet'){MosyLife.dismiss();if(MosyLife._trip)MosyLife._abortTrip('route');}
     MosyLife.syncMood();if(v!=='off'&&v!=='quiet')MosyLife.react('done');}}catch(e){}
@@ -11671,6 +11694,7 @@ window._spEnter=hash=>{
   const sp=$('#splash');if(sp)sp.remove();
   confetti(36);
   if(hash)nav(hash);
+  setTimeout(()=>{try{if(window.MosyLife)MosyLife.helloOnLoad();}catch(e){}},480);  /* Mosy waves hello once you're in */
 };
 function showSplash(){
   const sp=document.createElement('div');sp.id='splash';

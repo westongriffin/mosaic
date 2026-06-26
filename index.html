@@ -101,12 +101,15 @@ input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 /* ---------- layout shell ---------- */
 #shell{display:flex;min-height:100vh;position:relative;z-index:1}
 /* ---------- Aurora — living gradient-mesh backdrop ---------- */
+@property --aur-a{syntax:"<color>";inherits:true;initial-value:#6366f1}
+@property --aur-b{syntax:"<color>";inherits:true;initial-value:#a855f7}
+:root{transition:--aur-a .85s ease,--aur-b .85s ease}
 #aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 #aurora .ab{position:absolute;border-radius:50%;filter:blur(95px);opacity:.5;will-change:transform}
-#aurora .a1{width:46vw;height:46vw;max-width:640px;max-height:640px;background:radial-gradient(circle,#6366f1,transparent 68%);top:-12vh;left:9%;animation:auroraDrift 26s ease-in-out infinite}
-#aurora .a2{width:40vw;height:40vw;max-width:560px;max-height:560px;background:radial-gradient(circle,#ec4899,transparent 68%);top:-8vh;right:4%;animation:auroraDrift2 32s ease-in-out infinite}
-#aurora .a3{width:38vw;height:38vw;max-width:520px;max-height:520px;background:radial-gradient(circle,#22d3ee,transparent 70%);top:36vh;left:40%;animation:auroraDrift2 30s ease-in-out infinite reverse}
-#aurora .a4{width:36vw;height:36vw;max-width:500px;max-height:500px;background:radial-gradient(circle,#10b981,transparent 70%);bottom:-15vh;left:22%;animation:auroraDrift 36s ease-in-out infinite reverse}
+#aurora .a1{width:46vw;height:46vw;max-width:640px;max-height:640px;background:radial-gradient(circle,var(--aur-a),transparent 68%);top:-12vh;left:9%;animation:auroraDrift 26s ease-in-out infinite}
+#aurora .a2{width:40vw;height:40vw;max-width:560px;max-height:560px;background:radial-gradient(circle,color-mix(in srgb,var(--aur-a) 64%,#ffffff),transparent 68%);top:-8vh;right:4%;animation:auroraDrift2 32s ease-in-out infinite}
+#aurora .a3{width:42vw;height:42vw;max-width:580px;max-height:580px;background:radial-gradient(circle,var(--aur-b),transparent 70%);top:34vh;left:42%;animation:auroraDrift2 30s ease-in-out infinite reverse}
+#aurora .a4{width:36vw;height:36vw;max-width:500px;max-height:500px;background:radial-gradient(circle,color-mix(in srgb,var(--aur-b) 66%,#ffffff),transparent 70%);bottom:-15vh;left:20%;animation:auroraDrift 36s ease-in-out infinite reverse}
 @keyframes auroraDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,4vh) scale(1.12)}}
 @keyframes auroraDrift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-4vw,-3vh) scale(1.1)}}
 html.dark #aurora .ab{opacity:.42;filter:blur(105px)}
@@ -3166,6 +3169,17 @@ function renderTopbar(){
     <div class="me-chip" data-act="nav" data-arg="#/people/${my.id}"><span class="who"><b>${esc(my.name)}</b><span>${esc(my.title)}</span></span>${av(my,'md')}</div>`;
 }
 let _lastRouteKey='';
+let _aurProbe;
+/* complement of the module color (hue +165°, lightness clamped) for the aurora's secondary blobs */
+function auroraComplement(c){
+  if(!_aurProbe){_aurProbe=document.createElement('span');_aurProbe.style.cssText='display:none';document.body.appendChild(_aurProbe);}
+  _aurProbe.style.color=c;
+  const m=getComputedStyle(_aurProbe).color.match(/[\d.]+/g);if(!m)return c;
+  const r=+m[0]/255,g=+m[1]/255,b=+m[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;
+  let h=0;if(d){if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360;}
+  const l=(mx+mn)/2,s=d?d/(1-Math.abs(2*l-1)):0;
+  return 'hsl('+Math.round((h+165)%360)+' '+Math.round(s*100)+'% '+Math.round(Math.min(72,Math.max(42,l*100)))+'%)';
+}
 function render(){
   ROUTE=parseHash();
   if(!canSee(ROUTE.mod)){ROUTE={mod:'home',param:null};history.replaceState(null,'','#/home');}
@@ -3182,7 +3196,11 @@ function render(){
   renderSidebar();renderTopbar();renderTabbar();renderProxyBar();
   const v=Views[ROUTE.mod];
   $('#main').innerHTML=v?v(ROUTE.param):Views.home();
-  $('#main').style.setProperty('--mod',((MODULES.find(m=>m.id===ROUTE.mod)||{}).color)||'var(--brand)');
+  const _modC=((MODULES.find(m=>m.id===ROUTE.mod)||{}).color)||'var(--brand)';
+  $('#main').style.setProperty('--mod',_modC);
+  document.documentElement.style.setProperty('--mod',_modC);
+  document.documentElement.style.setProperty('--aur-a',_modC);
+  document.documentElement.style.setProperty('--aur-b',auroraComplement(_modC));
   $$('#main .card-head h3').forEach(h=>h.setAttribute('aria-level','2'));
   if(samePage){window.scrollTo(0,sy);}else{$('#main').scrollTop=0;window.scrollTo(0,0);}
   if(!samePage)countUpStats();

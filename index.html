@@ -713,10 +713,16 @@ html.dark .toast{background:#262b42;color:#eef0fa}
   .subtabs{width:100%;overflow-x:auto;flex-wrap:nowrap}
 }
 .org-kids{display:flex;gap:18px;align-items:flex-start;padding-top:26px;position:relative}
+/* parent → bar (top half of the gap, centered under the card) */
+.org-kids::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:2.5px;height:13px;background:var(--line2);border-radius:2px}
 .org-kids>.org-node{position:relative;padding-top:0}
-.org-down{width:2.5px;height:14px;background:var(--line2);margin:0 auto;border-radius:2px}
-.org-bridge{position:absolute;top:-14px;height:2.5px;background:var(--line2);border-radius:2px}
-.org-up{position:absolute;top:-14px;left:50%;width:2.5px;height:14px;background:var(--line2);border-radius:2px}
+/* horizontal bar: each child paints its own segment, extended ±9px to bridge the 18px flex gap; first/last trim to the child's centre */
+.org-kids>.org-node::after{content:'';position:absolute;top:-13px;left:-9px;right:-9px;height:2.5px;background:var(--line2);border-radius:2px}
+.org-kids>.org-node:first-child::after{left:50%}
+.org-kids>.org-node:last-child::after{right:50%}
+.org-kids>.org-node:only-child::after{display:none}
+/* riser: bar → each child (bottom half of the gap, centred on the child) */
+.org-kids>.org-node::before{content:'';position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:2.5px;height:13px;background:var(--line2);border-radius:2px}
 .org-count{font-size:10.5px;background:var(--brand-soft);color:var(--brand);font-weight:700;padding:1px 7px;border-radius:99px}
 
 /* ---------- calendar ---------- */
@@ -3872,14 +3878,14 @@ function orgNode(e,focusId){
   /* group ICs (no reports) into a compact roster card to keep the tree readable */
   const expand=kids.filter(k=>reportsOf(k.id).length>0);
   const leaves=kids.filter(k=>reportsOf(k.id).length===0);
-  let kidsHtml=expand.map(k=>`<div class="org-node" style="position:relative"><span class="org-up"></span>${orgNode(k,focusId)}</div>`).join('');
+  let kidsHtml=expand.map(k=>`<div class="org-node" style="position:relative">${orgNode(k,focusId)}</div>`).join('');
   if(leaves.length){
-    kidsHtml+=`<div class="org-node" style="position:relative"><span class="org-up"></span><div class="org-leaves">
+    kidsHtml+=`<div class="org-node" style="position:relative"><div class="org-leaves">
       <div class="org-leaves-head">${leaves.length} individual contributor${leaves.length>1?'s':''}</div>
       ${leaves.map(k=>`<button class="org-leaf${focusId&&k.id===focusId?' focus':k.id===DB.me.employeeId?' me':''}" style="--dept:${deptColor(k.dept)}" onclick="event.stopPropagation();nav('#/people/${k.id}')" draggable="true" ondragstart="window._orgDrag='${k.id}';event.stopPropagation()" title="Open ${esc(k.name)}">${av(k,'xs')}<span class="col" style="gap:0;min-width:0"><b class="oc-leaf-name">${esc(k.name)}</b><span class="oc-leaf-title">${esc(k.title.split(',')[0])}</span></span></button>`).join('')}
     </div></div>`;
   }
-  return `<div class="org-node">${card}<div class="org-down"></div><div class="org-kids"><span class="org-bridge" style="left:25%;right:25%"></span>${kidsHtml}</div></div>`;
+  return `<div class="org-node">${card}<div class="org-kids">${kidsHtml}</div></div>`;
 }
 
 /* ---- profile ---- */

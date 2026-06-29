@@ -413,6 +413,7 @@ html.dark .toast{background:#262b42;color:#eef0fa}
 #demo-prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(120,120,140,.15)}
 #demo-prog i{display:block;height:100%;width:0;background:var(--brand);transition:width .6s linear;box-shadow:0 0 10px var(--brand)}
 #demo-exit{position:absolute;top:12px;right:14px;pointer-events:auto;background:rgba(10,12,26,.55);color:#fff;border:none;border-radius:9px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);z-index:2}
+#demo-mute{position:absolute;top:12px;right:86px;pointer-events:auto;background:rgba(10,12,26,.55);color:#fff;border:none;border-radius:9px;padding:6px 11px;font-size:14px;line-height:1;cursor:pointer;backdrop-filter:blur(8px);z-index:2}
 #demo-cap{position:absolute;left:0;right:0;bottom:0;padding:64px 9vw 46px;background:linear-gradient(to top,rgba(8,10,22,.86),rgba(8,10,22,.5) 55%,transparent);color:#fff;text-align:center;opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
 #demo-cap.show{opacity:1;transform:none}
 #demo-cap .dc-main{font-family:var(--font-display);font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.15;text-shadow:0 2px 30px rgba(0,0,0,.5)}
@@ -1708,7 +1709,7 @@ const logoSVG=s=>`<svg class="logo-mark" style="width:${s||30}px;height:${s||30}
 const mosyMark=(s,o)=>{o=o||{};const z=s||28;const body=o.mono?'#ffffff':'url(#mosyGrad)';const sp=o.mono?'#ffffff':'#fde68a';const eyes=o.mono?'<circle cx="-13" cy="-3" r="4" fill="#2e2766"/><circle cx="13" cy="-3" r="4" fill="#2e2766"/>':'<ellipse cx="-14" cy="-4" rx="6" ry="8" fill="#fff"/><ellipse cx="14" cy="-4" rx="6" ry="8" fill="#fff"/><circle cx="-14" cy="-1" r="3" fill="#241c4a"/><circle cx="14" cy="-1" r="3" fill="#241c4a"/><circle cx="-16" cy="-6" r="1.3" fill="#fff"/><circle cx="12" cy="-6" r="1.3" fill="#fff"/>';const smile=o.mono?'#2e2766':'#ffffff';return `<svg class="mosy-mark" width="${z}" height="${z}" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(49,54)"><path d="M0,-44 C30,-48 50,-22 44,3 C40,25 25,42 0,40 C-25,42 -41,24 -45,-1 C-48,-27 -30,-40 0,-44 Z" fill="${body}"/><path transform="translate(24,-48)" d="M0,-7 L2.3,-2.3 L7,0 L2.3,2.3 L0,7 L-2.3,2.3 L-7,0 L-2.3,-2.3 Z" fill="${sp}"/><path transform="translate(-28,-28)" d="M0,-4 L1.4,-1.4 L4,0 L1.4,1.4 L0,4 L-1.4,1.4 L-4,0 L-1.4,-1.4 Z" fill="${sp}" opacity="0.82"/>${eyes}<path d="M-11,13 Q0,22 11,13" stroke="${smile}" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>`;};
 /* ===================== Mosy comes alive (Round 21) — one controller, transform/opacity-only, reduced-motion safe, never calls render() ===================== */
 const MosyLife={
-  _ready:false,_blinkIn:6,_driftIn:8,_idleAt:0,_lastBeat:0,_following:false,
+  _ready:false,_blinkIn:6,_driftIn:8,_ambientIn:8,_idleAt:0,_lastBeat:0,_following:false,
   s(){UIS.mosy=UIS.mosy||{seen:{},nudgeCount:0,lastNudgeAt:0,leanAt:0,prevW0:-1,prevCount:-1,celebZero:false,welcomed:false};return UIS.mosy;},
   chat(){return (typeof DB!=='undefined'&&DB.mosyChat)||'balanced';},
   _silent(){return this.chat()==='off';},
@@ -1717,8 +1718,8 @@ const MosyLife={
      greet = per-module route-greeting cooldown (60s floor at balanced per skeptic); follow = cursor companion. */
   _cfg(){const D={off:{trips:0,nudges:0,cool:0,tripCool:0,idle:1e9,greet:1e9,follow:false},
     quiet:{trips:0,nudges:0,cool:0,tripCool:0,idle:12000,greet:60000,follow:false},
-    balanced:{trips:2,nudges:2,cool:480000,tripCool:720000,idle:8000,greet:60000,follow:false},
-    lively:{trips:3,nudges:3,cool:480000,tripCool:480000,idle:6000,greet:45000,follow:true}};
+    balanced:{trips:4,nudges:2,cool:480000,tripCool:360000,idle:8000,greet:60000,follow:false},
+    lively:{trips:6,nudges:3,cool:480000,tripCool:240000,idle:6000,greet:45000,follow:true}};
     return D[this.chat()]||D.balanced;},
   _now(){try{return performance.now();}catch(e){return 0;}},
   _busy(){return document.hidden||this._blurred;},
@@ -1777,6 +1778,8 @@ const MosyLife={
       /* intent idle-peek: glance toward the queue/badge when something needs you, else a soft random wander */
       if((this.s().prevW0||0)>0)this._gazeHold(-2.2,-2.4,2400);
       else{const a=Math.random()*6.283,r=1+Math.random()*2.2;this._gazeHold(Math.cos(a)*r,Math.sin(a)*r-0.4,2400);}}
+    /* ambient page involvement — poll every ~6-9 beats; _tripGate enforces the real cooldown/budget */
+    if(!this._following&&--this._ambientIn<=0){this._ambientIn=6+Math.floor(Math.random()*4);try{this._pageRoam();}catch(e){}}
   },
   blink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-blink');void f.offsetWidth;f.classList.add('m-blink');setTimeout(()=>f.classList.remove('m-blink'),200);},
   wink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-wink');void f.offsetWidth;f.classList.add('m-wink');setTimeout(()=>f.classList.remove('m-wink'),380);},
@@ -1906,7 +1909,8 @@ const MosyLife={
     else if(kind==='showoff'){this.mouth(this.MOUTH.grin);this.wink();if(this._bigOK())this._body('b-wobble',1400);this.act('g-dance','gp-cheer',1400);this.eyes('star',1300);this.emote('note',3);setTimeout(()=>{try{this.syncMood();}catch(e){}},1700);}
     else if(kind==='done'){this.mouth(this.MOUTH.grin);this._body('b-pop',500);this.act('g-thumb','gp-thumb',900);this.eyes('happy',900);this.emote('spark',1);setTimeout(()=>{try{this.syncMood();}catch(e){}},1300);}
   },
-  _gates(){
+  /* environment gates shared by nudges AND trips (settled, idle, not busy/sensitive/overlay/input) */
+  _baseGates(){
     const st=this.s(),c=this.chat();
     if(c==='off'||c==='quiet'||st.muted)return false;
     if(this._busy()||this._sensitive||this._quiet)return false;
@@ -1916,6 +1920,12 @@ const MosyLife={
     const t=this._now();
     if(t<45000)return false;
     if(t-this._idleAt<this._cfg().idle)return false;
+    return true;
+  },
+  /* stationary-bubble nudge gate = base + the nudge cooldown/cap (trips have their OWN budget) */
+  _gates(){
+    if(!this._baseGates())return false;
+    const st=this.s(),t=this._now();
     if(st.lastNudgeAt&&t-st.lastNudgeAt<this._cfg().cool)return false;
     if(st.nudgeCount>=this._cfg().nudges)return false;
     return true;
@@ -1949,27 +1959,46 @@ const MosyLife={
     else if(vh-tr.bottom>=H*2+GAP)p={x:tr.left+Math.min(tr.width/2,120),y:tr.bottom+GAP+H,dir:'up'};
     else return null;
     p.x=Math.max(28,Math.min(vw-28,p.x));p.y=Math.max(70,Math.min(vh-28,p.y));return p;},
-  _tripGate(){if(!this._cfg().trips)return false;if(!this._gates()||_reduceMotion()||this._tripActive||this._trip)return false;if(innerWidth<720||innerHeight<560)return false;if(!matchMedia('(pointer:fine)').matches)return false;if(!this._bigOK())return false;const st=this.s(),t=this._now();if((st.tripCount||0)>=this._cfg().trips)return false;if(st.lastTripAt&&t-st.lastTripAt<this._cfg().tripCool)return false;return true;},
-  _reTarget(){if(!this._trip)return null;const tgt=this._resolveTarget(this._trip.act,this._trip.arg);if(!tgt||!this._inView(tgt.getBoundingClientRect()))return null;return tgt;},
+  _tripGate(){if(!this._cfg().trips)return false;if(!this._baseGates()||_reduceMotion()||this._tripActive||this._trip)return false;if(innerWidth<720||innerHeight<560)return false;if(!matchMedia('(pointer:fine)').matches)return false;if(!this._bigOK())return false;const st=this.s(),t=this._now();if((st.tripCount||0)>=this._cfg().trips)return false;if(st.lastTripAt&&t-st.lastTripAt<this._cfg().tripCool)return false;return true;},
+  _reTarget(){if(!this._trip)return null;
+    if(this._trip.el){const e=this._trip.el;return (e.isConnected&&this._inView(e.getBoundingClientRect()))?e:null;}
+    const tgt=this._resolveTarget(this._trip.act,this._trip.arg);if(!tgt||!this._inView(tgt.getBoundingClientRect()))return null;return tgt;},
+  /* AMBIENT page involvement: when idle on any page, occasionally hop to a prominent element and peek.
+     This is what makes Mosy feel present "throughout the page", not just tied to inbox items.
+     Fully rate-limited by _tripGate (per-session cap + cooldown + idle + sensitive/mobile/RM guards). */
+  _pageRoam(){
+    if(this._tripActive||this._trip||!this._tripGate())return false;
+    const el=this._pickProminent();if(!el)return false;
+    return this._startTrip(null,null,'peek',null,el);
+  },
+  _pickProminent(){
+    const sels=['#main .cmd-tile','#main .stat','#main .card-head h3','#main .chart','#main canvas','#main h1.page'];
+    let pool=[];
+    for(const s of sels){pool=[...document.querySelectorAll(s)].filter(e=>{const r=e.getBoundingClientRect();return this._inView(r)&&!!this._dockPoint(r);});if(pool.length)break;}
+    if(!pool.length)return null;
+    let pick=pool[Math.floor(Math.random()*pool.length)];
+    if(pool.length>1&&pick===this._lastPeekEl)pick=pool[(pool.indexOf(pick)+1)%pool.length];
+    this._lastPeekEl=pick;return pick;
+  },
   _highlight(el){this._unhighlight();if(!el)return;this._hlEl=el;el.classList.remove('mosy-spotlight');void el.offsetWidth;el.classList.add('mosy-spotlight');this._hlT=setTimeout(()=>this._unhighlight(),1000);},
   _unhighlight(){if(this._hlT){clearTimeout(this._hlT);this._hlT=null;}if(this._hlEl){this._hlEl.classList.remove('mosy-spotlight');this._hlEl=null;}},
   _clearTripT(){if(this._tripT){clearTimeout(this._tripT);this._tripT=null;}},
-  _startTrip(act,arg,kind,label){
+  _startTrip(act,arg,kind,label,directEl){
     if(!this._tripGate()||document.hidden)return false;
-    const tgt=this._resolveTarget(act,arg);if(!tgt)return false;const tr=tgt.getBoundingClientRect();if(!this._inView(tr))return false;
+    const tgt=directEl||this._resolveTarget(act,arg);if(!tgt||!tgt.isConnected)return false;const tr=tgt.getBoundingClientRect();if(!this._inView(tr))return false;
     const dock=this._dockPoint(tr);if(!dock)return false;
     const el=this._buildRoamer(),st=this.s(),now=this._now(),fr=this._fab.getBoundingClientRect();
-    this._tripActive=true;this._trip={kind,act,arg,label:label||'',dock,phase:'out',routeKey:this._routeKey};
+    this._tripActive=true;this._trip={kind,act,arg,el:directEl||null,label:label||'',dock,phase:'out',routeKey:this._routeKey};
     this._fab.classList.add('mosy-away');el.setAttribute('data-dir',dock.dir);
     el.style.transition='none';el.style.transform='translate('+(fr.left+fr.width/2-22)+'px,'+(fr.top+fr.height/2-22)+'px)';el.style.display='block';el.style.opacity='0';
     this._tripRAF=requestAnimationFrame(()=>{el.style.transition='transform .52s cubic-bezier(.34,1.05,.4,1),opacity .22s';el.style.opacity='1';el.style.transform='translate('+(dock.x-22)+'px,'+(dock.y-22)+'px)';});
     this._bindTripListeners();this._clearTripT();this._tripT=setTimeout(()=>this._perform(),560);this._tripWatch=setTimeout(()=>this._abortTrip('watchdog'),6000);
-    st.lastNudgeAt=now;st.nudgeCount=(st.nudgeCount||0)+1;st.lastTripAt=now;st.tripCount=(st.tripCount||0)+1;return true;},
+    st.lastNudgeAt=now;st.lastTripAt=now;st.tripCount=(st.tripCount||0)+1;return true;},
   _perform(){if(!this._trip||this._trip.phase!=='out')return;this._clearTripT();this._trip.phase='perform';
     const tgt=this._reTarget();if(!tgt){this._abortTrip('gone');return;}
     const c=this._roCraft;c.classList.remove('g-point','g-cheer');void c.offsetWidth;c.classList.add(this._trip.kind==='cele'?'g-cheer':'g-point');
     this._highlight(tgt);if(this._live&&this._trip.label)this._live.textContent=this._trip.label;
-    this._tripT=setTimeout(()=>this._goHome(),this._trip.kind==='cele'?1500:1700);},
+    this._tripT=setTimeout(()=>this._goHome(),this._trip.kind==='peek'?1150:this._trip.kind==='cele'?1500:1700);},
   _goHome(){if(!this._trip)return;this._clearTripT();this._trip.phase='home';
     const fr=this._fab.getBoundingClientRect(),el=this._roamer;el.style.transition='transform .46s cubic-bezier(.4,0,.5,1),opacity .3s';el.style.transform='translate('+(fr.left+fr.width/2-22)+'px,'+(fr.top+fr.height/2-22)+'px)';el.style.opacity='0';
     this._tripT=setTimeout(()=>this._endTrip(),480);},
@@ -4670,28 +4699,29 @@ ACT.mosySetEngage=v=>{DB.mosyChat=v;try{audit('Mosy engagement',v);}catch(e){}St
    (captions are baked in; pairs with the voiceover script)
    ============================================================ */
 const DEMO=[
-  {t:'card',cap:'The technology that powers work.',sub:'Everything work runs on — in one place.',dwell:5000},
-  {t:'scene',go:()=>nav('#/home'),cap:'Your whole company, live.',sub:'No mockups — every screen reads from one shared data spine.',dwell:3400},
-  {t:'montage',mods:['people','recruit','grow','pay','spend','flows','chat','insights'],cap:'25+ modules. One login. One source of truth.',sub:'People · Hiring · Performance · Pay · Spend · Work · Comms · Insight.',dwell:9200},
-  {t:'scene',go:()=>nav('#/recruit/R-104'),cap:'Now watch one action ripple across the company.',sub:'Alex Rivera is at the offer stage — and just accepted.',dwell:3200},
-  {t:'scene',go:()=>{try{ACT.openHire('C101');}catch(e){}},cap:'One click to hire.',sub:'',dwell:2600},
-  {t:'scene',go:()=>{try{ACT.confirmHire('C101');}catch(e){}},cap:'One action. Six modules update themselves.',sub:'HRIS record · onboarding journey · compliance courses · 30-60-90 goals · benefits · headcount — automatically.',dwell:6200},
-  {t:'scene',go:()=>{try{UI.closeModal();}catch(e){}ACT.switchRole('manager');},cap:'The same app, from a manager’s seat.',sub:'The entire interface re-permissions itself, live.',dwell:2900},
-  {t:'scene',go:()=>ACT.switchRole('employee'),cap:'…and an employee’s seat.',sub:'Security groups decide what each person sees — not hard-coded screens.',dwell:3000},
-  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}setTimeout(()=>{try{if(window.MosyLife)MosyLife.react('showoff');}catch(e){}},600);},cap:'Meet Mosy.',sub:'It doesn’t just answer questions — it gets work done.',dwell:3400},
-  {t:'scene',go:()=>{try{Assist.send('Create a task to prep the board deck');}catch(e){}},cap:'Plain English in. Real work staged out.',sub:'Every action waits for your confirmation first.',dwell:3400},
-  {t:'scene',go:()=>{try{[...(AI_PENDING||[])].forEach(a=>ACT.aiRunAction(a.id));}catch(e){}},cap:'Confirmed — done.',sub:'A meeting booked and a task created, in the right modules.',dwell:3000},
-  {t:'scene',go:()=>{try{if(Assist.open)Assist.toggle();}catch(e){}nav('#/command');},cap:'Everything that needs you, everywhere — one queue.',sub:'Approvals, tasks, signatures, cases — drawn live from every module.',dwell:3400},
-  {t:'scene',go:()=>nav('#/insights/dashboards'),cap:'Build any view of the business.',sub:'Drag-free dashboards, computed from the same live records.',dwell:3200},
-  {t:'scene',go:()=>nav('#/chat'),cap:'Craft in every corner.',sub:'Real-time messaging, desktop to mobile.',dwell:2600},
-  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}},cap:'Light or dark — instantly.',sub:'',dwell:2400},
-  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}nav('#/qa');},cap:'And it holds itself honest.',sub:'Every self-test green — the same suite that runs after every change.',dwell:3800},
-  {t:'card',cap:'Mosaic',sub:'Created by Wes Griffin. One self-contained file. Zero dependencies. Designed & built with AI.',dwell:6500,close:true},
+  {t:'card',vo:'This is Mosaic — the technology that powers work. Everything your company runs on, in one place.',cap:'The technology that powers work.',sub:'Everything work runs on — in one place.',dwell:6800},
+  {t:'scene',go:()=>nav('#/home'),vo:'Your whole company, live. No mockups — every screen reads from one shared data spine.',cap:'Your whole company, live.',sub:'No mockups — every screen reads from one shared data spine.',dwell:5400},
+  {t:'montage',mods:['people','recruit','grow','pay','spend','flows','chat','insights'],vo:'Twenty-five-plus modules. One login. One source of truth — people, hiring, performance, pay, spend, work, communication, and insight.',cap:'25+ modules. One login. One source of truth.',sub:'People · Hiring · Performance · Pay · Spend · Work · Comms · Insight.',dwell:13800},
+  {t:'scene',go:()=>nav('#/recruit/R-104'),vo:'Now watch one action ripple across the entire company. Alex Rivera is at the offer stage — and just accepted.',cap:'Now watch one action ripple across the company.',sub:'Alex Rivera is at the offer stage — and just accepted.',dwell:5600},
+  {t:'scene',go:()=>{try{ACT.openHire('C101');}catch(e){}},vo:'One click to hire.',cap:'One click to hire.',sub:'',dwell:3400},
+  {t:'scene',go:()=>{try{ACT.confirmHire('C101');}catch(e){}},vo:'One action, and six modules update themselves — the core H-R record, an onboarding journey, compliance courses, thirty-sixty-ninety goals, benefits, and headcount. All automatically.',cap:'One action. Six modules update themselves.',sub:'HRIS record · onboarding journey · compliance courses · 30-60-90 goals · benefits · headcount — automatically.',dwell:9500},
+  {t:'scene',go:()=>{try{UI.closeModal();}catch(e){}ACT.switchRole('manager');},vo:'Here’s the same app, from a manager’s seat. The entire interface re-permissions itself, live.',cap:'The same app, from a manager’s seat.',sub:'The entire interface re-permissions itself, live.',dwell:5200},
+  {t:'scene',go:()=>ACT.switchRole('employee'),vo:'And from an employee’s seat. Security groups decide what each person sees — not hard-coded screens.',cap:'…and an employee’s seat.',sub:'Security groups decide what each person sees — not hard-coded screens.',dwell:5200},
+  {t:'scene',go:()=>{ACT.switchRole('admin');try{if(!Assist.open)Assist.toggle();Assist.hist=[];Assist.greet();Assist.send('Schedule a sync with Priya about the launch tomorrow');}catch(e){}setTimeout(()=>{try{if(window.MosyLife)MosyLife.react('showoff');}catch(e){}},600);},vo:'Meet Mosy. It doesn’t just answer questions — it gets work done.',cap:'Meet Mosy.',sub:'It doesn’t just answer questions — it gets work done.',dwell:5400},
+  {t:'scene',go:()=>{try{Assist.send('Create a task to prep the board deck');}catch(e){}},vo:'Plain English in, real work staged out. Every action waits for your confirmation first.',cap:'Plain English in. Real work staged out.',sub:'Every action waits for your confirmation first.',dwell:5400},
+  {t:'scene',go:()=>{try{[...(AI_PENDING||[])].forEach(a=>ACT.aiRunAction(a.id));}catch(e){}},vo:'Confirmed, and done. A meeting booked and a task created, each in the right module.',cap:'Confirmed — done.',sub:'A meeting booked and a task created, in the right modules.',dwell:5000},
+  {t:'scene',go:()=>{try{if(Assist.open)Assist.toggle();}catch(e){}nav('#/command');},vo:'Everything that needs you, everywhere, in one queue — approvals, tasks, signatures, and cases, drawn live from every module.',cap:'Everything that needs you, everywhere — one queue.',sub:'Approvals, tasks, signatures, cases — drawn live from every module.',dwell:6200},
+  {t:'scene',go:()=>nav('#/insights/dashboards'),vo:'Build any view of the business — dashboards computed from the same live records.',cap:'Build any view of the business.',sub:'Drag-free dashboards, computed from the same live records.',dwell:5200},
+  {t:'scene',go:()=>nav('#/chat'),vo:'Craft in every corner — real-time messaging, from desktop to mobile.',cap:'Craft in every corner.',sub:'Real-time messaging, desktop to mobile.',dwell:4400},
+  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}},vo:'Light or dark, instantly.',cap:'Light or dark — instantly.',sub:'',dwell:3400},
+  {t:'scene',go:()=>{try{ACT.toggleTheme();}catch(e){}nav('#/qa');},vo:'And it holds itself honest. Every self-test green — the same suite that runs after every change.',cap:'And it holds itself honest.',sub:'Every self-test green — the same suite that runs after every change.',dwell:5800},
+  {t:'card',vo:'Mosaic. Created by Wes Griffin. One self-contained file, zero dependencies. Designed and built with A.I.',cap:'Mosaic',sub:'Created by Wes Griffin. One self-contained file. Zero dependencies. Designed & built with AI.',dwell:8500,close:true},
 ];
 const Demo={
-  running:false,timers:[],i:0,
+  running:false,timers:[],i:0,muted:false,_voice:null,
   start(){
     if(this.running)return;this.running=true;this.i=0;
+    try{if(window.speechSynthesis){speechSynthesis.cancel();speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{try{this._voice=this._pickVoice();}catch(e){}};this._voice=this._pickVoice();}}catch(e){}
     try{DB=buildSeed();Store.save(true);}catch(e){}
     try{if(Assist.open)Assist.toggle();UI.closeModal();UI.closeDrawer();closePopovers();}catch(e){}
     document.body.classList.add('demo-mode');
@@ -4703,6 +4733,7 @@ const Demo={
     if(!o){o=document.createElement('div');o.id='demo-overlay';document.body.appendChild(o);}
     o.innerHTML=`<div id="demo-prog"><i></i></div>
       <button id="demo-exit" onclick="Demo.stop()" title="Exit demo">✕ Exit</button>
+      <button id="demo-mute" onclick="Demo.toggleMute()" title="Mute narration">${this.muted?'🔇':'🔊'}</button>
       <div id="demo-card"></div>
       <div id="demo-cap"><div class="dc-main"></div><div class="dc-sub"></div></div>`;
   },
@@ -4726,12 +4757,24 @@ const Demo={
       else if(s.t==='montage'){this.card('');this.caption(s.cap,s.sub);this.montage(s.mods);}
       else {this.card('');if(s.go)s.go();this.caption(s.cap,s.sub);}
     }catch(e){}
+    try{this.speak(s.vo||s.cap);}catch(e){}
     this.i++;
     this.timers.push(setTimeout(()=>this.step(),s.dwell));
   },
-  montage(mods){let k=0;const adv=()=>{if(!this.running||k>=mods.length)return;try{nav('#/'+mods[k]);}catch(e){}k++;this.timers.push(setTimeout(adv,1120));};adv();},
+  montage(mods){let k=0;const adv=()=>{if(!this.running||k>=mods.length)return;try{nav('#/'+mods[k]);}catch(e){}k++;this.timers.push(setTimeout(adv,1700));};adv();},
+  _pickVoice(){try{const vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[];if(!vs.length)return null;
+    const pref=['Samantha','Google US English','Microsoft Aria','Microsoft Jenny','Karen','Serena','Allison','Ava','Daniel','Alex'];
+    for(const p of pref){const v=vs.find(v=>v.name&&v.name.indexOf(p)>=0&&/^en/i.test(v.lang||''));if(v)return v;}
+    return vs.find(v=>/^en-US/i.test(v.lang||''))||vs.find(v=>/^en/i.test(v.lang||''))||vs[0];}catch(e){return null;}},
+  speak(text){if(this.muted||!text)return;try{const ss=window.speechSynthesis;if(!ss)return;ss.cancel();
+    if(!this._voice)this._voice=this._pickVoice();
+    const u=new SpeechSynthesisUtterance(String(text));u.rate=1;u.pitch=1.02;u.volume=1;if(this._voice)u.voice=this._voice;ss.speak(u);}catch(e){}},
+  toggleMute(){this.muted=!this.muted;const b=document.getElementById('demo-mute');if(b){b.textContent=this.muted?'🔇':'🔊';b.title=this.muted?'Unmute narration':'Mute narration';}
+    if(this.muted){try{if(window.speechSynthesis)speechSynthesis.cancel();}catch(e){}}
+    else{const s=DEMO[Math.max(0,this.i-1)];if(s)this.speak(s.vo||s.cap);}},
   stop(){
     this.running=false;this.timers.forEach(clearTimeout);this.timers=[];
+    try{if(window.speechSynthesis)speechSynthesis.cancel();}catch(e){}
     document.body.classList.remove('demo-mode');
     const o=document.getElementById('demo-overlay');if(o)o.remove();
     try{if(Assist.open)Assist.toggle();UI.closeModal();UI.closeDrawer();}catch(e){}

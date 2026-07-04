@@ -68,6 +68,9 @@
   --ok:#10b981; --ok-soft:#e7f8f1; --warn:#f59e0b; --warn-soft:#fdf3e2;
   --bad:#ef4444; --bad-soft:#fdeaea; --info:#0ea5e9; --info-soft:#e6f5fd;
   --vio-soft:#f1ecfe; --rose-soft:#fdedf2; --teal-soft:#e4f7f4; --sky-soft:#e6f5fd;
+  /* status TEXT colours — dark enough for AA on light soft-backgrounds; lightened for dark mode below */
+  --ok-text:#076b4c; --warn-text:#8f5c03; --bad-text:#b32222; --vio-text:#6d3fd6; --star:#c07c00;
+  --brand-text:#4f46e5;  /* AA-contrast brand for links & soft-button text (plain --brand is only ~4:1) */
 
   --r:16px; --r-sm:11px; --r-lg:22px;
   --sidebar-w:236px; --topbar-h:62px;
@@ -85,13 +88,17 @@ html.dark{
   --brand-soft:#23264a;
   --ok-soft:#11302a; --warn-soft:#33270f; --bad-soft:#371a1c; --info-soft:#10283a;
   --vio-soft:#241d40; --rose-soft:#371726; --teal-soft:#0e2f2c; --sky-soft:#10283a;
+  --ok-text:#4ade9d; --warn-text:#fbc34d; --bad-text:#f87f7f; --vio-text:#b69bf0; --star:#f5a623;
+  --brand-text:#a5b4fc;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 svg:not([width]){width:15px;height:15px;flex:none}
 html{scroll-behavior:smooth}
 body{font-family:var(--font-ui);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 ::selection{background:var(--brand);color:#fff}
-a{color:var(--brand);text-decoration:none}
+a{color:var(--brand-text);text-decoration:none}
+.skip-link{position:fixed;left:10px;top:-64px;z-index:400;background:var(--brand);color:#fff;padding:9px 16px;border-radius:0 0 12px 12px;font-weight:700;font-size:14px;transition:top .16s;box-shadow:0 8px 24px -8px rgba(0,0,0,.45)}
+.skip-link:focus{top:0;outline:2px solid #fff;outline-offset:-4px}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 ::-webkit-scrollbar{width:10px;height:10px}
@@ -174,9 +181,9 @@ html{touch-action:manipulation}
 .role-switch button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
 .me-chip{display:flex;align-items:center;gap:9px;padding:5px 6px;border-radius:11px;cursor:pointer}
 .me-chip:hover{background:var(--bg)}
-.me-chip .who{line-height:1.25;text-align:right}
-.me-chip .who b{font-size:12.5px;display:block}
-.me-chip .who span{font-size:10.5px;color:var(--ink3)}
+.me-chip .who{line-height:1.25;text-align:right;max-width:170px;min-width:0}
+.me-chip .who b{font-size:12.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me-chip .who span{font-size:10.5px;color:var(--ink3);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* ---------- avatars ---------- */
 .av{border-radius:38%;display:inline-grid;place-items:center;font-weight:700;color:#fff;flex:none;user-select:none;letter-spacing:.02em}
@@ -266,7 +273,7 @@ html.dark .stat .tilebg{opacity:.42;filter:blur(9px)}
 html.dark .btn.primary{box-shadow:0 0 26px -6px color-mix(in srgb,var(--brand) 70%,transparent),0 8px 22px -8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.22)}
 html.dark .nav-item.active{box-shadow:0 0 22px -10px color-mix(in srgb,var(--mod,var(--brand)) 70%,transparent)}
 .delta{font-weight:700;font-size:11.5px;padding:1px 7px;border-radius:99px}
-.delta.up{background:var(--ok-soft);color:#076b4c}.delta.down{background:var(--bad-soft);color:#b32222}.delta.flat{background:var(--bg2);color:var(--ink3)}
+.delta.up{background:var(--ok-soft);color:var(--ok-text)}.delta.down{background:var(--bad-soft);color:var(--bad-text)}.delta.flat{background:var(--bg2);color:var(--ink3)}
 html.dark .delta.up{color:#4ade9d}html.dark .delta.down{color:#f87f7f}
 
 /* ---------- buttons ---------- */
@@ -276,8 +283,10 @@ html.dark .delta.up{color:#4ade9d}html.dark .delta.down{color:#f87f7f}
 .btn.primary:hover{background-color:var(--brand-deep);box-shadow:0 12px 26px -6px color-mix(in srgb,var(--brand) 58%,transparent),inset 0 1px 0 rgba(255,255,255,.28)}
 .btn.ghost{border-color:var(--line2);color:var(--ink2);background:var(--card)}
 .btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
-.btn.soft{background:var(--brand-soft);color:var(--brand)}
-.btn.soft:hover{filter:brightness(.97)}
+.btn.soft{background:var(--brand-soft);color:var(--brand-text)}
+.btn.soft:hover{background:color-mix(in srgb,var(--brand) 16%,var(--brand-soft))}
+.chip[data-act]:hover,.chip.click:hover,.layer-chip:hover{border-color:var(--ink3);color:var(--ink);cursor:pointer}
+.seg button:not(.on):hover{color:var(--ink)}
 .btn.danger{background:var(--bad-soft);color:var(--bad)}
 .btn.good{background:var(--ok-soft);color:var(--ok)}
 .btn.sm{padding:5px 10px;font-size:12px;border-radius:8px}
@@ -291,9 +300,9 @@ html.dark .delta.up{color:#4ade9d}html.dark .delta.down{color:#f87f7f}
 /* ---------- badges / chips ---------- */
 .badge{display:inline-flex;align-items:center;gap:5px;padding:2.5px 9px;border-radius:99px;font-size:11.5px;font-weight:650;white-space:nowrap}
 .badge .bdot{width:6px;height:6px;border-radius:99px;background:currentColor}
-.b-ok{background:var(--ok-soft);color:#076b4c}.b-warn{background:var(--warn-soft);color:#8f5c03}
-.b-bad{background:var(--bad-soft);color:#b32222}.b-info{background:var(--info-soft);color:#07689a}
-.b-vio{background:var(--vio-soft);color:#6d3fd6}.b-rose{background:var(--rose-soft);color:#b32a60}
+.b-ok{background:var(--ok-soft);color:var(--ok-text)}.b-warn{background:var(--warn-soft);color:var(--warn-text)}
+.b-bad{background:var(--bad-soft);color:var(--bad-text)}.b-info{background:var(--info-soft);color:#07689a}
+.b-vio{background:var(--vio-soft);color:var(--vio-text)}.b-rose{background:var(--rose-soft);color:#b32a60}
 .b-mute{background:var(--bg2);color:var(--ink2)}
 html.dark .b-ok{color:#4ade9d}html.dark .b-warn{color:#fbc34d}html.dark .b-bad{color:#f87f7f}
 html.dark .b-info{color:#5ec5f5}html.dark .b-vio{color:#b69af7}html.dark .b-rose{color:#f491bd}html.dark .b-teal{color:#46d6c4}
@@ -301,6 +310,15 @@ html.dark .b-info{color:#5ec5f5}html.dark .b-vio{color:#b69af7}html.dark .b-rose
 
 /* ---------- tables ---------- */
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
+/* RM-3: any card holding a table can scroll its own overflow at ANY width (was mobile-only, so the 641–900 band clipped wide tables) */
+.card:has(.tbl){overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* RM-6: give touch devices comfortable tap targets on the smallest controls */
+@media(hover:none){
+  .iconbtn{min-width:36px;min-height:36px}
+  .imsg-act{min-width:38px;min-height:38px}
+  .star{font-size:19px;padding:2px 3px}
+  .mini-month td{padding:8px 3px}
+}
 .tbl th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
 .tbl td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
 .tbl tr:last-child td{border-bottom:none}
@@ -371,16 +389,16 @@ select:focus,.field select:focus,.filterbar select:focus{border-color:var(--bran
 /* ---------- drawer ---------- */
 /* closed veils must be inert — without pointer-events:none they are
    invisible full-screen click shields on every fresh page load */
-#drawer-veil,#modal-veil{position:fixed;inset:0;background:rgba(10,12,26,.45);z-index:90;opacity:0;transition:opacity .2s;backdrop-filter:blur(2px);pointer-events:none}
+#drawer-veil,#modal-veil{position:fixed;inset:0;background:rgba(10,12,26,.45);z-index:112;opacity:0;transition:opacity .2s;backdrop-filter:blur(2px);pointer-events:none}
 #drawer-veil.open,#modal-veil.open{opacity:1;pointer-events:auto}
-#drawer{position:fixed;top:0;right:0;bottom:0;width:520px;max-width:94vw;background:var(--card);z-index:95;box-shadow:var(--shadow-lg);transform:translateX(105%);transition:transform .26s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:520px;max-width:94vw;background:var(--card);z-index:114;box-shadow:var(--shadow-lg);transform:translateX(105%);transition:transform .26s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column}
 #drawer.open{transform:none}
 .drawer-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
 .drawer-body{flex:1;overflow-y:auto;padding:20px 22px}
 .drawer-foot{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;justify-content:flex-end}
 
 /* ---------- modal ---------- */
-#modal{position:fixed;inset:0;z-index:96;display:grid;place-items:center;padding:20px;pointer-events:none}
+#modal{position:fixed;inset:0;z-index:116;display:grid;place-items:center;padding:20px;pointer-events:none}
 #modal .box{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);width:540px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column;transform:scale(.95) translateY(8px);opacity:0;transition:all .2s cubic-bezier(.3,.9,.3,1);pointer-events:auto}
 #modal.open .box{transform:none;opacity:1}
 .modal-head{padding:19px 24px 0;display:flex;align-items:flex-start;gap:12px}
@@ -472,6 +490,8 @@ html.dark .toast{background:#262b42;color:#eef0fa}
   radial-gradient(circle at 1px 1px, color-mix(in srgb,var(--ink3) 16%,transparent) 1px, transparent 0) 0 0/22px 22px,
   var(--card);backdrop-filter:none;-webkit-backdrop-filter:none}
 .org-wrap{overflow:auto;padding:10px 4px 30px}
+.org-wrap>*{margin-inline:auto}  /* centre the tree when it fits; it still scrolls when wider than the canvas */
+.cal-scroll,.org-wrap{scrollbar-width:thin}  /* RM-9: a visible thin scrollbar hints there's more sideways */
 .org-node{display:inline-flex;flex-direction:column;align-items:center}
 .org-card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--dept,var(--brand));border-radius:14px;padding:9px 11px;box-shadow:0 2px 11px -6px rgba(10,12,26,.28);display:flex;align-items:center;gap:11px;cursor:pointer;min-width:200px;max-width:240px;position:relative;transition:transform .15s,box-shadow .15s,border-color .15s}
 .org-card:hover{transform:translateY(-2px);box-shadow:0 11px 26px -10px rgba(10,12,26,.38)}
@@ -772,7 +792,7 @@ html.dark .pill-tabs button.on{background:#eef0fa;color:#13162b}
 .legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px}
 .starbar svg{width:15px;height:15px}
 .hovercard:hover{background:var(--card2)}
-.linklike{color:var(--brand);font-weight:600;cursor:pointer}
+.linklike{color:var(--brand-text);font-weight:600;cursor:pointer}
 .linklike:hover{text-decoration:underline}
 mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;border-radius:3px;padding:0 2px}
 
@@ -948,17 +968,17 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 .switch input:checked+.sw-track:before{transform:translateX(16px)}
 .sch-table{border-collapse:separate;border-spacing:4px;width:100%;min-width:680px}
 .sch-table th{font-size:11px;font-weight:700;color:var(--ink3);text-align:center;padding:4px}
-.sch-table th.today{color:#0d9488}
+.sch-table th.today{color:#0b7268}
 .sch-table th.sch-name,td.sch-name{text-align:left;width:150px;min-width:150px}
 .sch-cell{padding:0;vertical-align:top}
 .sch-empty{min-height:42px;border-radius:8px;border:1.4px dashed var(--line);display:grid;place-items:center;color:var(--ink3);cursor:pointer;font-size:15px}
-.sch-empty:hover{border-color:#0d9488;color:#0d9488;background:color-mix(in srgb,#0d9488 5%,transparent)}
-.sch-block{min-height:42px;border-radius:8px;padding:5px 7px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:1px;color:#fff;background:#0d9488}
+.sch-empty:hover{border-color:#0b7268;color:#0b7268;background:color-mix(in srgb,#0b7268 5%,transparent)}
+.sch-block{min-height:42px;border-radius:8px;padding:5px 7px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:1px;color:#fff;background:#0b7268}
 .sch-block b{font-size:11px;white-space:nowrap}.sch-block span{font-size:9.5px;opacity:.9}
-.sch-block.s-Early{background:#0ea5e9}.sch-block.s-Mid{background:#0d9488}.sch-block.s-Late{background:#7c3aed}
+.sch-block.s-Early{background:#0ea5e9}.sch-block.s-Mid{background:#0b7268}.sch-block.s-Late{background:#7c3aed}
 .sch-block:hover{filter:brightness(1.08)}
 .post-dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}
-.post-dot.ok{background:var(--ok-soft);color:#076b4c}
+.post-dot.ok{background:var(--ok-soft);color:var(--ok-text)}
 .post-dot.warn{background:var(--warn-soft);color:#92400e}
 /* D3 · skip layout/paint for off-screen rows in long lists (helps at scale) */
 .task-row,.tlist-row,.cmd-item{content-visibility:auto;contain-intrinsic-size:auto 46px}
@@ -988,7 +1008,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,[tabindex]:focu
 
 /* ---------- risk badge ---------- */
 .risk-pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700}
-.risk-low{background:var(--ok-soft);color:#076b4c}.risk-watch{background:var(--warn-soft);color:#8f5c03}.risk-high{background:var(--bad-soft);color:#b32222}
+.risk-low{background:var(--ok-soft);color:var(--ok-text)}.risk-watch{background:var(--warn-soft);color:var(--warn-text)}.risk-high{background:var(--bad-soft);color:var(--bad-text)}
 html.dark .risk-low{color:#4ade9d}html.dark .risk-watch{color:#fbc34d}html.dark .risk-high{color:#f87f7f}
 
 /* ---------- letter preview ---------- */
@@ -1064,7 +1084,7 @@ html.dark .letter{background:#f4f4f6}
 .mail-open{padding:22px 26px;overflow-y:auto;max-height:68vh}
 .mail-body{font-size:13.5px;line-height:1.8;color:var(--ink2);white-space:pre-line}
 .star{color:var(--ink3);cursor:pointer;font-size:15px}
-.star.on{color:#f5a623}
+.star.on{color:var(--star)}
 
 /* ---------- calendar ---------- */
 .cal-week{display:grid;grid-template-columns:46px repeat(5,1fr);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
@@ -1335,7 +1355,7 @@ body.fx-lock{overflow:hidden}
 }
 @media(min-width:641px){.sheet-grab{display:none}}
 .mail-row{touch-action:pan-y;position:relative;transition:transform .15s}
-.swipe-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:16px;background:var(--ok-soft);color:#076b4c;font-weight:800;font-size:12px;border-radius:0}
+.swipe-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:16px;background:var(--ok-soft);color:var(--ok-text);font-weight:800;font-size:12px;border-radius:0}
 
 /* ---------- deep passes r3: drive + meet ---------- */
 .dr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:14px 16px}
@@ -1405,7 +1425,7 @@ body.fx-lock{overflow:hidden}
 html.dark .mention{color:#b69af7}
 .parity-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);align-items:flex-start;font-size:12.5px}
 .parity-row:last-child{border-bottom:none}
-.p-b{color:#076b4c;font-weight:800}.p-s{color:#8f5c03;font-weight:800}.p-x{color:#b32222;font-weight:800}
+.p-b{color:var(--ok-text);font-weight:800}.p-s{color:var(--warn-text);font-weight:800}.p-x{color:var(--bad-text);font-weight:800}
 html.dark .p-b{color:#4ade9d}html.dark .p-s{color:#fbc34d}html.dark .p-x{color:#f87f7f}
 
 /* ---------- phase 4: deep modules ---------- */
@@ -1492,7 +1512,16 @@ body.proxying #topbar{top:34px}
   /* the AI FAB would sit on the composer in a thread — get it out of the way */
   body:has(.chat-wrap.conv-open) #assist-fab{display:none}
   #assist-fab{bottom:84px;right:14px;width:48px;height:48px}
-  #assist-panel{bottom:142px;right:14px;height:480px}
+  #assist-panel{bottom:142px;right:14px;height:min(480px,calc(100dvh - 200px));max-height:calc(100dvh - 160px)}
+  .meet-bar{flex-wrap:wrap;gap:7px}  /* RM-1: keep every control (incl. Leave) reachable */
+  .mail-row{grid-template-columns:22px minmax(0,92px) 1fr auto;column-gap:8px}  /* RM-4: shrink sender col so the subject shows */
+  .mail-row>:first-child{display:none}  /* hide bulk checkbox on mobile */
+  .mail-row .m-from,.mail-row .m-prev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .exp-line{grid-template-columns:1fr 1fr;column-gap:6px;row-gap:6px}  /* RM-7 */
+  .exp-line>:last-child{grid-column:1/-1;justify-self:end}
+  .filterbar input[type=search]{min-width:0;width:100%}  /* RM-8 */
+  .filterbar select{width:100%}
+  body:has(#assist-panel.open) #toasts{bottom:auto;top:70px}  /* RM-10: don't stack a toast on the open panel */
   #toasts{bottom:150px;right:14px}
   .card:has(.tbl){overflow-x:auto;-webkit-overflow-scrolling:touch}
   .kanban{grid-auto-columns:minmax(200px,72vw)}
@@ -1555,13 +1584,14 @@ body.proxying #topbar{top:34px}
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 <div id="aurora" aria-hidden="true"><span class="ab a1"></span><span class="ab a2"></span><span class="ab a3"></span><span class="ab a4"></span></div>
 <div id="shell">
   <aside id="sidebar"></aside>
   <div id="main-wrap">
     <div id="proxy-bar"></div>
     <header id="topbar"></header>
-    <main id="main"></main>
+    <main id="main" tabindex="-1"></main>
   </div>
 </div>
 <div id="side-veil" onclick="ACT.closeSidebar()"></div>
@@ -2545,7 +2575,7 @@ function buildPerformance(emps){
       rating:perf,potential:clamp(Math.round(perf+(rnd()*2-1)),1,5)>3?'High':(rnd()<0.5?'Medium':'Low'),
       submittedAt:daysAgo(rint(150,185))});
     /* current cycle */
-    const selfDone=rnd()<0.82;
+    const selfDone=e.id==='E030'?false:rnd()<0.82;  /* the demo employee always has a self-review waiting */
     reviews.push({id:'RV-'+(++rn),cycleId:'CY-2026H1',employeeId:e.id,reviewerId:e.id,type:'self',status:selfDone?'submitted':'open',
       submittedAt:selfDone?daysAgo(rint(2,12)):null,
       strengths:selfDone?'Shipped consistently and supported teammates through the 2.0 push.':null,
@@ -2969,13 +2999,15 @@ const WF_TEMPLATES=[
   {id:'bp-mass-change',name:'Mass Change',icon:'🧮',bp:true,hidden:true,blurb:'One approval applies a job-data change to many workers at once — launched from the People directory.',stages:['Initiate','HR approval','Complete'],ownerIds:['E021'],ownerLabel:'People Ops (BP)',
    form:[['summary','Change','text'],['effective','Effective date','date']]},
 ];
+/* one numeric employee-id generator, shared by hire + rehire — ignores any non-numeric id so it can never yield ENaN */
+function nextEmpId(){return 'E'+String(Math.max(0,...DB.employees.map(e=>+e.id.slice(1)).filter(Number.isFinite))+1).padStart(3,'0');}
 function applyBP(f){
   const tpl=tplOf(f.templateId);
   if(f.templateId==='bp-rehire'){
     const fx=DB.former.find(x=>x.name===f.fields.formerName);
     const start=f.fields.effective||daysAhead(14);
     const dept=fx?fx.dept:'people';
-    const ne={id:uid('E'),name:f.fields.formerName||'Returning Alum',title:f.fields.newTitle||'Returning team member',dept,team:deptName(dept),level:'IC3',location:'Remote',managerId:'E007',
+    const ne={id:nextEmpId(),name:f.fields.formerName||'Returning Alum',title:f.fields.newTitle||'Returning team member',dept,team:deptName(dept),level:'IC3',location:'Remote',managerId:'E007',
       hireDate:start,birthday:'06-15',status:'onboarding',email:deslug(f.fields.formerName||'alum').toLowerCase().replace(/ /g,'.')+'@meridianlabs.dev',
       comp:{base:+f.fields.newBase||120000,bonusPct:10,equity:rint(800,4000)},compHistory:[{date:start,type:'Rehire',base:+f.fields.newBase||120000,note:'Returning alum — prior service honored for tenure & accruals'}],
       pto:{vacBalance:10,vacUsed:0,sickBalance:10,sickUsed:0},docs:[]};
@@ -3022,6 +3054,7 @@ function applyBP(f){
     notify(e.id,'🎁',`A one-time payment of ${fmt$(+f.fields.amount||0)} (${f.fields.reason}) was approved — next payroll`,'#/pay');
     audit('BP applied: One-Time Payment',e.name+' · '+fmt$(+f.fields.amount||0));
   }else if(f.templateId==='bp-termination'){
+    if(e.status==='offboarding'||DB.offboarding.some(o=>o.employeeId===e.id))return;  /* already offboarding — don't duplicate the journey */
     const lastDay=f.fields.effective||daysAhead(14);
     e.status='offboarding';e.lastDay=lastDay;
     DB.offboarding.push({id:uid('OFFB'),employeeId:e.id,lastDay,reason:f.fields.reason,regret:f.fields.regret==='Yes',
@@ -3425,7 +3458,7 @@ function inboxFor(empId){
     const req=emp(t.employeeId);if(!req)return;
     const mine=t.chain?actsFor(empId,(chainCurrent(t.chain)||{}).id):actsFor(empId,req.managerId);
     if(mine)items.push({icon:'🏖️',kind:'Approval',text:`${req.name} requested ${t.days}d ${TO_TYPES[t.type].label.toLowerCase()} (${fmtDshort(t.start)}–${fmtDshort(t.end)})${t.chain?' · step '+(t.chain.findIndex(s=>s.status==='pending')+1)+' of '+t.chain.length:''}`,link:'#/time',due:t.start,weight:1,
-      acts:[{label:'✓ Approve',act:'decideTO',arg:t.id+'|approved',cls:'good'},{label:'Deny',act:'decideTO',arg:t.id+'|denied',cls:'ghost'}]});
+      acts:[{label:'✓ Approve',act:'decideTO',arg:t.id+'|approved',cls:'good'},{label:'Deny',act:'denyTOPrompt',arg:t.id,cls:'ghost'}]});
   });
   /* offer-approval steps waiting on me */
   DB.candidates.filter(c=>c.stage==='offer'&&c.offer&&c.offer.chain&&!chainDone(c.offer.chain)).forEach(c=>{
@@ -3487,7 +3520,7 @@ function inboxFor(empId){
   ((DB.spend||{}).expenses||[]).filter(x=>expNeedsMe(x)&&x.employeeId!==empId).forEach(x=>{
     const who=emp(x.employeeId);
     items.push({icon:'💳',kind:'Spend',text:`Expense ${x.status==='finance'?'at Finance':'approval'}: ${x.title} — ${fmt$(x.total)}${who?' · '+who.name:''}`,link:'#/spend/expenses',due:daysAhead(2),weight:1,
-      acts:[{label:'✓ Approve',act:'expApprove',arg:x.id,cls:'good'},{label:'Reject',act:'expReject',arg:x.id,cls:'ghost'}]});
+      acts:[{label:'✓ Approve',act:'expApprove',arg:x.id,cls:'good'},{label:'Send back',act:'expReject',arg:x.id,cls:'ghost'}]});
   });
   /* policy acknowledgments I owe */
   (DB.policyCampaigns||[]).filter(c=>!c.acks.includes(empId)&&c.due>=todayISO()).forEach(c=>{
@@ -3519,7 +3552,14 @@ function inboxFor(empId){
    ============================================================ */
 let _mountQ=[];
 const onMount=fn=>_mountQ.push(fn);
-function runMounts(){const q=_mountQ;_mountQ=[];q.forEach(f=>{try{f();}catch(e){console.error(e);}});try{chartIntro();}catch(e){}try{if(window.MosyLife)MosyLife.onPaint();}catch(e){}}
+/* AX-1/2/3: normalize accessibility after each paint — button semantics for [data-act] divs,
+   label↔input association, and accessible names for placeholder-only inputs */
+function a11yNormalize(){try{
+  document.querySelectorAll('[data-act]:not([tabindex]):not(button):not(a):not(input):not(select):not(textarea)').forEach(el=>{el.setAttribute('tabindex','0');if(!el.getAttribute('role'))el.setAttribute('role','button');});
+  document.querySelectorAll('label:not([for])').forEach(lab=>{if(lab.querySelector('input,select,textarea'))return;let c=lab.nextElementSibling;if(!(c&&/^(INPUT|SELECT|TEXTAREA)$/.test(c.tagName)))c=lab.parentNode.querySelector('input,select,textarea');if(c&&/^(INPUT|SELECT|TEXTAREA)$/.test(c.tagName)){if(!c.id)c.id='fld-'+(a11yNormalize._n=(a11yNormalize._n||0)+1);lab.setAttribute('for',c.id);}});
+  document.querySelectorAll('input:not([aria-label]),textarea:not([aria-label]),select:not([aria-label])').forEach(c=>{if((!c.labels||!c.labels.length)&&c.placeholder)c.setAttribute('aria-label',c.placeholder);});
+}catch(e){}}
+function runMounts(){const q=_mountQ;_mountQ=[];q.forEach(f=>{try{f();}catch(e){console.error(e);}});try{chartIntro();}catch(e){}try{a11yNormalize();}catch(e){}try{if(window.MosyLife)MosyLife.onPaint();}catch(e){}}
 /* additive chart entrance: draw line series in via stroke-dashoffset; bars/donut/areas animate via CSS. Purely cosmetic, reduced-motion safe, never changes the Chart API. */
 function chartIntro(){
   if(typeof _reduceMotion==='function'&&_reduceMotion())return;
@@ -3538,6 +3578,7 @@ window._toastDo=(id,btn)=>{const fn=_toastActs[id];if(fn){delete _toastActs[id];
 const UI={
   modal({title,sub,body,foot,wide}){
     const m=$('#modal');
+    try{closePopovers();}catch(e){}  /* don't leave a notif/persona/emoji popover painted over the modal */
     if(UI._mT){clearTimeout(UI._mT);UI._mT=null;}
     if(!m.classList.contains('open'))_focusReturnM=document.activeElement;
     m.innerHTML=`<div class="box" tabindex="-1" aria-label="${esc(String(title).replace(/<[^>]*>/g,''))}" style="${wide?'width:760px':''}"><span class="sheet-grab"></span>
@@ -3545,6 +3586,7 @@ const UI={
       <button class="iconbtn" data-act="closeModal" aria-label="Close dialog">${I.x}</button></div>
       <div class="modal-body">${body}</div>${foot?`<div class="modal-foot">${foot}</div>`:''}</div>`;
     $('#modal-veil').style.display='block';m.style.display='grid';
+    try{a11yNormalize();}catch(e){}
     requestAnimationFrame(()=>{$('#modal-veil').classList.add('open');m.classList.add('open');});
     setTimeout(()=>{const box=m.querySelector('.box');if(!box)return;
       const f=box.querySelector('.modal-body input,.modal-body select,.modal-body textarea')||box.querySelector('.modal-foot .btn.primary')||box;
@@ -3607,7 +3649,7 @@ const ring=(p,size,color,label)=>{const r=(size-8)/2,c=2*Math.PI*r;
     <circle class="track" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke-width="7"/>
     <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color||'var(--brand)'}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-clamp(p,0,100)/100)}"/>
     <text x="${size/2}" y="${size/2+1}" transform="rotate(90 ${size/2} ${size/2})" text-anchor="middle" dominant-baseline="middle" style="font:700 ${size/4.6}px var(--font-display);fill:var(--ink)">${label!==undefined?label:Math.round(p)+'%'}</text></svg>`;};
-const stars=n=>`<span class="starbar row" style="gap:1px;color:#f5a623">${[1,2,3,4,5].map(i=>`<span style="opacity:${i<=Math.round(n)?1:.22}">${I.star}</span>`).join('')}</span>`;
+const stars=n=>`<span class="starbar row" style="gap:1px;color:var(--star)">${[1,2,3,4,5].map(i=>`<span style="opacity:${i<=Math.round(n)?1:.22}">${I.star}</span>`).join('')}</span>`;
 
 /* ---------------- SVG charts (hand-rolled, theme-aware) ---------------- */
 const Chart={
@@ -3700,12 +3742,12 @@ const MODULES=[
   {id:'grow',label:'Performance',icon:'grow',color:'var(--c-grow)',group:'Talent',desc:'Goals, reviews & feedback'},
   {id:'flows',label:'Workflows',icon:'zap',color:'#e0457b',group:'Operations',desc:'Projects, tasks & requests — plan it, run it, route the approvals'},
   {id:'spend',label:'Spend',icon:'pay',color:'#1d4ed8',group:'Operations',desc:'Procurement, invoices, budgets & expenses — Coupa/NetSuite/Concur tier'},
-  {id:'schedule',label:'Scheduling',icon:'time',color:'#0d9488',group:'Operations',desc:'Shift scheduling, clock-in & timesheets for hourly teams'},
+  {id:'schedule',label:'Scheduling',icon:'time',color:'#0b7268',group:'Operations',desc:'Shift scheduling, clock-in & timesheets for hourly teams'},
   {id:'hrops',label:'HR Ops',icon:'shield',color:'#0f766e',group:'Operations',desc:'Payroll workbench, compliance, data health & process control — the operational backbone'},
   {id:'sign',label:'MosaicSign',icon:'edit',color:'#d97706',group:'Operations',desc:'E-signatures with an ESIGN-grade audit trail'},
   {id:'time',label:'Time Off',icon:'time',color:'var(--c-time)',group:'Operations',desc:'Balances, requests & calendar'},
   {id:'pay',label:'Compensation',icon:'pay',color:'var(--c-pay)',group:'Talent',desc:'Pay, bands & merit'},
-  {id:'benefits',label:'Benefits',icon:'shield',color:'#0d9488',group:'Talent',desc:'Plans, elections, life events — plus the admin console'},
+  {id:'benefits',label:'Benefits',icon:'shield',color:'#0b7268',group:'Talent',desc:'Plans, elections, life events — plus the admin console'},
   {id:'engage',label:'Engagement',icon:'engage',color:'var(--c-engage)',group:'Operations',desc:'Pulse surveys & eNPS'},
   {id:'insights',label:'Insights',icon:'insights',color:'var(--c-insights)',group:'Company',desc:'Cross-module analytics'},
   {id:'atlas',label:'Atlas',icon:'globe',color:'#0ea5e9',group:'Company',desc:'Where everyone works — offices & remote'},
@@ -3805,7 +3847,7 @@ try{matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>
 let _booted=false;
 function render(){
   ROUTE=parseHash();
-  if(!canSee(ROUTE.mod)){ROUTE={mod:'home',param:null};history.replaceState(null,'','#/home');}
+  if(!canSee(ROUTE.mod)){const _blk=ROUTE.mod;ROUTE={mod:'home',param:null};history.replaceState(null,'','#/home');if(_blk&&_blk!=='home'&&_booted)try{UI.toast('That area isn\'t part of your access — showing your home instead.','🔒');}catch(e){}}
   /* same-page re-renders (approvals, checkboxes, goal bumps…) keep your scroll position */
   const key=ROUTE.mod+'/'+(ROUTE.param||'');
   const samePage=key===_lastRouteKey;_lastRouteKey=key;
@@ -3979,6 +4021,8 @@ document.addEventListener('click',ev=>{
 });
 let _gChord=0;
 document.addEventListener('keydown',ev=>{
+  /* AX-1: make non-button [data-act] controls keyboard-operable — Enter/Space acts like a click */
+  if(ev.key==='Enter'||ev.key===' '){const a=ev.target;if(a&&a.matches&&a.matches('[data-act][tabindex="0"]:not(button):not(a):not(input):not(select):not(textarea):not([contenteditable]):not([onkeydown])')){ev.preventDefault();a.click();return;}}
   if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='k'){ev.preventDefault();openPalette();return;}
   if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='z'&&!/INPUT|TEXTAREA|SELECT/.test((ev.target||{}).tagName||'')){ev.preventDefault();ev.shiftKey?Store.redo():Store.undo();return;}
   if((ev.metaKey||ev.ctrlKey)&&ev.key.toLowerCase()==='y'&&!/INPUT|TEXTAREA|SELECT/.test((ev.target||{}).tagName||'')){ev.preventDefault();Store.redo();return;}
@@ -3999,8 +4043,9 @@ document.addEventListener('keydown',ev=>{
   }
   /* keep keyboard focus inside an open modal/drawer */
   if(ev.key==='Tab'&&!$('#palette').classList.contains('open')){
-    const cont=$('#modal').classList.contains('open')?$('#modal .box'):($('#drawer').classList.contains('open')?$('#drawer'):null);
-    if(cont){const f=[...cont.querySelectorAll('button,[href],input,select,textarea')].filter(x=>!x.disabled&&x.getClientRects().length);
+    const fx=$('#fx-overlay');
+    const cont=$('#modal').classList.contains('open')?$('#modal .box'):($('#drawer').classList.contains('open')?$('#drawer'):(fx||null));
+    if(cont){const f=[...cont.querySelectorAll('button,[href],input,select,textarea,[tabindex="0"]')].filter(x=>!x.disabled&&x.getClientRects().length);
       if(f.length){const first=f[0],last=f[f.length-1],a=document.activeElement;
         if(ev.shiftKey&&(a===first||!cont.contains(a))){ev.preventDefault();last.focus();}
         else if(!ev.shiftKey&&(a===last||!cont.contains(a))){ev.preventDefault();first.focus();}}
@@ -4028,7 +4073,8 @@ const ACT={
   closeDrawer:()=>UI.closeDrawer(),
   toggleSidebar(){const open=$('#sidebar').classList.toggle('open');$('#side-veil').classList.toggle('open',open);},
   closeSidebar(){$('#sidebar').classList.remove('open');$('#side-veil').classList.remove('open');},
-  togglePersonas(){const p=$('#persona-pop');if(p.classList.contains('open')){p.classList.remove('open');return;}
+  togglePersonas(){const p=$('#persona-pop');const b=$('[data-act="togglePersonas"]');if(p.classList.contains('open')){p.classList.remove('open');if(b)b.setAttribute('aria-expanded','false');return;}
+    if(b)b.setAttribute('aria-expanded','true');setTimeout(()=>{const f=p.querySelector('button,[href],[tabindex="0"]');if(f)f.focus();},20);
     p.innerHTML=`<div class="tiny faint" style="padding:8px 10px 6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">Switch persona — the whole app re-permissions</div>`+
       Object.entries(PERSONAS).map(([role,id])=>{const e=emp(id);
         return `<button class="pp-row ${myRole()===role?'on':''}" data-act="switchRole" data-arg="${role}">${av(e,'md')}
@@ -4045,7 +4091,7 @@ const ACT={
     try{localStorage.setItem('mosaic-theme',dark?'dark':'light');}catch(e){}
     applyBrand();renderTopbar();
   },
-  toggleNotifs(){const p=$('#notif-pop');if(p.classList.contains('open')){p.classList.remove('open');return;}renderNotifs();p.classList.add('open');},
+  toggleNotifs(){const p=$('#notif-pop');const b=$('[data-act="toggleNotifs"]');if(p.classList.contains('open')){p.classList.remove('open');if(b)b.setAttribute('aria-expanded','false');return;}renderNotifs();p.classList.add('open');if(b)b.setAttribute('aria-expanded','true');setTimeout(()=>{const f=p.querySelector('button,[href],[tabindex="0"]');if(f)f.focus();},20);},
   readAllNotifs(){DB.notifications.forEach(n=>{if(n.forId===DB.me.employeeId)n.read=true;});Store.save();renderNotifs();renderTopbar();},
   openNotif(id){const n=byId(DB.notifications,id);if(!n)return;n.read=true;Store.save();closePopovers();nav(n.link);},
   openPalette:()=>openPalette(),
@@ -4229,7 +4275,7 @@ Views.home=()=>{
             <span class="col" style="gap:1px;flex:1;min-width:0"><span class="small" style="font-weight:600">${esc(it.text)}</span>
             <span class="tiny faint">${it.kind} · due ${rel(it.due)}</span>
             ${it.acts?`<span class="row" style="gap:6px;margin-top:5px;flex-wrap:wrap">${it.acts.map(a2=>`<button class="btn xs ${a2.cls||'soft'}" data-act="${a2.act}" data-arg="${esc(a2.arg)}">${a2.label}</button>`).join('')}</span>`:''}</span>
-            <span class="iconbtn">${I.chev}</span></div>`).join(''):
+            <span class="iconbtn">${I.chev}</span></div>`).join('')+(inbox.length>8?`<div class="notif-item" data-act="nav" data-arg="#/command" role="button" tabindex="0" style="justify-content:center;color:var(--brand);font-weight:600;font-size:13px">See all ${inbox.length} in the Command Center →</div>`:''):
           `<div class="empty"><div class="big">🌤️</div>Inbox zero. Enjoy it while it lasts.</div>`}</div>
       </div>
       ${role!=='employee'?`
@@ -4896,7 +4942,7 @@ function profileTab(e,tab,mgr,team){
           <dt>Manager</dt><dd>${mgr?esc(mgr.name):'—'}</dd><dt>Cost center</dt><dd>${deptName(e.dept)} · ${e.location.split(' ')[0]}</dd>
           <dt>FLSA</dt><dd>Exempt</dd></dl></div>
         <div class="card pad" style="background:linear-gradient(135deg,color-mix(in srgb,var(--c-pay) 8%,var(--card)),var(--card))"><b class="small">💡 Total rewards</b>
-          <p class="small muted" style="margin-top:8px">Including bonus target, 401(k) match and benefits employer cost, total annual investment ≈ <b class="num">${fmt$(e.comp.base*(1+e.comp.bonusPct/100)+e.comp.base*0.04+5400)}</b>.</p></div>
+          <p class="small muted" style="margin-top:8px">Including bonus target, 401(k) match and benefits employer cost, total annual investment ≈ <b class="num">${fmt$(e.comp.base*(1+e.comp.bonusPct/100)+e.comp.base*Math.min(((DB.k401Pct||{})[e.id]!==undefined?DB.k401Pct[e.id]:6),4)/100+5400)}</b>.</p></div>
       </div>
     </div>`;
   }
@@ -5231,7 +5277,7 @@ function candCard(c){
     <div class="row" style="gap:8px">${av(c,'sm')}<b style="flex:1">${esc(c.name)}</b>${c.offer?'<span title="Offer extended">✉️</span>':''}</div>
     <div class="tiny faint" style="margin:3px 0 6px">${esc(c.company)} · ${c.years} yrs</div>
     <div class="row between"><span class="chip" style="font-size:10px;padding:1px 7px">${esc(c.source)}</span>
-    ${sc?`<span class="row tiny" style="gap:3px;color:#f5a623">${I.star}<b>${sc.toFixed(1)}</b></span>`:`<span class="tiny faint">${rel(c.appliedAt)}</span>`}</div></div>`;
+    ${sc?`<span class="row tiny" style="gap:3px;color:var(--star)">${I.star}<b>${sc.toFixed(1)}</b></span>`:`<span class="tiny faint">${rel(c.appliedAt)}</span>`}</div></div>`;
 }
 window.dragCand=(ev,cid)=>{ev.dataTransfer.setData('text/plain',cid);ev.target.classList.add('dragging');};
 window.dropCand=(ev,stage,rid)=>{
@@ -5258,11 +5304,17 @@ function moveCand(cid,stage){
   UI.toast(`<b>${esc(c.name)}</b> moved to ${STAGE_LABEL[stage]}`,'🧲');
 }
 ACT.moveCandBtn=arg=>{const [cid,stage]=arg.split('|');UI.closeDrawer();moveCand(cid,stage);};
+ACT.rejectCandPrompt=cid=>{const c=byId(DB.candidates,cid);if(!c)return;
+  UI.modal({title:'Release candidate',sub:esc(c.name),
+    body:`<div class="field"><label>Reason — recorded on the candidate &amp; shapes the outreach</label><textarea id="rej-note" rows="3" placeholder="e.g. Strong interview, but we moved forward with closer domain experience for this role."></textarea></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn danger" data-act="rejectCand" data-arg="${cid}">Release candidate</button>`});};
 ACT.rejectCand=cid=>{const c=byId(DB.candidates,cid);if(!c)return;
+  const dn=document.getElementById('rej-note');const reason=dn&&dn.value.trim()?dn.value.trim():'';
+  if(reason)c.rejectReason=reason;
   const prevStage=c.stage,prevLen=c.activity.length;
   c.stage='rejected';
-  c.activity.push({at:todayISO(),by:me().name,text:'Candidate released with feedback'});
-  Store.save();UI.closeDrawer();render();
+  c.activity.push({at:todayISO(),by:me().name,text:'Candidate released'+(reason?' — '+reason:' with feedback')});
+  try{UI.closeModal();}catch(e){}Store.save();UI.closeDrawer();render();
   UI.toast(`${esc(c.name)} released — rejection email queued`,'📭',{label:'Undo',fn:()=>{
     c.stage=prevStage;c.activity.length=prevLen;Store.save();render();
     UI.toast(`${esc(c.name)} is back in ${STAGE_LABEL[prevStage]}`,'↩️');}});};
@@ -5305,7 +5357,7 @@ ACT.openCand=cid=>{
           <div class="small muted mt8">“${esc(s.notes)}”</div></div>`;}).join('')}`:'<div class="faint small">No scorecards yet.</div>'}
       <b class="small" style="display:block;margin-top:16px">Activity</b>
       <div class="timeline mt8" style="--mod:var(--c-recruit)">${[...c.activity].reverse().map(a=>`<div class="tl-item"><span class="small">${esc(a.text)}</span><div class="tiny faint">${esc(a.by)} · ${rel(a.at)}</div></div>`).join('')}</div>`,
-    foot:`${c.stage!=='hired'&&c.stage!=='rejected'?`<button class="btn ghost" data-act="rejectCand" data-arg="${c.id}">Release</button>`:''}<span class="spacer"></span>
+    foot:`${c.stage!=='hired'&&c.stage!=='rejected'?`<button class="btn ghost" data-act="rejectCandPrompt" data-arg="${c.id}">Release</button>`:''}<span class="spacer"></span>
       ${!['hired','rejected'].includes(c.stage)?`<button class="btn ghost" data-act="candEmail" data-arg="${c.id}">✉️</button>`:''}
       ${c.stage==='prospect'?`<button class="btn soft" style="--brand:var(--c-recruit)" data-act="prospectConvert" data-arg="${c.id}">🔭 → Pipeline</button>`:''}
       ${['screening','interview'].includes(c.stage)?`<button class="btn soft" style="--brand:var(--c-recruit)" data-act="scorecardForm" data-arg="${c.id}">📝 Scorecard</button>`:''}
@@ -5334,6 +5386,7 @@ ACT.approveOfferStep=cid=>{
 /* ---- THE GOLDEN THREAD: hire → HRIS → onboarding → LMS → goals ---- */
 ACT.openHire=cid=>{
   const c=byId(DB.candidates,cid);if(!c)return;
+  if(c.stage==='hired'){UI.toast(esc(c.name)+' is already hired — their employee record exists.','✅');return;}
   const r=byId(DB.reqs,c.reqId);
   if(!c.offer||c.offer.status!=='extended'){
     UI.toast('Almost — the offer needs its approvals and a send before hiring. See the chain on the card.','⛓️');
@@ -5369,14 +5422,14 @@ ACT.confirmHire=cid=>{
   const level=$('#h-level').value||r.level;
   const loc=$('#h-loc').value;
   /* 1 — HRIS record */
-  const newId='E'+String(Math.max(...DB.employees.map(e=>+e.id.slice(1)))+1).padStart(3,'0');
+  const newId=nextEmpId();
   const ne=mkEmp({id:newId,name:c.name,title,level,dept:r.dept,team:r.team,managerId:r.hmId,loc,status:'onboarding',hireDate:start,base});
   addPersonal(ne);
   ne.pto.vacBalance=20;ne.pto.vacUsed=0;
   ne.compHistory=[{date:start,type:'Hired',base,note:'Offer — '+r.id}];
   DB.employees.push(ne);
   /* 2 — candidate + req */
-  c.stage='hired';c.activity.push({at:todayISO(),by:me().name,text:'Hired! Employee record '+newId+' created'});
+  c.stage='hired';if(c.offer)c.offer.status='accepted';c.activity.push({at:todayISO(),by:me().name,text:'Hired! Employee record '+newId+' created'});
   r.status='filled';r.filledAt=todayISO();r.hiredName=c.name;
   /* 3 — onboarding journey */
   DB.onboarding.push({id:uid('OB'),employeeId:newId,startDate:start,
@@ -5687,7 +5740,7 @@ function learnMine(){
         <div class="col" style="gap:1px;flex:1"><b class="small">${esc(c.title)}</b><span class="tiny faint">${c.cat} · ${c.mins} min · ${c.format}</span></div>
         ${overdue?badge('b-bad','Overdue'):en.due?`<span class="tiny ${between(todayISO(),en.due)<8?'':'faint'}" style="${between(todayISO(),en.due)<8?'color:var(--warn);font-weight:700':''}">due ${rel(en.due)}</span>`:''}</div>
       <div class="row mt12" style="gap:10px">${progressBar(en.progress,'var(--c-learn)')}
-        <button class="btn sm ${en.progress>0?'primary':'soft'}" style="--brand:var(--c-learn);--brand-deep:#0f9486" data-act="continueCourse" data-arg="${c.id}" onclick="event.stopPropagation()">${en.progress>0?'Continue':'Start'}</button></div></div>`;};
+        <button class="btn sm ${en.progress>0?'primary':'soft'}" style="--brand:var(--c-learn);--brand-deep:#0f9486" data-act="openPlayer" data-arg="${c.id}" onclick="event.stopPropagation()">${en.progress>0?'Continue':'Start'}</button></div></div>`;};
   return `
   <div class="grid g4 mb16">
     ${statCard('Assigned',mine.length,'courses on your plate','var(--c-learn)')}
@@ -5772,7 +5825,7 @@ function courseView(cid){
             ${c.required?'<span class="badge b-rose">Required</span>':''}${c.expires?`<span class="badge b-warn">Recertify every ${c.expires} mo</span>`:''}</div>
           <div class="muted small row wrap" style="margin-top:2px;gap:6px">${c.cat} · ${c.mins} min · ${c.format} · ${stars(c.rating)} ${c.rating}
             <span class="tiny faint">· your rating:</span><span class="row" style="gap:1px">${[1,2,3,4,5].map(n=>{const mine=((DB.courseRatings||{})[c.id]||{})[DB.me.employeeId];
-            return `<button data-act="rateCourse" data-arg="${c.id}|${n}" title="Rate ${n}" style="color:${mine&&n<=mine?'#f5a623':'var(--line2)'};font-size:14px;padding:0 1px">★</button>`;}).join('')}</span></div></div></div>
+            return `<button data-act="rateCourse" data-arg="${c.id}|${n}" title="Rate ${n}" style="color:${mine&&n<=mine?'var(--star)':'var(--line2)'};font-size:14px;padding:0 1px">★</button>`;}).join('')}</span></div></div></div>
         <p class="muted mt16" style="font-size:13.5px">${esc(c.blurb)}</p>
         <div class="row wrap mt12" style="gap:6px">${c.skills.map(s=>`<span class="chip">${s}</span>`).join('')}</div>
         <div class="divider"></div>
@@ -6059,7 +6112,7 @@ function cheersFeed(){
   return `
   <div class="cheer-composer mb8">
     <input id="cheer-in" placeholder='Try the Bonusly way:  +25 @jordan @sara #craft for shipping the pipeline fix' oninput="cheerPreview()" onkeydown="if(event.key==='Enter')ACT.cheerSend()">
-    <div class="row mt8 between wrap" style="gap:8px"><span class="tiny faint cheer-hint" id="cheer-prev"><span class="tok" style="background:var(--ok-soft);color:#076b4c">+points</span> <span class="tok mention">@name</span> <span class="tok" style="background:var(--vio-soft);color:#6d3fd6">#value</span> — all parsed live, or use the full composer</span>
+    <div class="row mt8 between wrap" style="gap:8px"><span class="tiny faint cheer-hint" id="cheer-prev"><span class="tok" style="background:var(--ok-soft);color:var(--ok-text)">+points</span> <span class="tok mention">@name</span> <span class="tok" style="background:var(--vio-soft);color:var(--vio-text)">#value</span> — all parsed live, or use the full composer</span>
     <span class="row" style="gap:7px"><button class="btn xs ghost" data-act="openPraise">Full composer</button>
     <button class="btn sm primary" style="--brand:${CHEER_GREEN};--brand-deep:#16a34a" data-act="cheerSend">Give 🎉</button></span></div>
   </div>
@@ -6074,12 +6127,12 @@ function cheersFeed(){
         <span class="tiny" style="color:var(--ink2);flex:1;line-height:1.5"><b>${esc(from.name)}</b> ${f.kind==='praise'?'cheered':'gave feedback to'} ${recips.map(r=>`<a href="#/people/${r.id}" style="font-weight:700">${esc(r.name)}</a>`).join(', ')}</span>
         ${f.pts?`<span class="badge b-ok">+${f.pts}${boostTotal?' (+'+boostTotal+' boosted)':''}${recips.length>1?' each':''}</span>`:''}<span class="tiny faint" style="white-space:nowrap">${rel(f.at)}</span></div>
       <p class="small mt12" style="line-height:1.6">“${esc(f.text)}”</p>
-      <div class="row wrap mt12" style="gap:6px">${(f.values||[]).map(v=>`<span class="chip" style="background:var(--vio-soft);border-color:transparent;color:#6d3fd6;font-weight:650">#${v.toLowerCase().replace(/[^a-z]/g,'')}</span>`).join('')}
+      <div class="row wrap mt12" style="gap:6px">${(f.values||[]).map(v=>`<span class="chip" style="background:var(--vio-soft);border-color:transparent;color:var(--vio-text);font-weight:650">#${v.toLowerCase().replace(/[^a-z]/g,'')}</span>`).join('')}
         ${f.visibility==='private'?'<span class="chip">🔒 private</span>':''}<span class="spacer"></span>
         ${['👏','💜','🎉'].map(emo=>`<button class="chip" data-act="react" data-arg="${f.id}|${emo}" style="padding:2px 8px">${emo}${f.reactions&&f.reactions[emo]?' <b>'+f.reactions[emo]+'</b>':''}</button>`).join('')}
         ${(()=>{const extra=Object.entries(f.reactions||{}).filter(([emo])=>!['👏','💜','🎉'].includes(emo));return extra.map(([emo,n])=>`<button class="chip" data-act="react" data-arg="${f.id}|${emo}" style="padding:2px 8px">${emo} <b>${n}</b></button>`).join('');})()}
         <button class="chip react-add" data-act="emojiFor" data-arg="cheerreact:${f.id}" style="padding:2px 8px" title="Add a reaction" aria-label="Add a reaction">😊 +</button>
-        ${f.pts&&f.fromId!==myId?`<button class="chip" data-act="boostPost" data-arg="${f.id}" title="Add your own points on top — Bonusly-style add-on" style="background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700">🚀 Boost</button>`:''}</div>
+        ${f.pts&&f.fromId!==myId?`<button class="chip" data-act="boostPost" data-arg="${f.id}" title="Add your own points on top — Bonusly-style add-on" style="background:var(--ok-soft);border-color:transparent;color:var(--ok-text);font-weight:700">🚀 Boost</button>`:''}</div>
       ${(f.boosts||[]).length?`<div class="tiny faint mt8">🚀 Boosted by ${f.boosts.map(b=>esc((emp(b.by)||{name:'?'}).name.split(' ')[0])+' (+'+b.pts+')').join(', ')}</div>`:''}
       ${(f.comments||[]).map(cm=>{const ce=emp(cm.fromId);return ce?`<div class="row mt8" style="gap:8px;padding-left:6px">${av(ce,'xs')}<span class="tiny" style="background:var(--card2);border-radius:9px;padding:5px 9px;flex:1"><b>${esc(ce.name.split(' ')[0])}</b> ${esc(cm.text)}</span></div>`:'';}).join('')}
       <div class="row mt8" style="gap:7px"><input id="fc-${f.id}" placeholder="Add a comment…" style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;outline:none;font-size:12px" onkeydown="if(event.key==='Enter')ACT.commentFeedback('${f.id}')">
@@ -6087,9 +6140,9 @@ function cheersFeed(){
 }
 window.cheerPreview=()=>{
   const el=$('#cheer-prev');const v=($('#cheer-in')||{}).value||'';if(!el)return;
-  if(!v.trim()){el.innerHTML='<span class="tok" style="background:var(--ok-soft);color:#076b4c">+points</span> <span class="tok mention">@name</span> <span class="tok" style="background:var(--vio-soft);color:#6d3fd6">#value</span> — all parsed live, or use the full composer';return;}
+  if(!v.trim()){el.innerHTML='<span class="tok" style="background:var(--ok-soft);color:var(--ok-text)">+points</span> <span class="tok mention">@name</span> <span class="tok" style="background:var(--vio-soft);color:var(--vio-text)">#value</span> — all parsed live, or use the full composer';return;}
   const p=parseCheer(v);
-  el.innerHTML=`${p.pts?`<span class="tok" style="background:var(--ok-soft);color:#076b4c">+${p.pts} pts${p.recips.length>1?' each':''}</span> `:'<span class="tok" style="background:var(--bg2)">no points</span> '}→ ${p.recips.length?p.recips.map(id=>esc((emp(id)||{}).name)).join(', '):'<span style="color:var(--bad);font-weight:700">tag someone with @</span>'}${p.values.length?' · '+p.values.map(x=>'#'+x.toLowerCase().replace(/[^a-z]/g,'')).join(' '):''}${p.pts*Math.max(p.recips.length,1)>ptsLeft(DB.me.employeeId)?' · <span style="color:var(--bad);font-weight:700">over your allowance</span>':''}`;
+  el.innerHTML=`${p.pts?`<span class="tok" style="background:var(--ok-soft);color:var(--ok-text)">+${p.pts} pts${p.recips.length>1?' each':''}</span> `:'<span class="tok" style="background:var(--bg2)">no points</span> '}→ ${p.recips.length?p.recips.map(id=>esc((emp(id)||{}).name)).join(', '):'<span style="color:var(--bad);font-weight:700">tag someone with @</span>'}${p.values.length?' · '+p.values.map(x=>'#'+x.toLowerCase().replace(/[^a-z]/g,'')).join(' '):''}${p.pts*Math.max(p.recips.length,1)>ptsLeft(DB.me.employeeId)?' · <span style="color:var(--bad);font-weight:700">over your allowance</span>':''}`;
 };
 /* Moment-card actions — instant confetti, optional cheers */
 ACT.celebrate=eid=>{const e=emp(eid);if(!e)return;confetti(80);UI.toast('🎉 Celebrating '+e.name.split(' ')[0]+'!','🎉',{label:'Send cheers',fn:()=>ACT.celebrateCheer(eid)});};
@@ -6110,6 +6163,7 @@ ACT.boostPost=fid=>{
   const f=byId(DB.feedback,fid);if(!f)return;
   const left=ptsLeft(DB.me.employeeId);
   const n=fbRecipients(f).length||1;
+  if(Math.floor(left/n)<1){UI.toast(`You have ${left} point${left===1?'':'s'} left — not enough to boost all ${n} recipient${n===1?'':'s'} this month.`,'🪙');return;}
   UI.modal({title:'Boost this cheer 🚀',sub:`Add your own points on top — each of the ${n} recipient${n===1?'':'s'} gets them. You have ${left} to give.`,body:`
     <div class="field"><label>Points to add (each)</label><input type="number" id="boost-pts" value="${Math.min(10,Math.floor(left/n))}" min="1" max="${Math.floor(left/n)||1}"></div>`,
     foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:${CHEER_GREEN};--brand-deep:#16a34a" data-act="boostSave" data-arg="${fid}">🚀 Boost</button>`});
@@ -6191,7 +6245,7 @@ function cheersAdmin(){
         ${(()=>{const mgrs=DB.employees.filter(e=>e.status==='active'&&reportsOf(e.id).length);const ex=mgrs.sort((a,b)=>reportsOf(b.id).length-reportsOf(a.id).length)[0];
           return ex?`<p class="tiny faint mt12">e.g. <b>${esc(ex.name.split(' ')[0])}</b> (${reportsOf(ex.id).length} direct report${reportsOf(ex.id).length===1?'':'s'}) gets ${allowance()} + ${reportsOf(ex.id).length}×${cheersMgrBonus()} = <b>${allowanceFor(ex.id)}</b> pts/mo.</p>`:'';})()}</div>
       <div class="card pad"><div class="row between"><b class="small">Auto-celebrations</b>
-        <button class="chip" data-act="cheersCeleToggle" style="${DB.cheersAutoCele!==false?'background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700':''}">${DB.cheersAutoCele!==false?'✓ On':'Off'}</button></div>
+        <button class="chip" data-act="cheersCeleToggle" style="${DB.cheersAutoCele!==false?'background:var(--ok-soft);border-color:transparent;color:var(--ok-text);font-weight:700':''}">${DB.cheersAutoCele!==false?'✓ On':'Off'}</button></div>
         <p class="tiny muted" style="margin-top:7px">Mosaic posts birthdays and work anniversaries to the feed automatically, with a one-click “Send cheers”.</p></div>
       <div class="card pad"><b class="small">Program admins</b>
         <div class="col mt12" style="gap:7px">${admins.map(a=>`<span class="row" style="gap:8px">${av(a,'sm')}<b class="tiny" style="font-size:12px">${nameLink(a)}</b></span>`).join('')||'<span class="tiny faint">Only system admins.</span>'}</div>
@@ -6353,7 +6407,7 @@ const PARITY={
     ['b','Reopen solved cases with a fresh SLA clock'],['b','CSV export — a real spreadsheet file'],
     ['s','Email-channel intake (production: forwarding address)'],['x','Live chat with real-time presence']]},
 };
-const parityBtn=mod=>`<button class="btn ghost" data-act="parity" data-arg="${mod}" title="The auditable feature checklist vs ${PARITY[mod]?PARITY[mod].name:''}">📋 Parity</button>`;
+const parityBtn=mod=>{const pn=((PARITY[mod]&&PARITY[mod].name)||'').split(/[ +/]/)[0];return `<button class="btn ghost" data-act="parity" data-arg="${mod}" title="The auditable feature checklist vs ${PARITY[mod]?PARITY[mod].name:''}">📋 ${pn?esc(pn)+' parity':'Parity'}</button>`;};
 ACT.parity=mod=>{
   const p=PARITY[mod];if(!p)return;
   const mark={b:['p-b','✅','Built — works end-to-end in this demo'],s:['p-s','🔁','Simulated — real counterpart needs a server/vendor'],x:['p-x','🚫','Not possible in a single-file demo — phase-2 stack territory']};
@@ -6524,14 +6578,14 @@ Views.time=param=>{
   <div class="grid g23">
     <div class="col" style="gap:16px">
       ${approvals.length?`<div class="card" style="border-color:color-mix(in srgb,var(--c-time) 35%,var(--line))">
-        <div class="card-head"><h3>⏳ Waiting on you (${approvals.length})</h3></div>
+        <div class="card-head"><h3>⏳ Waiting on you (${approvals.length})</h3>${approvals.length>1?`<span class="spacer"></span><button class="btn sm good" data-act="approveAllTO">${I.check} Approve all ${approvals.length}</button>`:''}</div>
         <div class="card-body" style="padding-top:8px">${approvals.map(t=>{const e=emp(t.employeeId);
           return `<div class="row mb12 wrap" style="gap:10px">${av(e,'md')}
           <span class="col" style="gap:1px;flex:1;min-width:170px"><b class="small">${esc(e.name)} — ${t.days}d ${TO_TYPES[t.type].label.toLowerCase()}</b>
           <span class="tiny faint">${fmtDshort(t.start)} – ${fmtDshort(t.end)}${t.note?' · “'+esc(t.note)+'”':''} · balance after: ${t.type==='vacation'?e.pto.vacBalance-t.days+'d':'—'}</span>
           ${t.chain?`<span style="margin-top:5px">${chainHtml(t.chain)}</span>`:''}</span>
           <span class="row" style="gap:7px"><button class="btn sm good" data-act="decideTO" data-arg="${t.id}|approved">${I.check} Approve</button>
-          <button class="btn sm danger" data-act="decideTO" data-arg="${t.id}|denied">Deny</button></span></div>`;}).join('')}</div></div>`:''}
+          <button class="btn sm danger" data-act="denyTOPrompt" data-arg="${t.id}">Deny</button></span></div>`;}).join('')}</div></div>`:''}
       ${adminPending.length?`<div class="card"><div class="card-head"><h3>Pending elsewhere (${adminPending.length})</h3><span class="spacer"></span><span class="tiny faint">visible to People admins</span></div>
         <div class="card-body" style="padding-top:8px">${adminPending.map(t=>{const e=emp(t.employeeId);const m=emp(e.managerId);
           return `<div class="row mb8" style="gap:10px">${av(e,'sm')}<span class="small" style="flex:1">${esc(e.name)} — ${t.days}d ${TO_TYPES[t.type].label.toLowerCase()}</span><span class="tiny faint">waiting on ${esc(m?m.name:'manager')}</span></div>`;}).join('')}</div></div>`:''}
@@ -6591,6 +6645,8 @@ ACT.submitTimeReq=()=>{
   const end=endRaw<start?start:endRaw;
   const days=weekdaysBetween(start,end);
   const type=$('#to-type').value;
+  const bal=type==='vacation'?my.pto.vacBalance:type==='sick'?my.pto.sickBalance:Infinity;
+  if(days>bal){UI.toast(`That request is ${days} days, but you have ${bal} ${type} day${bal===1?'':'s'} left. Adjust the dates or talk to your manager.`,'🏖️');return;}
   const req={id:uid('TO'),employeeId:my.id,type,start,end,days,note:$('#to-note').value.trim(),status:'pending',submittedAt:todayISO()};
   if(days>5&&my.managerId)req.chain=[{label:'Manager',id:my.managerId,status:'pending'},{label:'People team',id:'E021',status:'pending'}];
   DB.timeoff.unshift(req);
@@ -6609,8 +6665,9 @@ ACT.cancelTO=id=>{
   const wasApproved=t.status==='approved';
   const prior={status:t.status,vb:e.pto.vacBalance,vu:e.pto.vacUsed,sb:e.pto.sickBalance,su:e.pto.sickUsed};
   if(wasApproved){
-    if(t.type==='vacation'){e.pto.vacBalance+=t.days;e.pto.vacUsed=Math.max(0,e.pto.vacUsed-t.days);}
-    if(t.type==='sick'){e.pto.sickBalance+=t.days;e.pto.sickUsed=Math.max(0,e.pto.sickUsed-t.days);}
+    const restore=(t.deducted!=null?t.deducted:t.days);  /* give back exactly what was deducted, never more */
+    if(t.type==='vacation'){e.pto.vacBalance+=restore;e.pto.vacUsed=Math.max(0,e.pto.vacUsed-restore);}
+    if(t.type==='sick'){e.pto.sickBalance+=restore;e.pto.sickUsed=Math.max(0,e.pto.sickUsed-restore);}
   }
   t.status='cancelled';t.cancelledAt=todayISO();
   if(e.managerId&&wasApproved)notify(e.managerId,'↩️',`${e.name} cancelled their ${t.days}d ${TO_TYPES[t.type].label.toLowerCase()} (${fmtDshort(t.start)}–${fmtDshort(t.end)})`,'#/time');
@@ -6619,10 +6676,29 @@ ACT.cancelTO=id=>{
   UI.toast(wasApproved?`Cancelled — ${t.days} day${t.days===1?'':'s'} back in your balance, manager notified`:'Withdrawn before anyone had to decide','↩️',
     {label:'Undo',fn:()=>{t.status=prior.status;delete t.cancelledAt;Object.assign(e.pto,{vacBalance:prior.vb,vacUsed:prior.vu,sickBalance:prior.sb,sickUsed:prior.su});Store.save();render();}});
 };
+ACT.approveAllTO=()=>{
+  const mine=DB.timeoff.filter(toAwaitingMe);
+  if(mine.length<2){UI.toast('Only one is waiting — use its Approve button.','✅');return;}
+  const snap=JSON.stringify(DB);let n=0;
+  mine.forEach(t=>{const e=emp(t.employeeId);if(!e)return;
+    if(t.chain){const cur=chainCurrent(t.chain);if(cur){cur.status='approved';cur.by=DB.me.employeeId;cur.at=todayISO();}
+      if(!chainDone(t.chain)){const next=chainCurrent(t.chain);if(next)notify(next.id,'⛓️',`${e.name}'s ${t.days}d request — your sign-off is next`,'#/time');n++;return;}}
+    t.status='approved';t.approverId=DB.me.employeeId;t.decidedAt=todayISO();
+    const key=t.type==='vacation'?'vac':t.type==='sick'?'sick':null;
+    if(key){const b=e.pto[key+'Balance'];const d=Math.min(t.days,b);t.deducted=d;e.pto[key+'Balance']=b-d;e.pto[key+'Used']+=d;}
+    notify(e.id,'✅',`Your ${TO_TYPES[t.type].label.toLowerCase()} request (${fmtDshort(t.start)}–${fmtDshort(t.end)}) was approved`,'#/time');n++;});
+  audit('Bulk time-off approval',n+' requests');Store.save();render();
+  UI.toast(`Approved ${n} request${n===1?'':'s'} — balances & calendars synced`,'✅',{label:'Undo all',fn:()=>{DB=JSON.parse(snap);Store.save();render();UI.toast('Approvals undone','↩️');}});
+};
+ACT.denyTOPrompt=id=>{const t=byId(DB.timeoff,id);if(!t)return;const e=emp(t.employeeId);
+  UI.modal({title:'Decline time off',sub:esc(e.name)+' · '+t.days+'d '+t.type+' ('+fmtDshort(t.start)+'–'+fmtDshort(t.end)+')',
+    body:`<div class="field"><label>Reason — shared with ${esc(e.name.split(' ')[0])}</label><textarea id="deny-note" rows="3" placeholder="A short, kind reason. e.g. Coverage during the launch — let's find dates the week after."></textarea></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn danger" data-act="decideTO" data-arg="${id}|denied">Decline request</button>`});};
 ACT.decideTO=arg=>{
   const [id,decision]=arg.split('|');
   const t=byId(DB.timeoff,id);if(!t)return;
-  const e=emp(t.employeeId);
+  if(t.status!=='pending')return;  /* already decided — never re-deduct/re-decide (chain steps keep status 'pending' until final) */
+  const e=emp(t.employeeId);if(!e)return;
   /* multi-step chain: approve advances; deny ends */
   if(t.chain&&decision==='approved'){
     const cur=chainCurrent(t.chain);
@@ -6638,11 +6714,12 @@ ACT.decideTO=arg=>{
     }
   }
   t.status=decision;t.approverId=DB.me.employeeId;t.decidedAt=todayISO();
+  if(decision==='denied'){const dn=document.getElementById('deny-note');if(dn&&dn.value.trim())t.decisionNote=dn.value.trim();try{UI.closeModal();}catch(e2){}}
   if(decision==='approved'){
-    if(t.type==='vacation'){e.pto.vacBalance=Math.max(0,e.pto.vacBalance-t.days);e.pto.vacUsed+=t.days;}
-    if(t.type==='sick'){e.pto.sickBalance=Math.max(0,e.pto.sickBalance-t.days);e.pto.sickUsed+=t.days;}
+    const key=t.type==='vacation'?'vac':t.type==='sick'?'sick':null;
+    if(key){const b=e.pto[key+'Balance'];const d=Math.min(t.days,b);t.deducted=d;e.pto[key+'Balance']=b-d;e.pto[key+'Used']+=d;}
   }
-  notify(e.id,decision==='approved'?'✅':'❌',`Your ${TO_TYPES[t.type].label.toLowerCase()} request (${fmtDshort(t.start)}–${fmtDshort(t.end)}) was ${decision}`,'#/time');
+  notify(e.id,decision==='approved'?'✅':'❌',`Your ${TO_TYPES[t.type].label.toLowerCase()} request (${fmtDshort(t.start)}–${fmtDshort(t.end)}) was ${decision}${decision==='denied'&&t.decisionNote?' — “'+esc(t.decisionNote)+'”':''}`,'#/time');
   audit('Time-off '+decision,e.name+' · '+t.days+'d '+t.type);
   Store.save();render();
   if(decision==='approved')UI.toast(`Approved — <b>${esc(e.name)}</b>'s balance updated & calendar synced`,'✅');
@@ -6759,6 +6836,7 @@ function payPlanning(){
       <td style="text-align:center"><input type="checkbox" ${p.promo?'checked':''} onchange="ACT.compPlanSet('${e.id}|promo|'+(this.checked?1:0))" style="width:15px;height:15px;accent-color:var(--c-pay)"></td>
       <td class="num"><b>${fmt$(nb)}</b> <span class="tiny" style="color:var(--ok)">+${fmt$(delta)}</span></td></tr>`;}).join('');
   return `
+  <p class="tiny faint mb12">🧪 <b>A planning scratchpad</b> — model raises against budget here, then <b>Submit</b> routes each increase through comp-change approval. The official, lockable cycle is the <b>Merit cycle</b> tab.</p>
   <div class="grid g3 mb14">
     <div class="card pad"><div class="tiny faint">Merit budget · ${cfg.merit}% of base</div><div style="font-size:23px;font-weight:800;font-family:var(--font-display)">${fmt$(pool)}</div></div>
     <div class="card pad"><div class="tiny faint">Planned spend</div><div style="font-size:23px;font-weight:800;font-family:var(--font-display);color:${over?'var(--bad)':'var(--ok)'}">${fmt$(spent)}</div></div>
@@ -6771,7 +6849,20 @@ function payPlanning(){
 }
 ACT.compPlanSet=arg=>{const [id,f,v]=arg.split('|');const e=emp(id);if(!e)return;DB.compPlan=DB.compPlan||{};const p=DB.compPlan[id]||{merit:payPlanGuide(e),promo:false};if(f==='merit')p.merit=clamp(+v||0,0,20);else p.promo=v==='1';DB.compPlan[id]=p;Store.save();render();};
 ACT.compPlanReset=()=>{DB.compPlan={};Store.save();render();UI.toast('Reset to guideline increases','📊');};
-ACT.compPlanSubmit=()=>{const n=Object.keys(DB.compPlan||{}).length;audit('Comp plan submitted',n+' changes modeled');UI.toast('Plan submitted — each increase routes through the comp-change BP for approval','✅');};
+ACT.compPlanSubmit=()=>{
+  DB.compPlan=DB.compPlan||{};
+  const team=(isAdmin()?activeEmps().filter(e=>e.dept!=='exec'):allReportsOf(DB.me.employeeId)).filter(e=>e.status==='active');
+  const changes=team.filter(e=>payPlanDelta(e)>0&&!DB.flows.some(f=>f.templateId==='bp-comp-change'&&f.fields&&f.fields.workerId===e.id&&!flowDone(f)));
+  if(!changes.length){UI.toast('Nothing new to submit — these increases are already in approval.','📊');return;}
+  changes.forEach(e=>{const nb=e.comp.base+payPlanDelta(e);const promo=DB.compPlan[e.id]&&DB.compPlan[e.id].promo;
+    DB.flows.unshift({id:'WF-'+rint(110,999),templateId:'bp-comp-change',title:'Comp change — '+e.name,requesterId:DB.me.employeeId,assigneeId:e.managerId||DB.me.employeeId,createdAt:todayISO(),stage:1,priority:'high',
+      fields:{workerId:e.id,newBase:nb,effective:daysAhead(14),reason:'Merit cycle'+(promo?' + promotion':'')},
+      activity:[{at:todayISO(),by:me().name,text:'Submitted from the comp-planning workbench'}]});});
+  notify('E021','💸',changes.length+' comp change'+(changes.length===1?'':'s')+' submitted for HR approval','#/flows');
+  audit('Comp plan submitted',changes.length+' comp-change BPs created');
+  Store.save();render();
+  UI.toast(changes.length+' comp change'+(changes.length===1?'':'s')+' routed for approval — track them in Workflows.','✅');
+};
 /* #9: comp admin — bands governance, merit config, off-cycle log. g-comp gated. */
 function payCompAdmin(){
   const cfg=DB.compCfg||(DB.compCfg={merit:4,promo:1.5,window:'Jul 1 – Jul 19'});
@@ -6841,7 +6932,8 @@ function payMy(){
   const e=me();
   const band=bandFor(e.level,e.dept);
   const posInBand=clamp((e.comp.base-band[0])/(band[2]-band[0])*100,0,100);
-  const match=Math.round(e.comp.base*0.04);
+  const _k401=((DB.k401Pct||{})[e.id]!==undefined?DB.k401Pct[e.id]:6);
+  const match=Math.round(e.comp.base*Math.min(_k401,4)/100);  /* match the actual election (100% up to 4%), not a flat 4% */
   const bonus=Math.round(e.comp.base*e.comp.bonusPct/100);
   const benCost=5400;
   const next=new Date();const day=next.getDate();
@@ -6886,7 +6978,7 @@ function payMy(){
         <div class="row mt16 wrap" style="gap:22px">
           ${Chart.donut([{label:'Base',v:e.comp.base,color:'var(--c-pay)'},{label:'Target bonus',v:bonus,color:'var(--c-time)'},{label:'401(k) match',v:match,color:'var(--c-grow)'},{label:'Benefits',v:benCost,color:'var(--c-engage)'}],150,0.62,'Total rewards breakdown: base, bonus, match and benefits')}
           <div class="col" style="gap:9px;flex:1;min-width:190px">
-            ${[['Base salary',e.comp.base,'var(--c-pay)'],['Target bonus ('+e.comp.bonusPct+'%)',bonus,'var(--c-time)'],['401(k) match (4%)',match,'var(--c-grow)'],['Benefits (employer-paid)',benCost,'var(--c-engage)']].map(x=>`
+            ${[['Base salary',e.comp.base,'var(--c-pay)'],['Target bonus ('+e.comp.bonusPct+'%)',bonus,'var(--c-time)'],['401(k) match ('+Math.min(_k401,4)+'%)',match,'var(--c-grow)'],['Benefits (employer-paid)',benCost,'var(--c-engage)']].map(x=>`
             <div class="row between"><span class="row small" style="gap:7px"><i style="width:9px;height:9px;border-radius:3px;background:${x[2]}"></i>${x[0]}</span><b class="num small">${fmt$(x[1])}</b></div>`).join('')}
             <div class="divider" style="margin:6px 0"></div>
             <div class="row between"><b class="small">Total annual value</b><b class="num" style="font-size:16px">${fmt$(e.comp.base+bonus+match+benCost)}</b></div>
@@ -6911,8 +7003,8 @@ function payMy(){
       <div class="card pad"><b class="small">Next payday</b>
         <div class="row mt12" style="gap:12px"><span style="font-size:26px">💸</span>
         <span class="col" style="gap:1px"><b style="font-size:17px">${payday.toLocaleDateString('en-US',{month:'long',day:'numeric'})}</b>
-        <span class="tiny faint">semi-monthly · direct deposit ····4821</span></span></div>
-        <button class="btn ghost block mt12" onclick="UI.toast('Demo: paystub PDF would open here','🧾')">View latest paystub</button></div>
+        <span class="tiny faint">semi-monthly · ${e.personal&&e.personal.bank?'direct deposit ····'+e.personal.bank.accountLast4:'no direct deposit on file'}</span></span></div>
+        <button class="btn ghost block mt12" data-act="paystub" data-arg="${e.id}|0">View latest paystub</button></div>
       <div class="card pad"><b class="small">Equity</b>
         <div class="mt12 col" style="gap:4px"><b class="num" style="font-size:20px">${e.comp.equity.toLocaleString()} options</b>
         <span class="tiny faint">4-year vest · 1-year cliff · synced from Carta</span>
@@ -6948,7 +7040,8 @@ function payMerit(){
   const spend=sum(rows.map(r=>r.currentBase*r.proposedPct/100));
   const budget=sum(rows.map(r=>r.currentBase*mc.budgetPct/100));
   const over=spend>budget;
-  return `<div class="card pad mb16" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+  return `<p class="tiny faint mb12">📋 <b>The official merit cycle</b> — ratings-driven, and it locks once you submit to Finance. To model scenarios against budget first, use the <b>Comp planning</b> tab.</p>
+  <div class="card pad mb16" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
     <div class="col" style="gap:2px"><b>${esc(mc.name)}</b><span class="tiny faint">effective ${fmtD(mc.effective)} · ${badge(mc.status)} · ratings pulled from Year-End 2025</span></div>
     <span class="spacer"></span>
     <div class="col" style="gap:2px;align-items:flex-end"><span class="tiny faint">Proposed spend vs ${mc.budgetPct}% budget</span>
@@ -8068,6 +8161,7 @@ ACT.openOffboard=eid=>{
 };
 ACT.confirmOffboard=eid=>{
   const e=emp(eid);if(!e)return;
+  if(DB.offboarding.some(o=>o.employeeId===eid)){UI.closeModal();UI.toast(esc(e.name)+' already has an offboarding journey underway.','🕊️');return;}
   const lastDay=$('#ob-last').value||daysAhead(14);
   const reason=$('#ob-reason').value;
   const regret=$('#ob-regret').checked;
@@ -8344,7 +8438,7 @@ ACT.aiSaveKey=()=>{
   const k=($('#ai-key')||{value:''}).value.trim();
   DB.aiKey=k||null;DB.aiModel=($('#ai-model')||{}).value||'claude-opus-4-8';
   Store.save();render();
-  UI.toast(k?'Key saved (this browser only) — Mosy is now live AI':'Key removed — back to the built-in engine','✨');
+  UI.toast(k?'Key saved (this browser only) — hit Test to confirm it works':'Key removed — back to the built-in engine','✨');
 };
 ACT.aiRemoveKey=()=>{DB.aiKey=null;Store.save();render();UI.toast('Key removed — Mosy uses the built-in engine','✨');};
 ACT.aiTest=async()=>{
@@ -8627,10 +8721,11 @@ function renderProxyBar(){
    MOBILE TAB BAR
    ============================================================ */
 function renderTabbar(){
-  const items=[['home','Home'],['command','Command'],['people','People'],['chat','Messages'],['mail','Mail'],['cal','Calendar'],['flows','Workflows']].filter(it=>canSee(it[0]));
+  /* cap at 5 for legible labels + comfortable tap targets on a phone; everything else lives one tap away under "Menu" */
+  const items=[['home','Home'],['command','Command'],['people','People'],['chat','Messages']].filter(it=>canSee(it[0])).slice(0,4);
   $('#tabbar').innerHTML=items.map(it=>{const m=modOf(it[0])||{};
     return `<button class="${ROUTE.mod===it[0]?'on':''}" style="--mod:${m.color||'var(--brand)'}" data-act="nav" data-arg="#/${it[0]}">${I[m.icon]||I.home}<span>${it[1]}</span></button>`;}).join('')+
-    `<button style="--mod:var(--brand)" onclick="openPalette()" aria-label="Search Mosaic">${I.search}<span>Search</span></button>`;
+    `<button style="--mod:var(--brand)" data-act="toggleSidebar" aria-label="Open the full menu">${I.menu}<span>Menu</span></button>`;
 }
 
 /* ============================================================
@@ -9061,7 +9156,7 @@ function apSettings(){
         <div class="field mt12" style="margin-bottom:8px"><label>First response due within (hours)</label><input type="number" id="sla-hours" value="${DB.slaHours||24}" min="1" max="120"></div>
         <button class="btn ghost block" data-act="slaSave">Save SLA</button></div>
       <div class="card pad"><div class="row between"><b class="small">Round-robin auto-assignment</b>
-        <button class="chip" data-act="toggleAutoAssign" style="${DB.autoAssign?'background:var(--ok-soft);border-color:transparent;color:#076b4c;font-weight:700':''}">${DB.autoAssign?'✓ On':'Off'}</button></div>
+        <button class="chip" data-act="toggleAutoAssign" style="${DB.autoAssign?'background:var(--ok-soft);border-color:transparent;color:var(--ok-text);font-weight:700':''}">${DB.autoAssign?'✓ On':'Off'}</button></div>
         <p class="tiny muted" style="margin-top:7px">New cases distribute across the People Operations group automatically instead of landing unassigned.</p></div>
     </div>
   </div>`;
@@ -9426,10 +9521,10 @@ ACT.chatEditSave=mid=>{
 ACT.chatDelete=mid=>{
   const idx=DB.chatMsgs.findIndex(x=>x.id===mid);if(idx<0)return;
   const m=DB.chatMsgs[idx];if(m.fromId!==DB.me.employeeId)return;
-  const removed=[m,...threadOf(mid)];
+  const removed=[];DB.chatMsgs.forEach((x,i)=>{if(x.id===mid||x.parentId===mid)removed.push({i,x});});
   DB.chatMsgs=DB.chatMsgs.filter(x=>x.id!==mid&&x.parentId!==mid);
   Store.save();render();
-  UI.toast('Message deleted','🗑️',{label:'Undo',fn:()=>{DB.chatMsgs.push(...removed);DB.chatMsgs.sort(()=>0);Store.save();render();}});
+  UI.toast('Message deleted','🗑️',{label:'Undo',fn:()=>{removed.forEach(r=>DB.chatMsgs.splice(Math.min(r.i,DB.chatMsgs.length),0,r.x));Store.save();render();UI.toast('Message restored','↩️');}});
 };
 ACT.chatAttach=ch=>{
   const names=['Q3-launch-checklist.pdf','rig-photos.zip','retro-notes.doc','fleet-dashboard.png'];
@@ -9533,7 +9628,7 @@ Views.mail=param=>{
     <button class="btn primary" style="--brand:#e25141;--brand-deep:#c93b2c" data-act="mailCompose">${I.edit} Compose</button></div>
   <div class="mail-wrap">
     <div class="mail-side">
-      ${folders.map(f=>`<button class="ch-item ${folder===f[0]&&!open?'on':''}" data-act="mailFolder" data-arg="${f[0]}">${f[1]}${f[2]?`<span class="unread-dot" style="background:#e25141">${f[2]}</span>`:''}</button>`).join('')}
+      ${folders.map(f=>`<button class="ch-item ${folder===f[0]&&!open?'on':''}" data-act="mailFolder" data-arg="${f[0]}">${f[1]}${f[2]?`<span class="unread-dot" style="background:#c0392b">${f[2]}</span>`:''}</button>`).join('')}
       <div class="row between" style="padding:10px 10px 4px"><span class="nav-label" style="padding:0">Labels</span>
         <button class="iconbtn" style="width:20px;height:20px" title="New label" data-act="newLabel">＋</button></div>
       ${(DB.mailLabels||[]).map(l=>`<button class="ch-item ${UIS.mailLabel===l.id?'on':''}" data-act="mailLabelFilter" data-arg="${l.id}"><span class="lbl-dot" style="background:${l.color}"></span>${esc(l.name)}</button>`).join('')}
@@ -9648,10 +9743,12 @@ ACT.saveLabel=()=>{(DB.mailLabels=DB.mailLabels||[]).push({id:uid('lb'),name:$('
 ACT.mailReply=tid=>{
   const msgs=threadMsgs(tid);const t=$('#mail-reply');if(!msgs.length||!t||!t.value.trim())return;
   const latest=msgs[msgs.length-1];
+  /* reply to the most recent message that ISN'T mine — otherwise after your first reply the "latest" is your own sent copy and you'd reply to yourself */
+  const inbound=[...msgs].reverse().find(m=>m.folder!=='sent'&&m.fromEmail!==me().email)||latest;
   const body=t.value.trim()+'\n\n—\n'+me().name+' · '+me().title+' · Meridian Labs';
   const subj='Re: '+latest.subject.replace(/^(Re|Fwd): /,'');
   DB.mail.push({id:uid('ML'),ownerId:DB.me.employeeId,threadId:tid,folder:'sent',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,read:true,starred:false,labels:[]});
-  const counterpart=DB.employees.find(e=>e.email===latest.fromEmail);
+  const counterpart=DB.employees.find(e=>e.email===inbound.fromEmail);
   if(counterpart){
     DB.mail.push({id:uid('ML'),ownerId:counterpart.id,threadId:tid,folder:'inbox',at:todayISO(),fromName:me().name,fromEmail:me().email,subject:subj,body,read:false,starred:false,labels:[]});
     notify(counterpart.id,'✉️','Reply from '+me().name+': '+subj,'#/mail/'+tid);
@@ -10198,7 +10295,7 @@ Views.meet=()=>{
     <div class="col" style="gap:16px">
       <div class="card pad"><b class="small">Your personal room</b>
         <div class="row mt12" style="gap:8px"><code class="chip" style="font-size:11px">meet.meridianlabs.com/${deslug(me().name).toLowerCase().replace(/ /g,'.')}</code></div>
-        <button class="btn ghost block mt12" onclick="UI.toast('Link copied to clipboard','🔗')">${I.link} Copy link</button></div>
+        <button class="btn ghost block mt12" onclick="try{const l=this.closest('.card').querySelector('code');navigator.clipboard&&navigator.clipboard.writeText(l?l.textContent:location.href)}catch(e){};UI.toast('Link copied to clipboard','🔗')">${I.link} Copy link</button></div>
       <div class="card pad" style="background:linear-gradient(135deg,color-mix(in srgb,#2d8cff 7%,var(--card)),var(--card))"><b class="small">🧵 Connected</b>
         <p class="tiny muted" style="margin-top:7px;line-height:1.7">1:1s and interviews carry Meet links automatically; <b>recordings save to Drive</b> when you leave. Production swap: Zoom SDK / Meet behind this exact UI.</p></div>
     </div>
@@ -10230,7 +10327,7 @@ function meetStage(){
     :M.layout==='speaker'?`<div class="meet-present"><div class="present-stage" style="display:grid;place-items:center">${tile(others[0]||me(),true)}</div><div class="meet-thumbs">${allP.filter(p=>p.id!==(others[0]||me()).id).map(p=>tile(p)).join('')}</div></div>`
     :`<div class="meet-grid">${allP.map(p=>tile(p)).join('')}</div>`;
   return `
-  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(M.title)}</h1><div class="page-sub keep-m">🔴 <span id="meet-timer">00:00</span> · ${allP.length} participants · meet.meridianlabs.com/${M.code} <button class="chip" style="font-size:10px" onclick="UI.toast('Invite link copied','🔗')">copy invite</button></div></div></div>
+  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(M.title)}</h1><div class="page-sub keep-m">🔴 <span id="meet-timer">00:00</span> · ${allP.length} participants · meet.meridianlabs.com/${M.code} <button class="chip" style="font-size:10px" onclick="try{navigator.clipboard&&navigator.clipboard.writeText('meet.meridianlabs.com/${M.code}')}catch(e){};UI.toast('Invite link copied','🔗')">copy invite</button></div></div></div>
   <div class="meet-wrap">
     <div class="meet-stage" id="meet-stage" style="position:relative">
       ${M.rec?'<span class="rec-badge">REC</span>':''}
@@ -10433,7 +10530,7 @@ Views.sign=()=>{
   ${mine.sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).map(e=>`
     <tr class="click" data-act="signOpen" data-arg="${e.id}">
     <td><b class="small">${esc(e.title)}</b><div class="tiny faint">${e.id} · ${esc(e.docName)}</div></td>
-    <td><span class="row" style="gap:4px">${e.signers.map(s=>`<span class="chip" style="font-size:10.5px;${s.status==='signed'?'background:var(--ok-soft);border-color:transparent;color:#076b4c':''}">${s.status==='signed'?'✓ ':''}${esc(s.name.split(' ')[0])}</span>`).join('')}</span></td>
+    <td><span class="row" style="gap:4px">${e.signers.map(s=>`<span class="chip" style="font-size:10.5px;${s.status==='signed'?'background:var(--ok-soft);border-color:transparent;color:var(--ok-text)':''}">${s.status==='signed'?'✓ ':''}${esc(s.name.split(' ')[0])}</span>`).join('')}</span></td>
     <td>${badge(e.status==='out'?'b-warn':e.status,e.status==='out'?'Out for signature':undefined)}</td>
     <td class="muted">${rel(e.createdAt)}</td>
     <td><span class="hashchip">${e.hash.slice(0,8)}</span></td></tr>`).join('')||'<tr><td colspan="5"><div class="empty"><div class="big">📜</div>No envelopes yet.</div></td></tr>'}</tbody></table></div>`;
@@ -10638,7 +10735,7 @@ Views.flows=param=>{
   if(param){
     if(/^PRJ-/.test(param)&&projOf(param))return projectWorkspace(param);
     if(['mytasks','projects','requests'].includes(param))UIS.flowTab=param;
-    else if(['mine','list','boards','timeline','new'].includes(param)){UIS.flowTab='requests';UIS.reqTab=param;}
+    else if(['mine','list','boards','timeline','new'].includes(param)){UIS.flowTab='requests';UIS.flowReqTab=param;}
   }
   const tab=UIS.flowTab||'mytasks';
   return flowHead(tab)+(tab==='projects'?projectsGrid():tab==='requests'?flowsRequests():myTasksView());
@@ -10655,16 +10752,16 @@ function flowHead(tab){
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setFlowTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>`;
 }
 ACT.setFlowTab=a=>{
-  if(['mine','list','boards','timeline','new'].includes(a)){UIS.flowTab='requests';UIS.reqTab=a;}
+  if(['mine','list','boards','timeline','new'].includes(a)){UIS.flowTab='requests';UIS.flowReqTab=a;}
   else UIS.flowTab=a;
   tabSync('flows',UIS.flowTab);render();
 };
-ACT.setReqTab=a=>{UIS.reqTab=a;render();};
+ACT.setFlowReqTab=a=>{UIS.flowReqTab=a;render();};
 function flowsRequests(){
-  const rt=UIS.reqTab||'mine';
+  const rt=UIS.flowReqTab||'mine';
   const nAct=DB.flows.filter(flowNeedsMe).length;
   const sub=[['mine','My work',nAct],['list','List',0],['boards','Boards',0],['timeline','Timeline',0],['new','New request',0]];
-  return `<div class="subtabs">${sub.map(s=>`<button class="${rt===s[0]?'on':''}" data-act="setReqTab" data-arg="${s[0]}">${s[1]}${tabN(s[2])}</button>`).join('')}</div>
+  return `<div class="subtabs">${sub.map(s=>`<button class="${rt===s[0]?'on':''}" data-act="setFlowReqTab" data-arg="${s[0]}">${s[1]}${tabN(s[2])}</button>`).join('')}</div>
     <p class="tiny faint" style="margin:-2px 0 14px">Routed requests & Workday-style business processes — contracts, purchasing, People, IT and worker changes that apply themselves on final approval.</p>
     ${rt==='mine'?flowsMine():rt==='list'?flowsList():rt==='boards'?flowsBoard():rt==='timeline'?flowsTimeline():flowsNew()}`;
 }
@@ -10994,6 +11091,11 @@ ACT.flowDrop=arg=>{
   f.stage=clamp(si,0,tpl.stages.length-1);
   if(f.templateId==='purchase'&&tpl.stages[f.stage]==='PO issued'&&!f.po){f.po='PO-2026-0'+rint(143,999);f.activity.push({at:todayISO(),by:me().name,text:'Finance approved — '+f.po+' issued'});}
   f.activity.push({at:todayISO(),by:me().name,text:`Moved ${from} → ${tpl.stages[f.stage]} (board)`});
+  /* reaching the final stage must actually apply the BP + notify — same as the drawer "Advance" button */
+  if(f.stage===tpl.stages.length-1){
+    if(tpl.bp&&!f.applied){applyBP(f);f.applied=true;}
+    notify(f.requesterId,tpl.icon,`${f.title} is done 🎉`,'#/flows');
+  }
   audit('Flow moved',f.id+' → '+tpl.stages[f.stage]);
   Store.save();render();
   UI.toast(`“${f.title.slice(0,34)}” → ${tpl.stages[f.stage]}`,'🗂');
@@ -11026,7 +11128,8 @@ function flowsTimeline(){
     <p class="tiny faint mt12">Bars run created → due; the fill is stage progress; the red line is today. Click any bar to open it.</p></div>`;
 }
 function flowsNew(){
-  return `<div class="grid g2">${WF_TEMPLATES.filter(t=>!t.hidden).map(t=>`
+  const canBP=isAdmin()||hasCap('hr-admin');  /* HR business processes (termination, comp change, …) are HR-only */
+  return `<div class="grid g2">${WF_TEMPLATES.filter(t=>!t.hidden&&(canBP||!t.bp)).map(t=>`
     <button class="card pad tpl-card" data-act="flowForm" data-arg="${t.id}">
       <div class="row" style="gap:12px"><span style="font-size:26px">${t.icon}</span>
       <span class="col" style="gap:2px;flex:1"><b>${t.name}</b><span class="tiny muted">${t.blurb}</span>
@@ -11126,7 +11229,7 @@ ACT.subDelT=arg=>{const [tid,sid]=arg.split('|');const t=taskOf(tid);if(!t)retur
 ACT.subAsgT=arg=>{const [tid,sid,eid]=arg.split('|');const t=taskOf(tid);const s=t&&(t.subtasks||[]).find(x=>x.id===sid);if(!s)return;s.assigneeId=eid||null;Store.save();ACT.taskOpen(tid);};
 ACT.tagAdd=tid=>{const t=taskOf(tid);const inp=$('#tag-add');if(!t||!inp)return;const v=inp.value.trim().toLowerCase().replace(/[^a-z0-9 -]/g,'').slice(0,18);if(v&&!(t.tags||[]).includes(v))(t.tags=t.tags||[]).push(v);Store.save();render();ACT.taskOpen(tid);};
 ACT.tagDel=arg=>{const i=arg.indexOf('|');const tid=arg.slice(0,i),tag=decodeURIComponent(arg.slice(i+1));const t=taskOf(tid);if(!t)return;t.tags=(t.tags||[]).filter(x=>x!==tag);Store.save();render();ACT.taskOpen(tid);};
-ACT.depAdd=arg=>{const [tid,dep]=arg.split('|');const t=taskOf(tid);if(!t||!dep)return;if(!t.dependsOn.includes(dep)){t.dependsOn.push(dep);t.activity.push({at:todayISO(),by:DB.me.employeeId,text:'marked this blocked by another task'});}Store.save();render();ACT.taskOpen(tid);};
+ACT.taskDepAdd=arg=>{const [tid,dep]=arg.split('|');const t=taskOf(tid);if(!t||!dep)return;if(!t.dependsOn.includes(dep)){t.dependsOn.push(dep);t.activity.push({at:todayISO(),by:DB.me.employeeId,text:'marked this blocked by another task'});}Store.save();render();ACT.taskOpen(tid);};
 ACT.depDel=arg=>{const [tid,dep]=arg.split('|');const t=taskOf(tid);if(!t)return;t.dependsOn=(t.dependsOn||[]).filter(x=>x!==dep);Store.save();render();ACT.taskOpen(tid);};
 ACT.collabAdd=arg=>{const [tid,eid]=arg.split('|');const t=taskOf(tid);if(!t||!eid)return;if(!(t.collaborators||[]).includes(eid)){(t.collaborators=t.collaborators||[]).push(eid);if(eid!==DB.me.employeeId)notify(eid,'👀',`${me().name} added you as a collaborator on “${t.title}”`,'#/flows');}Store.save();ACT.taskOpen(tid);};
 ACT.collabDel=arg=>{const [tid,eid]=arg.split('|');const t=taskOf(tid);if(!t)return;t.collaborators=(t.collaborators||[]).filter(x=>x!==eid);Store.save();ACT.taskOpen(tid);};
@@ -11235,7 +11338,7 @@ ACT.taskOpen=tid=>{
       ${can?`<div class="row" style="gap:7px;margin-top:6px"><input id="st-add" class="subt-add" placeholder="Add a subtask…" onkeydown="if(event.key==='Enter')ACT.subAddT('${t.id}')"><button class="btn xs soft" style="--brand:${PRJ_PINK}" data-act="subAddT" data-arg="${t.id}">Add</button></div>`:''}</div>
     ${can?`<div class="tf-block"><div class="tf-lbl">Blocked by</div>
       <div class="col" style="gap:4px">${(t.dependsOn||[]).map(d=>{const dt=taskOf(d);return dt?`<div class="dep-row ${dt.done?'ok':''}"><span style="flex:1;min-width:0" class="ellip">${dt.done?'✓':'⛔'} ${esc(dt.title)}</span><i data-act="depDel" data-arg="${t.id}|${d}">×</i></div>`:'';}).join('')}</div>
-      <select class="tf-sel" style="margin-top:6px" onchange="if(this.value)ACT.depAdd('${t.id}|'+this.value)"><option value="">+ Add dependency…</option>${depCands.map(x=>`<option value="${x.id}">${esc(x.title.slice(0,44))}${x.projectId!==t.projectId&&projOf(x.projectId)?' · '+projOf(x.projectId).name:''}</option>`).join('')}</select></div>`:''}
+      <select class="tf-sel" style="margin-top:6px" onchange="if(this.value)ACT.taskDepAdd('${t.id}|'+this.value)"><option value="">+ Add dependency…</option>${depCands.map(x=>`<option value="${x.id}">${esc(x.title.slice(0,44))}${x.projectId!==t.projectId&&projOf(x.projectId)?' · '+projOf(x.projectId).name:''}</option>`).join('')}</select></div>`:''}
     <div class="tf-block"><div class="tf-lbl">Collaborators</div><div class="row wrap" style="gap:6px;align-items:center">
       ${(t.collaborators||[]).map(id=>{const e=emp(id);return e?`<span class="collab-chip">${av(e,'xs')}<span class="tiny">${esc(e.name.split(' ')[0])}</span>${can?`<i data-act="collabDel" data-arg="${t.id}|${id}">×</i>`:''}</span>`:'';}).join('')||'<span class="tiny faint">None yet</span>'}
       ${can?`<select class="tf-sel" style="width:auto;min-width:120px" onchange="if(this.value)ACT.collabAdd('${t.id}|'+this.value)"><option value="">+ Add…</option>${DB.employees.filter(x=>x.status==='active'&&!(t.collaborators||[]).includes(x.id)&&x.id!==t.assigneeId).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>`:''}</div></div>
@@ -11263,6 +11366,7 @@ ACT.flowForm=tid=>{
 };
 ACT.flowSubmit=tid=>{
   const tpl=tplOf(tid);if(!tpl)return;
+  if(tpl.bp&&!(isAdmin()||hasCap('hr-admin'))){UI.toast('HR business processes can only be started by People Ops','🔒');return;}
   const fields={};tpl.form.forEach(f=>{const el=$('#wf-'+f[0]);fields[f[0]]=f[2]==='number'?(+el.value||0):el.value;});
   const subj=fields.workerId?emp(fields.workerId):null;
   const autoTitle=tpl.bp&&subj?tpl.name+' — '+subj.name:tpl.name;
@@ -11364,7 +11468,7 @@ ACT.flowMove=arg=>{
     env.hash=envHash(env);DB.envelopes.unshift(env);f.envelopeId=env.id;
     f.activity.push({at:todayISO(),by:'Workflows',text:'Envelope '+env.id+' created in MosaicSign'});
   }else f.activity.push({at:todayISO(),by:me().name,text:(+dir>0?'Advanced to ':'Sent back to ')+st});
-  if(f.stage===last&&tpl.bp&&+dir>0)applyBP(f);
+  if(f.stage===last&&tpl.bp&&+dir>0&&!f.applied){applyBP(f);f.applied=true;}
   if(f.stage===last)notify(f.requesterId,tpl.icon,`${f.title} is done 🎉`,'#/flows');
   audit('Workflow '+(+dir>0?'advanced':'sent back'),f.id+' → '+st);
   Store.save();ACT.flowOpen(fid);render();
@@ -11388,7 +11492,7 @@ function growCareer(){
       <div class="row between mb12 wrap"><b>The ${track==='IC'?'individual contributor':'management'} track</b>
         ${next?`<span class="row" style="gap:8px"><span class="tiny faint">Progress toward ${next[0]}</span><div style="width:140px">${progressBar(doneN/next[2].length*100,'var(--c-grow)')}</div></span>`:''}</div>
       ${ladder.map((l,i)=>`<div class="ladder-step ${i===idx?'now':''} ${i===idx+1?'next':''}" style="${i>idx+1?'opacity:.55':''}">
-        <span style="width:40px;height:40px;border-radius:12px;background:${i===idx?'var(--c-grow)':i<idx?'var(--ok-soft)':'var(--bg2)'};color:${i===idx?'#fff':i<idx?'#076b4c':'var(--ink3)'};display:grid;place-items:center;font-weight:800;font-size:12px;flex:none">${i<idx?'✓':l[0]}</span>
+        <span style="width:40px;height:40px;border-radius:12px;background:${i===idx?'var(--c-grow)':i<idx?'var(--ok-soft)':'var(--bg2)'};color:${i===idx?'#fff':i<idx?'var(--ok-text)':'var(--ink3)'};display:grid;place-items:center;font-weight:800;font-size:12px;flex:none">${i<idx?'✓':l[0]}</span>
         <div style="flex:1"><div class="row wrap" style="gap:8px"><b class="small">${l[1]}</b>${i===idx?'<span class="badge b-vio">You are here</span>':i===idx+1?'<span class="badge b-info">Next level</span>':''}</div>
           <div class="col mt8" style="gap:5px">${l[2].map((ex,xi)=>i===idx+1?`
             <label class="row" style="gap:8px;cursor:pointer;align-items:flex-start"><input type="checkbox" ${mine[l[0]+'-'+xi]?'checked':''} onchange="ACT.growCheck('${l[0]}-${xi}')" style="width:15px;height:15px;accent-color:var(--c-grow);margin-top:2px">
@@ -11666,7 +11770,8 @@ const _reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* fullscreen cinematic overlay (distinct from the boxed UI.modal); returns a controller */
 function overlay(html,opts={}){
   let el=$('#fx-overlay');if(el)el.remove();
-  el=document.createElement('div');el.id='fx-overlay';
+  const _fxReturn=document.activeElement;  /* AX-5: restore focus to the trigger on close */
+  el=document.createElement('div');el.id='fx-overlay';el.setAttribute('tabindex','-1');
   el.className='fx-overlay'+(opts.theme==='light'?' light':'');
   el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
   if(opts.label)el.setAttribute('aria-label',opts.label);
@@ -11677,12 +11782,15 @@ function overlay(html,opts={}){
     close(){el.classList.remove('show');document.body.classList.remove('fx-lock');
       document.removeEventListener('keydown',onKey,true);
       setTimeout(()=>el.remove(),_reduceMotion()?0:380);
+      try{if(_fxReturn&&_fxReturn.focus)_fxReturn.focus();}catch(e){}
       if(opts.onClose){try{opts.onClose();}catch(e){}}}};
   const onKey=e=>{if(e.key==='Escape'&&opts.dismissable!==false){e.stopPropagation();ctrl.close();}};
   document.addEventListener('keydown',onKey,true);
   if(opts.dismissable!==false)el.addEventListener('click',e=>{if(e.target===el)ctrl.close();});
   el._ctrl=ctrl;requestAnimationFrame(()=>el.classList.add('show'));
-  runMounts();return ctrl;
+  runMounts();
+  setTimeout(()=>{try{const f=el.querySelector('button,[href],input,select,textarea,[tabindex="0"]');(f||el).focus();}catch(e){}},60);
+  return ctrl;
 }
 function closeOverlay(){const el=$('#fx-overlay');if(el&&el._ctrl)el._ctrl.close();else if(el)el.remove();}
 /* type text into an element char-by-char; resolves when finished (instant under reduced-motion) */
@@ -12073,7 +12181,7 @@ ACT.applySubmit=rid=>{
   const name=($('#ap-name')||{value:''}).value.trim();
   const email=($('#ap-email')||{value:''}).value.trim();
   if(!name||!email){UI.toast('Name and email, please — recruiters need someone to call','📝');return;}
-  const c={id:uid('C'),name,email,reqId:r.id,stage:'applied',source:'Careers site',company:'—',years:0,location:'—',
+  const c={id:uid('C'),name,email,reqId:r.id,stage:'applied',source:'Careers site',company:'—',years:0,loc:'Remote',
     appliedAt:todayISO(),linkedin:($('#ap-link')||{value:''}).value.trim(),
     scorecards:[],notes:[],
     activity:[{at:todayISO(),by:'Careers site',text:'Applied online'+((($('#ap-why')||{value:''}).value.trim())?' — “'+$('#ap-why').value.trim().slice(0,120)+'”':'')}]};
@@ -12088,7 +12196,7 @@ ACT.applyInternal=rid=>{
   const r=byId(DB.reqs,rid);if(!r)return;const me2=me();
   if(DB.candidates.some(c=>c.reqId===rid&&c.internalId===me2.id)){UI.toast('You\'ve already applied to this one — it\'s in the pipeline','🌱');return;}
   const c={id:uid('C'),name:me2.name,email:me2.email,reqId:r.id,stage:'screening',source:'Internal',internalId:me2.id,
-    company:brandName()+' (internal)',years:+(between(me2.hireDate,todayISO())/365).toFixed(1),location:me2.location,
+    company:brandName()+' (internal)',years:+(between(me2.hireDate,todayISO())/365).toFixed(1),loc:me2.location,
     appliedAt:todayISO(),scorecards:[],notes:[],
     activity:[{at:todayISO(),by:'Careers site',text:`Internal application — currently ${me2.title} in ${deptName(me2.dept)}. Skipped initial screen per policy.`}]};
   DB.candidates.push(c);
@@ -12345,9 +12453,9 @@ Views.schedule=param=>{
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">Scheduling</h1>
     <div class="page-sub">Shifts, clock-in and timesheets for the deskless crew — Support & Operations.</div></div>
-    ${canManageSchedule()?`<button class="btn primary" style="--brand:#0d9488;--brand-deep:#0f766e" data-act="shiftNew">${I.plus} Add shift</button>`:''}</div>
-  ${todayShift?`<div class="card pad mb14 row between wrap" style="gap:10px;border-left:3px solid #0d9488"><div class="col" style="gap:1px"><b class="small">Your shift today · ${todayShift.start}–${todayShift.end} (${esc(todayShift.block)})</b><span class="tiny faint">${todayShift.clockIn?'Clocked in '+todayShift.clockIn:'Not clocked in yet'}${todayShift.clockOut?' · out '+todayShift.clockOut:''}</span></div>
-    ${todayShift.clockOut?'<span class="badge b-ok">Shift complete</span>':todayShift.clockIn?`<button class="btn sm soft" style="--brand:#0d9488" data-act="clockOut" data-arg="${todayShift.id}">Clock out</button>`:`<button class="btn sm primary" style="--brand:#0d9488;--brand-deep:#0f766e" data-act="clockIn" data-arg="${todayShift.id}">🕒 Clock in</button>`}</div>`:''}
+    ${canManageSchedule()?`<button class="btn primary" style="--brand:#0b7268;--brand-deep:#0f766e" data-act="shiftNew">${I.plus} Add shift</button>`:''}</div>
+  ${todayShift?`<div class="card pad mb14 row between wrap" style="gap:10px;border-left:3px solid #0b7268"><div class="col" style="gap:1px"><b class="small">Your shift today · ${todayShift.start}–${todayShift.end} (${esc(todayShift.block)})</b><span class="tiny faint">${todayShift.clockIn?'Clocked in '+todayShift.clockIn:'Not clocked in yet'}${todayShift.clockOut?' · out '+todayShift.clockOut:''}</span></div>
+    ${todayShift.clockOut?'<span class="badge b-ok">Shift complete</span>':todayShift.clockIn?`<button class="btn sm soft" style="--brand:#0b7268" data-act="clockOut" data-arg="${todayShift.id}">Clock out</button>`:`<button class="btn sm primary" style="--brand:#0b7268;--brand-deep:#0f766e" data-act="clockIn" data-arg="${todayShift.id}">🕒 Clock in</button>`}</div>`:''}
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setSchTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
   ${tab==='coverage'?schedCoverage():tab==='sheets'?schedSheets():schedGrid()}`;
 };
@@ -12368,7 +12476,7 @@ function schedCoverage(){
   const target=Math.max(3,Math.round(scheduleCrew().length*0.5));
   const weekday=d=>{const x=new Date(d+'T12:00:00').getDay();return x!==0&&x!==6;};
   return `<div class="card pad"><div class="row between"><b class="small">Daily coverage vs target (${target})</b><span class="tiny faint">red = understaffed</span></div>
-  <div class="mt12">${Chart.bars(days.map(d=>({label:dn[new Date(d+'T12:00:00').getDay()],v:sched(d),color:weekday(d)&&sched(d)<target?'var(--bad)':'#0d9488'})),{h:200})}</div>
+  <div class="mt12">${Chart.bars(days.map(d=>({label:dn[new Date(d+'T12:00:00').getDay()],v:sched(d),color:weekday(d)&&sched(d)<target?'var(--bad)':'#0b7268'})),{h:200})}</div>
   <div class="col mt12" style="gap:6px">${days.filter(d=>weekday(d)&&sched(d)<target).map(d=>`<div class="row" style="gap:8px"><span class="badge b-warn">Understaffed</span><span class="small">${fmtD(d)} — ${sched(d)} scheduled, target ${target}</span></div>`).join('')||'<span class="tiny faint">✓ Every weekday meets the coverage target this week.</span>'}</div></div>`;
 }
 function schedSheets(){
@@ -12385,7 +12493,7 @@ function shiftModal(s,presetEid,presetDate){
     <div class="field"><label>Team member</label><select id="sh-emp">${crewEmps.map(e=>`<option value="${e.id}" ${(s?s.employeeId:presetEid)===e.id?'selected':''}>${esc(e.name)} — ${esc(e.team)}</option>`).join('')}</select></div>
     <div class="grid g2" style="gap:10px"><div class="field"><label>Date</label><input type="date" id="sh-date" value="${s?s.date:presetDate||todayISO()}"></div>
     <div class="field"><label>Block</label><select id="sh-block">${[['Early','07:00','15:00','Early · 7a–3p'],['Mid','11:00','19:00','Mid · 11a–7p'],['Late','13:00','21:00','Late · 1p–9p']].map(b=>`<option value="${b[0]}|${b[1]}|${b[2]}" ${cur===b[0]?'selected':''}>${b[3]}</option>`).join('')}</select></div></div>`,
-    foot:`${s?`<button class="btn ghost" style="color:var(--bad)" data-act="shiftDel" data-arg="${s.id}">Delete</button>`:''}<span class="spacer"></span><button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0d9488" data-act="shiftSave" data-arg="${s?s.id:''}">Save shift</button>`});
+    foot:`${s?`<button class="btn ghost" style="color:var(--bad)" data-act="shiftDel" data-arg="${s.id}">Delete</button>`:''}<span class="spacer"></span><button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0b7268" data-act="shiftSave" data-arg="${s?s.id:''}">Save shift</button>`});
 }
 ACT.shiftNew=()=>shiftModal(null,null,null);
 ACT.shiftAdd=arg=>{const [eid,date]=arg.split('|');shiftModal(null,eid,date);};
@@ -12489,7 +12597,8 @@ ACT.runClose=()=>{
   const ex=payrollExceptions();
   if(ex.some(x=>x.sev==='high')){UI.toast('Clear the blocking exceptions first','⚠️');return;}
   const p=payPeriod();const ev=payrollEvents(p);
-  const total=Math.round(sum(activeEmps().map(e=>e.comp.base))/24)+sum(ev.map(x=>x.amt||0));
+  const inHireP=e=>e.hireDate&&e.hireDate>=p.start&&e.hireDate<=p.end;  /* mid-period hires are paid via their prorated event, not full base */
+  const total=Math.round(sum(activeEmps().filter(e=>!inHireP(e)).map(e=>e.comp.base))/24)+sum(ev.map(x=>x.amt||0));
   (DB.payrollRuns=DB.payrollRuns||[]).unshift({id:'RUN-'+now().getFullYear()+'-'+String(now().getMonth()+1).padStart(2,'0')+(now().getDate()<=15?'A':'B'),period:p.label,closedAt:todayISO(),lines:activeEmps().length+ev.length,total});
   const rows=[['Account','Description','Debit','Credit']].concat([['6000','Salaries & wages — '+p.label,total,''],['6100','Employer taxes (est. 8.6%)',Math.round(total*0.086),''],['2100','Cash / payroll clearing','',Math.round(total*1.086)]]);
   const csv=rows.map(r=>r.join(',')).join('\n');
@@ -12914,7 +13023,7 @@ ACT.depSave=()=>{
   Store.save();UI.closeModal();render();
   UI.toast('Added — want to update coverage? That\'s a life event.','👨‍👩‍👧',{label:'Report it',fn:()=>ACT.lifeEvent()});
 };
-ACT.depRm=i=>{const a=(DB.dependents||{})[DB.me.employeeId];if(!a)return;a.splice(+i,1);Store.save();render();UI.toast('Removed','👨‍👩‍👧');};
+ACT.depRm=i=>{const a=(DB.dependents||{})[DB.me.employeeId];if(!a)return;const [rm]=a.splice(+i,1);Store.save();render();UI.toast('Dependent removed','👨‍👩‍👧',{label:'Undo',fn:()=>{a.splice(+i,0,rm);Store.save();render();UI.toast('Dependent restored','↩️');}});};
 ACT.benefAdd=()=>{
   UI.modal({title:'🛡️ Add a beneficiary',sub:'Applies to your company-paid life insurance and 401(k). Allocations must total 100%.',body:`
     <div class="field"><label>Full name</label><input id="bf-name" placeholder="Sam Lee"></div>
@@ -12930,7 +13039,7 @@ ACT.benefSave=()=>{
   const tot=sum(DB.beneficiaries[DB.me.employeeId].map(b=>+b.pct||0));
   UI.toast(tot===100?'Saved — allocations total 100% ✓':'Saved — allocations total '+tot+'%, adjust to reach 100%',tot===100?'🛡️':'⚠️');
 };
-ACT.benefRm=i=>{const a=(DB.beneficiaries||{})[DB.me.employeeId];if(!a)return;a.splice(+i,1);Store.save();render();UI.toast('Removed','🛡️');};
+ACT.benefRm=i=>{const a=(DB.beneficiaries||{})[DB.me.employeeId];if(!a)return;const [rm]=a.splice(+i,1);Store.save();render();UI.toast('Beneficiary removed','🛡️',{label:'Undo',fn:()=>{a.splice(+i,0,rm);Store.save();render();UI.toast('Beneficiary restored','↩️');}});};
 /* ---- Round 9 #1/#2/#5: vesting math, 401(k) self-service, W-2 ---- */
 function vestingOf(e){
   const granted=e.comp.equity;if(!granted)return null;
@@ -13215,7 +13324,7 @@ function spendExpenses(){
         return `${i2?`<span class="clink ${idx>i2?'ok':''}"></span>`:''}<span class="step ${idx>i2+1||x.status==='reimbursed'?'ok':idx===i2+1?'now':''}"><span class="cdot">${idx>i2+1||x.status==='reimbursed'?'✓':i2+1}</span>${s2==='manager'?'Manager':s2==='finance'?'Finance':'Paid'}</span>`;}).join('')}</span>`:''}
     </div></div>`;};
   return `
-  ${needMe.length?`<div class="card pad mb12" style="border-color:color-mix(in srgb,#1d4ed8 35%,var(--line))"><b class="small">⚡ Awaiting your approval (${needMe.length})</b></div>${needMe.map(card).join('')}`:''}
+  ${needMe.length?`<div class="card pad mb12 row between" style="border-color:color-mix(in srgb,#1d4ed8 35%,var(--line))"><b class="small">⚡ Awaiting your approval (${needMe.length})</b>${needMe.length>1?`<button class="btn sm good" data-act="approveAllExp">${I.check} Approve all ${needMe.length}</button>`:''}</div>${needMe.map(card).join('')}`:''}
   <b class="small" style="display:block;margin:6px 0 10px">Your expense reports</b>
   ${mine.map(card).join('')||'<div class="card empty"><div class="big">🧾</div>No expenses yet — that conference won\'t reimburse itself.</div>'}`;
 }
@@ -13266,6 +13375,16 @@ ACT.expSubmit=id=>{
   if(mgr)notify(mgr.id,'🧾',`Expense approval: ${x.title} — ${fmt$(x.total)}`,'#/spend/expenses');
   Store.save();render();UI.toast('Submitted for approval','🧾');
 };
+ACT.approveAllExp=()=>{
+  const mine=DB.spend.expenses.filter(expNeedsMe);
+  if(mine.length<2){UI.toast('Only one is waiting — use its Approve button.','✅');return;}
+  const snap=JSON.stringify(DB);let n=0;
+  mine.forEach(x=>{
+    if(x.status==='manager'){x.status='finance';(byId(DB.groups,'g-finance')||{members:[]}).members.slice(0,1).forEach(fid=>notify(fid,'🧾',`Expense at Finance: ${x.title} — ${fmt$(x.total)}`,'#/spend/expenses'));n++;}
+    else if(x.status==='finance'){x.status='reimbursed';x.reimbursedAt=todayISO();notify(x.employeeId,'💸',`Reimbursed: ${x.title} — ${fmt$(x.total)} lands in your next payroll run`,'#/spend/expenses');n++;}});
+  audit('Bulk expense approval',n+' expenses');Store.save();render();
+  UI.toast(`Approved ${n} expense${n===1?'':'s'}`,'✅',{label:'Undo all',fn:()=>{DB=JSON.parse(snap);Store.save();render();UI.toast('Approvals undone','↩️');}});
+};
 ACT.expApprove=id=>{
   const x=byId(DB.spend.expenses,id);if(!x)return;
   if(x.status==='manager'){x.status='finance';
@@ -13302,6 +13421,10 @@ function spendInvoices(){
 }
 ACT.invAdvance=id=>{
   const v=byId(DB.spend.invoices,id);if(!v)return;
+  if(v.status==='pending-match'&&!v.poRef&&!v._noPoAck){  /* the "no-PO gets flagged" promise, now enforced */
+    UI.modal({title:'No matching PO',sub:v.id+' · '+fmt$(v.amount),body:'<p class="muted">This invoice has no purchase order to match against — approving it books spend that was never pre-committed. Approve as an exception?</p>',
+      foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn danger" onclick="(byId(DB.spend.invoices,'${id}')||{})._noPoAck=1;UI.closeModal();ACT.invAdvance('${id}')">Approve as exception</button>`});
+    return;}
   const map={'pending-match':'approved','approved':'scheduled','scheduled':'paid'};
   v.status=map[v.status]||v.status;
   if(v.status==='paid')v.paidAt=todayISO();

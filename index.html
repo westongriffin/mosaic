@@ -910,7 +910,8 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 #mosyGrad .mg0{stop-color:var(--brand,#6366f1)}#mosyGrad .mg1{stop-color:var(--brand-deep,#4f46e5)}
 #mosy-roamer{position:fixed;left:0;top:0;width:44px;height:44px;z-index:104;pointer-events:none!important;opacity:0;display:none;will-change:transform,opacity;contain:layout style paint}
 #mosy-roamer .mr-craft{width:44px;height:44px;display:grid;place-items:center;filter:drop-shadow(0 8px 20px color-mix(in srgb,var(--brand) 50%,transparent));transform-origin:center}
-#mosy-roamer .mosy-mark{width:40px;height:40px}
+#mosy-roamer .mosy-mark{width:40px;height:40px;animation:mosyRoamFloat 2.6s ease-in-out infinite}
+@keyframes mosyRoamFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 #mosy-roamer .mr-craft.g-point{animation:mosyRoamPoint 1.2s ease-out}
 #mosy-roamer .mr-craft.g-cheer{animation:mosyRoamCheer .9s cubic-bezier(.3,.9,.3,1)}
 #mosy-roamer .mr-craft.b-lean{animation:mosyRoamLean 1.1s ease-in-out}
@@ -923,7 +924,7 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 .mosy-spotlight{animation:mosySpot .95s ease-out 1;border-radius:10px}
 @keyframes mosySpot{0%{box-shadow:0 0 0 0 var(--brand,#6366f1)}60%{box-shadow:0 0 0 5px color-mix(in srgb,var(--brand,#6366f1) 32%,transparent)}100%{box-shadow:0 0 0 7px transparent}}
 @media (prefers-reduced-motion: reduce){#mosy-roamer{display:none!important;opacity:0!important}.mosy-spotlight{animation:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand,#6366f1) 38%,transparent)}}
-@media (max-width:719px){#mosy-roamer{display:none!important}}
+@media (max-width:339px){#mosy-roamer{display:none!important}}  /* roamer now welcome on phones too — only hidden on ultra-narrow screens */
 .mosy-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#f59e0b;color:#fff;font-size:10.5px;font-weight:800;line-height:1;display:none;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(10,12,26,.4);pointer-events:none}
 .mosy-badge.show{display:flex}
 .mosy-badge.alert{background:#ef4444}
@@ -1033,6 +1034,14 @@ html.dark .letter{background:#f4f4f6}
 .ch-time{font-size:11px;color:var(--ink3);white-space:nowrap}
 .ch-item .unread-dot{background:#6d28d9;color:#fff;font-size:10px;font-weight:700;border-radius:99px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
 .ch-new{color:var(--ink3);justify-content:flex-start;padding-left:14px}
+/* collapsible message sections */
+.ch-sec-hd{align-items:center}
+.ch-sec-tog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;border-radius:7px;padding:3px 6px;margin:-3px -6px;flex:1}
+.ch-sec-tog:hover{background:var(--bg)}
+.ch-caret{font-size:9px;color:var(--ink3);transition:transform .22s ease;display:inline-block;transform:rotate(0deg)}
+.ch-sec-tog[aria-expanded="false"] .ch-caret{transform:rotate(-90deg)}
+.ch-group{overflow:hidden;transition:max-height .26s ease,opacity .2s ease;max-height:1600px;opacity:1}
+.ch-group.collapsed{max-height:0;opacity:0;pointer-events:none}
 .chat-main{display:flex;flex-direction:column;max-height:74vh;min-width:0}
 .chat-head{padding:11px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
 .chat-back{display:none;width:30px;height:30px;border:none;background:none;color:var(--brand);font-size:28px;line-height:1;cursor:pointer;flex:none;align-items:center;justify-content:center;margin-left:-6px}
@@ -1587,7 +1596,6 @@ body.proxying #topbar{top:34px}
 <a href="#main" class="skip-link">Skip to content</a>
 <div id="aurora" aria-hidden="true"><span class="ab a1"></span><span class="ab a2"></span><span class="ab a3"></span><span class="ab a4"></span></div>
 <div id="shell">
-  <aside id="sidebar"></aside>
   <div id="main-wrap">
     <div id="proxy-bar"></div>
     <header id="topbar"></header>
@@ -1595,6 +1603,7 @@ body.proxying #topbar{top:34px}
   </div>
 </div>
 <div id="side-veil" onclick="ACT.closeSidebar()"></div>
+<aside id="sidebar"></aside><!-- top-level overlay so its z-index clears #side-veil on mobile (was trapped inside #shell's stacking context) -->
 <div id="persona-pop"></div>
 <div id="drawer-veil" onclick="UI.closeDrawer()"></div>
 <aside id="drawer" role="dialog" aria-label="Details panel" tabindex="-1"></aside>
@@ -1739,7 +1748,7 @@ const logoSVG=s=>`<svg class="logo-mark" style="width:${s||30}px;height:${s||30}
 const mosyMark=(s,o)=>{o=o||{};const z=s||28;const body=o.mono?'#ffffff':'url(#mosyGrad)';const sp=o.mono?'#ffffff':'#fde68a';const eyes=o.mono?'<circle cx="-13" cy="-3" r="4" fill="#2e2766"/><circle cx="13" cy="-3" r="4" fill="#2e2766"/>':'<ellipse cx="-14" cy="-4" rx="6" ry="8" fill="#fff"/><ellipse cx="14" cy="-4" rx="6" ry="8" fill="#fff"/><circle cx="-14" cy="-1" r="3" fill="#241c4a"/><circle cx="14" cy="-1" r="3" fill="#241c4a"/><circle cx="-16" cy="-6" r="1.3" fill="#fff"/><circle cx="12" cy="-6" r="1.3" fill="#fff"/>';const smile=o.mono?'#2e2766':'#ffffff';return `<svg class="mosy-mark" width="${z}" height="${z}" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(49,54)"><path d="M0,-44 C30,-48 50,-22 44,3 C40,25 25,42 0,40 C-25,42 -41,24 -45,-1 C-48,-27 -30,-40 0,-44 Z" fill="${body}"/><path transform="translate(24,-48)" d="M0,-7 L2.3,-2.3 L7,0 L2.3,2.3 L0,7 L-2.3,2.3 L-7,0 L-2.3,-2.3 Z" fill="${sp}"/><path transform="translate(-28,-28)" d="M0,-4 L1.4,-1.4 L4,0 L1.4,1.4 L0,4 L-1.4,1.4 L-4,0 L-1.4,-1.4 Z" fill="${sp}" opacity="0.82"/>${eyes}<path d="M-11,13 Q0,22 11,13" stroke="${smile}" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>`;};
 /* ===================== Mosy comes alive (Round 21) — one controller, transform/opacity-only, reduced-motion safe, never calls render() ===================== */
 const MosyLife={
-  _ready:false,_blinkIn:6,_driftIn:8,_ambientIn:8,_idleAt:0,_lastBeat:0,_following:false,
+  _ready:false,_blinkIn:6,_driftIn:8,_ambientIn:4,_idleAt:0,_lastBeat:0,_following:false,
   s(){UIS.mosy=UIS.mosy||{seen:{},nudgeCount:0,lastNudgeAt:0,leanAt:0,prevW0:-1,prevCount:-1,celebZero:false,welcomed:false};return UIS.mosy;},
   chat(){return (typeof DB!=='undefined'&&DB.mosyChat)||'balanced';},
   _silent(){return this.chat()==='off';},
@@ -1748,8 +1757,8 @@ const MosyLife={
      greet = per-module route-greeting cooldown (60s floor at balanced per skeptic); follow = cursor companion. */
   _cfg(){const D={off:{trips:0,nudges:0,cool:0,tripCool:0,idle:1e9,greet:1e9,follow:false},
     quiet:{trips:0,nudges:0,cool:0,tripCool:0,idle:12000,greet:60000,follow:false},
-    balanced:{trips:4,nudges:2,cool:480000,tripCool:360000,idle:8000,greet:60000,follow:false},
-    lively:{trips:6,nudges:3,cool:480000,tripCool:240000,idle:6000,greet:45000,follow:true}};
+    balanced:{trips:16,nudges:2,cool:480000,tripCool:55000,idle:8000,tripSettle:12000,tripIdle:3200,greet:60000,follow:false},
+    lively:{trips:26,nudges:3,cool:480000,tripCool:32000,idle:6000,tripSettle:9000,tripIdle:2200,greet:45000,follow:true}};
     return D[this.chat()]||D.balanced;},
   _now(){try{return performance.now();}catch(e){return 0;}},
   _busy(){return document.hidden||this._blurred;},
@@ -1809,7 +1818,7 @@ const MosyLife={
       if((this.s().prevW0||0)>0)this._gazeHold(-2.2,-2.4,2400);
       else{const a=Math.random()*6.283,r=1+Math.random()*2.2;this._gazeHold(Math.cos(a)*r,Math.sin(a)*r-0.4,2400);}}
     /* ambient page involvement — poll every ~6-9 beats; _tripGate enforces the real cooldown/budget */
-    if(!this._following&&--this._ambientIn<=0){this._ambientIn=6+Math.floor(Math.random()*4);try{this._pageRoam();}catch(e){}}
+    if(!this._following&&--this._ambientIn<=0){this._ambientIn=4+Math.floor(Math.random()*3);try{this._pageRoam();}catch(e){}}
   },
   blink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-blink');void f.offsetWidth;f.classList.add('m-blink');setTimeout(()=>f.classList.remove('m-blink'),200);},
   wink(){if(!this._ready||_reduceMotion())return;const f=this._fab;f.classList.remove('m-wink');void f.offsetWidth;f.classList.add('m-wink');setTimeout(()=>f.classList.remove('m-wink'),380);},
@@ -1940,7 +1949,7 @@ const MosyLife={
     else if(kind==='done'){this.mouth(this.MOUTH.grin);this._body('b-pop',500);this.act('g-thumb','gp-thumb',900);this.eyes('happy',900);this.emote('spark',1);setTimeout(()=>{try{this.syncMood();}catch(e){}},1300);}
   },
   /* environment gates shared by nudges AND trips (settled, idle, not busy/sensitive/overlay/input) */
-  _baseGates(){
+  _baseGates(forTrip){
     const st=this.s(),c=this.chat();
     if(c==='off'||c==='quiet'||st.muted)return false;
     if(this._busy()||this._sensitive||this._quiet)return false;
@@ -1948,8 +1957,9 @@ const MosyLife={
     if(document.querySelector('#assist-panel.open,#palette.open,#modal.open,#drawer.open,#fx-overlay'))return false;
     const ae=document.activeElement;if(ae&&(/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)||ae.isContentEditable))return false;
     const t=this._now();
-    if(t<45000)return false;
-    if(t-this._idleAt<this._cfg().idle)return false;
+    /* trips (the roaming character) settle & idle sooner than stationary nudges, so on-page presence reads promptly */
+    if(t<(forTrip?(this._cfg().tripSettle||14000):45000))return false;
+    if(t-this._idleAt<(forTrip?(this._cfg().tripIdle||3500):this._cfg().idle))return false;
     return true;
   },
   /* stationary-bubble nudge gate = base + the nudge cooldown/cap (trips have their OWN budget) */
@@ -1989,7 +1999,7 @@ const MosyLife={
     else if(vh-tr.bottom>=H*2+GAP)p={x:tr.left+Math.min(tr.width/2,120),y:tr.bottom+GAP+H,dir:'up'};
     else return null;
     p.x=Math.max(28,Math.min(vw-28,p.x));p.y=Math.max(70,Math.min(vh-28,p.y));return p;},
-  _tripGate(){if(!this._cfg().trips)return false;if(!this._baseGates()||_reduceMotion()||this._tripActive||this._trip)return false;if(innerWidth<720||innerHeight<560)return false;if(!matchMedia('(pointer:fine)').matches)return false;if(!this._bigOK())return false;const st=this.s(),t=this._now();if((st.tripCount||0)>=this._cfg().trips)return false;if(st.lastTripAt&&t-st.lastTripAt<this._cfg().tripCool)return false;return true;},
+  _tripGate(){if(!this._cfg().trips)return false;if(!this._baseGates(true)||_reduceMotion()||this._tripActive||this._trip)return false;if(innerWidth<340||innerHeight<440)return false;if(!this._bigOK())return false;const st=this.s(),t=this._now();if((st.tripCount||0)>=this._cfg().trips)return false;if(st.lastTripAt&&t-st.lastTripAt<this._cfg().tripCool)return false;return true;},
   _reTarget(){if(!this._trip)return null;
     if(this._trip.el){const e=this._trip.el;return (e.isConnected&&this._inView(e.getBoundingClientRect()))?e:null;}
     const tgt=this._resolveTarget(this._trip.act,this._trip.arg);if(!tgt||!this._inView(tgt.getBoundingClientRect()))return null;return tgt;},
@@ -1997,7 +2007,9 @@ const MosyLife={
      This is what makes Mosy feel present "throughout the page", not just tied to inbox items.
      Fully rate-limited by _tripGate (per-session cap + cooldown + idle + sensitive/mobile/RM guards). */
   _pageRoam(){
-    if(this._tripActive||this._trip||!this._tripGate())return false;
+    /* cheap guards only — DON'T pre-call _tripGate() here: it consumes _bigOK(), so a second
+       call inside _startTrip() would fail the 2s check and the ambient roam would never fire. */
+    if(this._tripActive||this._trip||!this._cfg().trips||this._silent()||this._busy())return false;
     const el=this._pickProminent();if(!el)return false;
     return this._startTrip(null,null,'peek',null,el);
   },
@@ -2028,7 +2040,7 @@ const MosyLife={
     const tgt=this._reTarget();if(!tgt){this._abortTrip('gone');return;}
     const c=this._roCraft;c.classList.remove('g-point','g-cheer');void c.offsetWidth;c.classList.add(this._trip.kind==='cele'?'g-cheer':'g-point');
     this._highlight(tgt);if(this._live&&this._trip.label)this._live.textContent=this._trip.label;
-    this._tripT=setTimeout(()=>this._goHome(),this._trip.kind==='peek'?1150:this._trip.kind==='cele'?1500:1700);},
+    this._tripT=setTimeout(()=>this._goHome(),this._trip.kind==='peek'?1500:this._trip.kind==='cele'?1500:1700);},
   _goHome(){if(!this._trip)return;this._clearTripT();this._trip.phase='home';
     const fr=this._fab.getBoundingClientRect(),el=this._roamer;el.style.transition='transform .46s cubic-bezier(.4,0,.5,1),opacity .3s';el.style.transform='translate('+(fr.left+fr.width/2-22)+'px,'+(fr.top+fr.height/2-22)+'px)';el.style.opacity='0';
     this._tripT=setTimeout(()=>this._endTrip(),480);},
@@ -9403,6 +9415,11 @@ Views.chat=param=>{
   const pins=cur?(cur.pins||[]).map(id=>byId(DB.chatMsgs,id)).filter(Boolean):[];
   const myStatus=statusOf(myId);
   let lastDay=null;
+  const folded=k=>!!(UIS.chatFold||{})[k];
+  const secHd=(key,label,addAct,addTitle)=>`<div class="row between ch-sec-hd" style="padding:11px 10px 4px">`
+    +`<span class="ch-sec-tog" data-act="chatFold" data-arg="${key}" role="button" tabindex="0" aria-expanded="${folded(key)?'false':'true'}" title="Show or hide ${esc(label)}"><span class="ch-caret">▾</span><span class="nav-label" style="padding:0">${label}</span></span>`
+    +(addAct?`<button class="iconbtn" style="width:20px;height:20px" title="${addTitle}" data-act="${addAct}">＋</button>`:'')
+    +`</div>`;
   return `
   <div class="page-head chat-ph"><div style="flex:1"><h1 class="page">Messages</h1><div class="page-sub">Threads, pins, mentions, saved items, search — your team's pulse, scoped by department</div></div>
     ${parityBtn('chat')}
@@ -9411,15 +9428,12 @@ Views.chat=param=>{
     <div class="chat-side">
       <input type="search" id="chat-q" placeholder="Search messages…" autocomplete="off" style="width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:8px 11px;outline:none;font-size:13px;margin-bottom:4px" oninput="chatDoSearch(this.value)">
       <div id="chat-search-res"></div>
-      <div class="row between" style="padding:10px 10px 4px"><span class="nav-label" style="padding:0">Channels</span>
-        <button class="iconbtn" style="width:20px;height:20px" title="Create a channel" data-act="newChannel">＋</button></div>
-      ${channels.map(c=>chRow(c,cur)).join('')}
-      <div class="row between" style="padding:12px 10px 4px"><span class="nav-label" style="padding:0">Direct messages</span>
-        <button class="iconbtn" style="width:20px;height:20px" title="Start a direct message" data-act="dmNew">＋</button></div>
-      ${dms.map(c=>chRow(c,cur)).join('')}
-      <button class="ch-item ch-new" data-act="dmNew">＋ New message</button>
-      <div class="nav-label">Library</div>
-      <button class="ch-item ${savedMode?'on':''}" data-act="nav" data-arg="#/chat/saved"><span class="ch-av"><span class="ch-hash">🔖</span></span><span class="ch-mid"><span class="ch-name">Saved items</span></span>${savedIds.length?`<span class="unread-dot" style="background:var(--ink3)">${savedIds.length}</span>`:''}</button>
+      ${secHd('channels','Channels','newChannel','Create a channel')}
+      <div class="ch-group${folded('channels')?' collapsed':''}" id="chg-channels">${channels.map(c=>chRow(c,cur)).join('')||'<div class="tiny faint" style="padding:2px 14px 6px">No channels yet.</div>'}</div>
+      ${secHd('dms','Direct messages','dmNew','Start a direct message')}
+      <div class="ch-group${folded('dms')?' collapsed':''}" id="chg-dms">${dms.map(c=>chRow(c,cur)).join('')}<button class="ch-item ch-new" data-act="dmNew">＋ New message</button></div>
+      ${secHd('library','Library',null,null)}
+      <div class="ch-group${folded('library')?' collapsed':''}" id="chg-library"><button class="ch-item ${savedMode?'on':''}" data-act="nav" data-arg="#/chat/saved"><span class="ch-av"><span class="ch-hash">🔖</span></span><span class="ch-mid"><span class="ch-name">Saved items</span></span>${savedIds.length?`<span class="unread-dot" style="background:var(--ink3)">${savedIds.length}</span>`:''}</button></div>
     </div>
     <div class="chat-main">
       ${savedMode?`
@@ -9456,6 +9470,13 @@ window.chatDoSearch=q=>{
   el.innerHTML=hits.length?hits.map(m=>{const c=byId(DB.channels,m.ch);const from=emp(m.fromId);
     return `<button class="ch-item" style="align-items:flex-start" data-act="nav" data-arg="#/chat/${m.ch}"><span class="col" style="gap:0;min-width:0"><span class="tiny" style="font-weight:700">${from?esc(from.name.split(' ')[0]):''} <span class="faint">in ${c.dm?'DM':'#'+c.name}</span></span><span class="tiny faint" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">${esc(m.text.slice(0,60))}</span></span></button>`;}).join('')
     :'<div class="tiny faint" style="padding:6px 10px">No matches.</div>';
+};
+/* collapse/expand a Messages sidebar section (Channels / Direct messages / Library) */
+ACT.chatFold=key=>{
+  UIS.chatFold=UIS.chatFold||{};
+  const now=!UIS.chatFold[key];UIS.chatFold[key]=now;
+  const grp=document.getElementById('chg-'+key);if(grp)grp.classList.toggle('collapsed',now);
+  const tog=document.querySelector('.ch-sec-tog[data-arg="'+key+'"]');if(tog)tog.setAttribute('aria-expanded',String(!now));
 };
 ACT.chatSend=ch=>{
   const inp=$('#chat-in');if(!inp||!inp.value.trim())return;

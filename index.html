@@ -34,7 +34,7 @@
 <meta property="og:image" content="social-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mosaic — The technology that powers work">
-<meta name="twitter:description" content="24 modules, four golden threads, one HTML file. The technology that powers work — built with AI.">
+<meta name="twitter:description" content="50+ modules, four golden threads, one HTML file. The technology that powers work — built with AI.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3973,7 +3973,7 @@ function palCommands(){
     {label:'Capability map',sub:'Everything Mosaic replaces, in one grid',cmd:'nav',arg:'#/map'},
     {label:'My '+now().getFullYear()+' Wrapped',sub:'Your year in review',cmd:'wrapped'},
     {label:'Kiosk / lobby display',sub:'Full-screen reception screen',cmd:'kiosk'},
-    {label:'▶ Play the demo reel',sub:'Self-running 60-second highlight tour — hit record',cmd:'demoPlay'},
+    {label:'▶ Play the demo reel',sub:'Self-running highlight tour, ~1:45 — hit record',cmd:'demoPlay'},
     {label:'Notification & app settings',sub:'Push, in-app banners, categories, appearance',cmd:'nav',arg:'#/settings'},
     {label:'Toggle dark mode',sub:'Easier on the eyes',cmd:'toggleTheme'},
     {label:'Keyboard shortcuts',sub:'g+h, g+p, ⌘K, ? …',cmd:'kbHelp'},
@@ -4320,7 +4320,7 @@ Views.home=()=>{
           <span class="hb-pill">📅 ${weekEventsFor(todayISO()).length} on your calendar</span>
           ${out.length?`<span class="hb-pill">🌴 ${out.length} out this week</span>`:''}
         </div>
-        <button class="btn hb-cta" data-act="demoPlay" title="Self-running highlight reel — hit record">▶ Play the demo reel</button>
+        <button class="btn hb-cta" data-act="demoPlay" title="Self-running highlight reel, ~1:45 — hit record">▶ Play the demo reel</button>
         <div class="hb-foot"><button data-act="wrapped">✨ ${now().getFullYear()} Wrapped</button><span>·</span><button data-act="tourPick">${I.spark} Guided tours</button><span>·</span><button data-act="resetDemo">${I.refresh} Reset demo</button></div>
       </div>
     </div>
@@ -4808,7 +4808,7 @@ ACT.mosySetEngage=v=>{DB.mosyChat=v;try{audit('Mosy engagement',v);}catch(e){}St
 const DEMO=[
   {t:'card',vo:'This is Mosaic — the technology that powers work. Everything your company runs on, in one place.',cap:'The technology that powers work.',sub:'Everything work runs on — in one place.',dwell:6800},
   {t:'scene',go:()=>nav('#/home'),vo:'Your whole company, live. No mockups — every screen reads from one shared data spine.',cap:'Your whole company, live.',sub:'No mockups — every screen reads from one shared data spine.',dwell:5400},
-  {t:'montage',mods:['people','recruit','grow','pay','spend','flows','chat','insights'],vo:'Twenty-five-plus modules. One login. One source of truth — people, hiring, performance, pay, spend, work, communication, and insight.',cap:'25+ modules. One login. One source of truth.',sub:'People · Hiring · Performance · Pay · Spend · Work · Comms · Insight.',dwell:13800},
+  {t:'montage',mods:['people','recruit','grow','finance','equity','access','sign','meet','insights'],vo:'Fifty-plus modules. One login. One source of truth — people, hiring, performance, finance, cap table, identity, e-sign, video, and insight.',cap:'50+ modules. One login. One source of truth.',sub:'People · Hiring · Performance · Finance · Cap Table · Identity · e-Sign · Video · Insight.',dwell:15500},
   {t:'scene',go:()=>nav('#/recruit/R-104'),vo:'Now watch one action ripple across the entire company. Alex Rivera is at the offer stage — and just accepted.',cap:'Now watch one action ripple across the company.',sub:'Alex Rivera is at the offer stage — and just accepted.',dwell:5600},
   {t:'scene',go:()=>{try{ACT.openHire('C101');}catch(e){}},vo:'One click to hire.',cap:'One click to hire.',sub:'',dwell:3400},
   {t:'scene',go:()=>{try{ACT.confirmHire('C101');}catch(e){}},vo:'One action, and six modules update themselves — the core H-R record, an onboarding journey, compliance courses, thirty-sixty-ninety goals, benefits, and headcount. All automatically.',cap:'One action. Six modules update themselves.',sub:'HRIS record · onboarding journey · compliance courses · 30-60-90 goals · benefits · headcount — automatically.',dwell:9500},
@@ -5578,7 +5578,7 @@ function shareWrapped(e,st){
   const W=540,H=540;
   const row=(y,label,val)=>`<text x="58" y="${y}" fill="rgba(255,255,255,.8)" font-family="Inter,system-ui,sans-serif" font-size="19" font-weight="500">${label}</text><text x="482" y="${y}" text-anchor="end" fill="#ffffff" font-family="Inter,system-ui,sans-serif" font-size="27" font-weight="800">${val}</text>`;
   const tenure=st.tenureY>0?st.tenureY+' year'+(st.tenureY>1?'s':'')+' at '+esc(brandName()):'First year at '+esc(brandName());
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="0.55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f0648c"/></linearGradient></defs><rect width="${W}" height="${H}" rx="34" fill="url(#wg)"/><text x="58" y="92" fill="rgba(255,255,255,.85)" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="3">${esc(brandName().toUpperCase())} WRAPPED</text><text x="56" y="156" fill="#ffffff" font-family="Georgia,serif" font-size="62" font-weight="800">${st.yr}</text><text x="58" y="200" fill="rgba(255,255,255,.95)" font-family="Inter,system-ui,sans-serif" font-size="23" font-weight="700">${esc(e.name)}</text><line x1="58" y1="236" x2="482" y2="236" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>${row(296,'Days off taken',st.pto)}${row(356,'Courses completed',st.done)}${row(416,'Goals shipped',st.goalsDone)}${row(476,'Cheers received',st.cheersRecv)}<text x="58" y="516" fill="rgba(255,255,255,.62)" font-family="Inter,system-ui,sans-serif" font-size="13.5">${tenure} &#183; made with Mosy</text></svg>`;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="0.55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f0648c"/></linearGradient></defs><rect width="${W}" height="${H}" rx="34" fill="url(#wg)"/><text x="58" y="92" fill="rgba(255,255,255,.85)" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="3">${esc(brandName().toUpperCase())} WRAPPED</text><text x="56" y="156" fill="#ffffff" font-family="Georgia,serif" font-size="62" font-weight="800">${st.yr}</text><text x="58" y="200" fill="rgba(255,255,255,.95)" font-family="Inter,system-ui,sans-serif" font-size="23" font-weight="700">${esc(e.name)}</text><line x1="58" y1="236" x2="482" y2="236" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>${row(296,'Vacation days taken',st.pto)}${row(356,'Courses completed',st.done)}${row(416,'Goals shipped',st.goalsDone)}${row(476,'Cheers received',st.cheersRecv)}<text x="58" y="516" fill="rgba(255,255,255,.62)" font-family="Inter,system-ui,sans-serif" font-size="13.5">${tenure} &#183; made with Mosy</text></svg>`;
   svgToPNG(svg,W,H,2).then(d=>{downloadDataURL(d,'mosaic-wrapped-'+st.yr+'.png');UI.toast('Your Wrapped card saved 🎉','✨');}).catch(()=>UI.toast('Couldn\'t generate the card','😕'));
 }
 function openWrapped(){
@@ -12006,7 +12006,7 @@ function showSplash(){
   const sp=document.createElement('div');sp.id='splash';
   const caps=Object.values(PARITY).reduce((a,p)=>a+p.items.filter(i2=>i2[0]==='b').length,0);
   const team=DB.employees.filter(e=>e.status!=='terminated').length;
-  const picks=['people','recruit','learn','grow','pay','spend','sign','flows','chat','cal','drive','cheers'];
+  const picks=['people','finance','equity','access','bgcheck','spend','sign','meet','crm','grow','flows','cheers'];
   const mods=picks.map(id=>MODULES.find(m=>m.id===id)).filter(Boolean);
   const title='Mosaic';  /* product name — the company white-labels via brandName() elsewhere */
   sp.innerHTML=`
@@ -12015,7 +12015,7 @@ function showSplash(){
       <span class="sp-logo" onclick="confetti(46)" title="go on, click it 🎉">${logoSVG(74)}</span>
       <h1 class="sp-rise">${title}</h1>
       <div class="sp-tag sp-rise" style="animation-delay:.12s">The technology that powers <span class="sp-rot"><i>work</i></span></div>
-      <div class="sp-sub sp-rise" style="animation-delay:.2s">People, money, workflows and comms — one seamless platform, one login, zero re-entry.</div>
+      <div class="sp-sub sp-rise" style="animation-delay:.2s">HR, finance, identity, sales and legal — the tools you'd buy separately, native in one system, one login, zero re-entry.</div>
       <div class="sp-stats sp-rise" style="animation-delay:.28s">
         <div><b data-cnt="${MODULES.length}">0</b><span>modules</span></div>
         <div><b data-cnt="${team}">0</b><span>teammates</span></div>
@@ -12085,6 +12085,7 @@ const TOURS={
   workspace:{name:'The workspace suite',icon:'🛠️',desc:'Hub, Messages, Mail, Calendar, Drive, Meet — one login.'},
   manager:{name:'A manager\'s day',icon:'👥',desc:'Approvals, reviews, 1:1s, team goals.'},
   admin:{name:'Run the company',icon:'🛡️',desc:'Security groups, BPs, spend, analytics.'},
+  native:{name:'Replace your whole stack',icon:'🧱',desc:'Finance, cap table, identity, e-sign, video — native, not bolted on.'},
 };
 const TOUR_STEPS={
   workspace:[
@@ -12102,13 +12103,20 @@ const TOUR_STEPS={
   ],
   admin:[
     {route:'#/admin',center:true,title:'Security is the product 🛡️',text:'Groups grant modules and capabilities; preview any group with proxy mode to see exactly what it sees.'},
-    {route:'#/flows',center:true,title:'Business processes 🧩',text:'Job changes, comp changes, terminations — final approval applies the change to the record itself.'},
+    {route:'#/flows',center:true,title:'Workflows & automation 🧩',text:'Job changes, comp changes, terminations — final approval writes the change to the record itself. The no-code Automation Builder turns WHEN→THEN rules into the same flows.'},
     {route:'#/spend',center:true,title:'Spend 💸',text:'Requisition → PO → invoice match → paid, plus Concur-style expenses with approval chains.'},
     {route:'#/insights',center:true,title:'Insights 📈',text:'Headcount, attrition, flight risk, position plans — computed live from the same records.'},
   ],
+  native:[
+    {route:'#/finance',center:true,title:'Finance & GL 📒',text:'A NetSuite-class general ledger — journals, close and financial statements — reading the same records as payroll and spend. Not an accounting integration; the ledger itself.'},
+    {route:'#/equity',center:true,title:'Cap Table 📊',text:'A Carta-class cap table — grants, vesting, 409A and exit-waterfall modeling. Every share sits next to the person record, so headcount and ownership never drift apart.'},
+    {route:'#/access',center:true,title:'Identity & Access 🔑',text:'Okta-class SSO, app catalog and lifecycle provisioning. A hire grants access; a term revokes it — automatically, because identity is part of the platform, not a synced afterthought.'},
+    {route:'#/sign',center:true,title:'MosaicSign ✍️',text:'DocuSign-class e-signature with templates, bulk send and a full ESIGN audit trail. Offers, policies and packets sign inside the flow that created them — no round-trip to a second vendor.'},
+    {route:'#/meet',center:true,title:'Meet 🎥',text:'Zoom-class video with recordings, live transcripts and AI notes that file themselves into Drive. The whole stack you\'d buy separately — native, no integrations.'},
+  ],
 };
 ACT.tourPick=()=>{
-  UI.modal({title:'Pick a tour 🧭',sub:'Four guided stories through Mosaic — or wander via the Capability map.',body:`
+  UI.modal({title:'Pick a tour 🧭',sub:Object.keys(TOURS).length+' guided stories through Mosaic — or wander via the Capability map.',body:`
     <div class="col" style="gap:9px">${Object.entries(TOURS).map(([k,t])=>`
       <button class="card pad tpl-card" data-act="tourStart" data-arg="${k}"><div class="row" style="gap:12px"><span style="font-size:22px">${t.icon}</span>
       <span class="col" style="gap:1px;flex:1;text-align:left"><b class="small">${t.name}</b><span class="tiny muted">${t.desc}</span></span>${I.chev}</div></button>`).join('')}
@@ -12117,6 +12125,10 @@ ACT.tourPick=()=>{
 };
 ACT.tourStart=k=>{
   UI.closeModal();
+  /* the admin-oriented tours walk admin-gated modules (finance, cap table, access…); from a
+     non-admin seat render() would bounce those routes to Home mid-tour — so elevate to the
+     admin persona first, keeping the tour consumable no matter which seat you launched it from. */
+  if((k==='admin'||k==='native')&&myRole()!=='admin')ACT.switchRole('admin');
   Tour._golden=Tour._golden||Tour.steps;
   if(k==='golden'){Tour.steps=Tour._golden;Tour.start();return;}
   Tour.steps=TOUR_STEPS[k].concat([{center:true,title:'That\'s the thread 🧵',text:'Everything you just saw reads and writes the same records. Explore freely — Reset demo rebuilds the world.'}]);
@@ -12135,6 +12147,20 @@ const MAP_FEATURES={
   help:['KB + deflection','My cases','CSAT'],askpeople:['SLA queue & macros','Merge & CSV export','Round-robin'],
   sign:['ESIGN ceremony','Tamper-evident hash','Completion certificates'],flows:['Boards & Timeline','Workday BPs','Subtasks & automations'],
   spend:['PO register','Invoice matching','Budgets & expenses'],admin:['Security groups','Proxy mode','Audit & branding'],
+  command:['Unified action inbox','Priority tiers','Daily digest'],docs:['Version-controlled library','Policy attestation','E-forms catalog'],
+  sourcing:['Talent pool CRM','Referrals & bonuses','Interview scheduling'],bgcheck:['Screening packages','Consider adjudication','Adverse-action flow'],
+  certs:['Mandatory training campaigns','Cert renewal alerts','Learning paths'],jobs:['Families & profiles','Skills taxonomy','Career ladders & bands'],
+  talent:['9-box calibration','Succession & bench risk','360 feedback'],builder:['Visual workflow designer','WHEN → THEN rules','Custom fields & objects'],
+  portfolio:['Project health tracking','Budget & spend rollup','Resource utilization'],finance:['General ledger & journals','Invoicing · A/R & A/P','Statements & monthly close'],
+  effdate:['Future-dated change queue','Auto-activate on date','Point-in-time records'],er:['Disciplinary actions & PIPs','Confidential investigations','ADA accommodations'],
+  safety:['OSHA 300 log','Workers\' comp claims','FMLA & leave tracking'],schedule:['Weekly shift grid','Clock-in & timesheets','Coverage targets'],
+  attendance:['PTO accrual engine','Timesheet approvals','FLSA & meal-break flags'],rewards:['Pay bands & compa-ratio','Pay-equity analysis','Variable comp & garnishments'],
+  benops:['Open enrollment windows','COBRA elections','ACA 1095-C & accounts'],comms:['Targeted broadcasts','Read & ack tracking','Lifecycle surveys'],
+  workforce:['Headcount & position planning','Attrition & flight-risk','Report builder & DEI'],equity:['Grants & vesting','409A & rounds','Exit waterfall'],
+  access:['SSO app catalog','Birthright provisioning','Access reviews & MFA'],atlas:['Headcount map','Site & remote mix','Department breakdown'],
+  crm:['Opportunity pipeline','Weighted forecast','Account health & ARR'],workplace:['Desk booking & occupancy','Room booking','Visitor check-in'],
+  legal:['Contract repository','Clause library','Vendor risk register'],global:['Legal entities & locales','Multi-currency + live FX','Cost-center dimensions'],
+  servicedesk:['Multi-queue routing','SLA tracking & breach alerts','Self-service KB'],governance:['DSAR lifecycle','Consent registry','Segregation-of-duties'],
 };
 Views.map=()=>{
   const rollup=Object.values(PARITY).reduce((a,p)=>{p.items.forEach(i2=>a[i2[0]]=(a[i2[0]]||0)+1);return a;},{});
@@ -16105,7 +16131,9 @@ const Tour={
         target.scrollIntoView({block:'nearest',behavior:'smooth'});
       }
     };
-    if(s.route&&location.hash!==s.route){nav(s.route);setTimeout(go,300);}else go();
+    /* route steps defer the popover until after nav; guard so a mid-nav end()/next() can't
+       resurrect a ghost card (every native-tour step is route-based, so this matters) */
+    if(s.route&&location.hash!==s.route){const _i=this.i;nav(s.route);setTimeout(()=>{if(this.active&&this.i===_i)go();},300);}else go();
   },
   next(){this.i++;if(this.i>=this.steps.length)this.end();else this.show();},
   prev(){this.i=Math.max(0,this.i-1);this.show();},

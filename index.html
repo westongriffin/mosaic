@@ -2766,16 +2766,16 @@ function buildCases(emps){
 
 /* ---------------- integrations + audit + notifications ---------------- */
 const INTEGRATIONS=[
-  {id:'slack',name:'Slack',icon:'💬',status:'connected',blurb:'Celebrations, approvals & nudges in #people-updates'},
-  {id:'gws',name:'Google Workspace',icon:'📅',status:'connected',blurb:'Calendar sync for 1:1s, interviews & PTO'},
-  {id:'zoom',name:'Zoom',icon:'🎥',status:'connected',blurb:'One-click interview & 1:1 links'},
+  {id:'slack',name:'Slack',icon:'💬',status:'connected',native:true,mod:'#/chat',blurb:'Built in as Messages — channels, DMs, threads & huddles'},
+  {id:'gws',name:'Google Workspace',icon:'📅',status:'connected',native:true,mod:'#/mail',blurb:'Built in as Mail, Calendar, Drive & Meet'},
+  {id:'zoom',name:'Zoom',icon:'🎥',status:'connected',native:true,mod:'#/meet',blurb:'Built in as Meet — video rooms, recordings & AI notes'},
   {id:'github',name:'GitHub',icon:'🐙',status:'connected',blurb:'Engineering onboarding checklist automation'},
-  {id:'docusign',name:'DocuSign',icon:'✍️',status:'connected',blurb:'Offer letters & policy acknowledgments'},
-  {id:'carta',name:'Carta',icon:'📈',status:'connected',blurb:'Equity grants synced to comp records'},
-  {id:'checkr',name:'Checkr',icon:'🔍',status:'available',blurb:'Background checks from the offer stage'},
-  {id:'netsuite',name:'NetSuite',icon:'🧾',status:'available',blurb:'Headcount & payroll GL sync'},
-  {id:'brex',name:'Brex',icon:'💳',status:'available',blurb:'Auto-provision corporate cards on day one'},
-  {id:'okta',name:'Okta',icon:'🔐',status:'connected',blurb:'SSO + day-one account provisioning'},
+  {id:'docusign',name:'DocuSign',icon:'✍️',status:'connected',native:true,mod:'#/sign',blurb:'Built in as MosaicSign — templates, bulk send & ESIGN audit'},
+  {id:'carta',name:'Carta',icon:'📈',status:'connected',native:true,mod:'#/equity',blurb:'Built in as Cap Table — grants, 409A & exit waterfall'},
+  {id:'checkr',name:'Checkr',icon:'🔍',status:'connected',native:true,mod:'#/bgcheck',blurb:'Built in as Background checks — FCRA screening & adjudication'},
+  {id:'netsuite',name:'NetSuite',icon:'🧾',status:'connected',native:true,mod:'#/finance',blurb:'Built in as Finance — general ledger & financial statements'},
+  {id:'brex',name:'Brex',icon:'💳',status:'connected',native:true,mod:'#/spend',blurb:'Built in as Spend — corporate cards, expenses & budgets'},
+  {id:'okta',name:'Okta',icon:'🔐',status:'connected',native:true,mod:'#/access',blurb:'Built in as Access — SSO, app catalog & provisioning'},
 ];
 function buildNotifs(emps){
   const idOf=n=>emps.find(e=>e.name===n).id;
@@ -3315,6 +3315,7 @@ function buildSeed(){
   employees.forEach(addPersonal);
   const former=buildFormer();
   const {reqs,cands}=buildRecruiting(employees);
+  const bgchecks=buildBackgroundChecks(cands,employees);
   const onboarding=buildOnboarding(employees);
   const enrollments=buildEnrollments(employees);
   const perf=buildPerformance(employees);
@@ -3333,7 +3334,7 @@ function buildSeed(){
   const mail=buildMail(employees);
   mail.forEach(m=>{m.threadId=m.thread==='offer-alex'||/Offer — Senior Robotics/.test(m.subject)?'th-offer-alex':uid('TH');m.labels=m.labels||[];});
   const pt=buildProjects(employees);
-  return {v:19,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
+  return {v:22,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
     projects:pt.projects,tasks:pt.tasks,
     mailLabels:[{id:'lb1',name:'Benefits',color:'#10b981'},{id:'lb2',name:'Launch',color:'#6d28d9'},{id:'lb3',name:'Board',color:'#f59e0b'}],
     channels:chat.channels,chatMsgs:chat.msgs,mail,events:buildEvents(employees),
@@ -3341,7 +3342,7 @@ function buildSeed(){
     envelopes:buildEnvelopes(employees),flows:buildFlows(employees),
     lifeEvents:[{id:'LE-1',employeeId:(employees.find(e=>e.name==='Chloe Marchand')||{}).id,kind:'Birth or adoption',date:daysAgo(20),deadline:daysAgo(-10),changes:'+1 dependent · kept Sequoia PPO',status:'approved'}],
     oeWindow:{start:'2026-11-01',end:'2026-11-15'},
-    employees,former,reqs,candidates:cands,onboarding,offboarding:buildOffboarding(employees),enrollments,
+    employees,former,reqs,candidates:cands,backgroundChecks:bgchecks,onboarding,offboarding:buildOffboarding(employees),enrollments,
     cycles:perf.cycles,reviews:perf.reviews,goals:perf.goals,feedback:perf.feedback,ones:perf.ones,
     timeoff:timeoff.requests,holidays:timeoff.holidays,
     benefits,merit,surveys:buildSurveys(employees),
@@ -3358,11 +3359,11 @@ function buildSeed(){
     policyCampaigns:[{id:'PC-101',title:'Updated Remote Work & Equipment Policy',due:daysAhead(10),created:daysAgo(6),audience:'*',
       acks:employees.filter((e,i)=>e.status==='active'&&hash32(e.id+'ack')%10<6).map(e=>e.id)}],
     accrual:{vacation:{perMonth:1.67,cap:30,carryover:5},sick:{perMonth:0.83,cap:15,carryover:0}},
-    integrations:INTEGRATIONS.map(i=>({...i})),finance:buildFinance(employees),equity:buildEquity(employees)};
+    integrations:INTEGRATIONS.map(i=>({...i})),finance:buildFinance(employees),equity:buildEquity(employees),access:buildAccess(employees)};
 }
 let _undo=[],_redo=[];const UNDO_CAP=10;
 const Store={
-  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===19){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
+  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===22){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
   /* save(silent): on a normal save, snapshot the prior persisted state so Ctrl+Z can return to it */
   save(silent){
     if(!silent){try{const prev=localStorage.getItem(LS_KEY);if(prev){_undo.push(prev);if(_undo.length>UNDO_CAP)_undo.shift();_redo.length=0;}}catch(e){}}
@@ -3405,7 +3406,7 @@ const canSee=mod=>{
   const role=myRole();
   const map={
     home:['admin','manager','employee'],people:['admin','manager','employee'],
-    finance:['admin'],equity:['admin'],
+    finance:['admin'],equity:['admin'],access:['admin'],bgcheck:['admin'],
     recruit:['admin','manager'],onboard:['admin','manager'],
     learn:['admin','manager','employee'],grow:['admin','manager','employee'],
     time:['admin','manager','employee'],pay:['admin','manager','employee'],
@@ -3750,6 +3751,7 @@ const MODULES=[
   {id:'drive',label:'Drive',icon:'drive',color:'#1fa463',group:'Connect',desc:'Files & folders with department sharing'},
   {id:'meet',label:'Meet',icon:'video',color:'#2d8cff',group:'Connect',desc:'Video rooms for 1:1s & interviews'},
   {id:'recruit',label:'Recruiting',icon:'recruit',color:'var(--c-recruit)',group:'Talent',desc:'Reqs, pipeline & offers'},
+  {id:'bgcheck',label:'Background checks',icon:'shield',color:'#0d9488',group:'Talent',desc:'FCRA-compliant screening — order, adjudicate & issue adverse-action notices'},
   {id:'onboard',label:'Journeys',icon:'onboard',color:'var(--c-onboard)',group:'Talent',desc:'Onboarding & offboarding journeys'},
   {id:'learn',label:'Learning',icon:'learn',color:'var(--c-learn)',group:'Talent',desc:'Courses, paths & certs'},
   {id:'grow',label:'Performance',icon:'grow',color:'var(--c-grow)',group:'Talent',desc:'Goals, reviews & feedback'},
@@ -3765,6 +3767,7 @@ const MODULES=[
   {id:'engage',label:'Engagement',icon:'engage',color:'var(--c-engage)',group:'Operations',desc:'Pulse surveys & eNPS'},
   {id:'insights',label:'Insights',icon:'insights',color:'var(--c-insights)',group:'Company',desc:'Cross-module analytics'},
   {id:'equity',label:'Cap Table',icon:'insights',color:'#7c3aed',group:'Company',desc:'Cap table, equity grants, 409A & exit waterfall — Carta-tier, native'},
+  {id:'access',label:'Access',icon:'admin',color:'#4338ca',group:'Company',desc:'SSO, app catalog & lifecycle provisioning — Okta-tier, native'},
   {id:'atlas',label:'Atlas',icon:'globe',color:'#0ea5e9',group:'Company',desc:'Where everyone works — offices & remote'},
   {id:'help',label:'Help Center',icon:'help',color:'var(--c-help)',group:'Company',desc:'Answers & support for every work question'},
   {id:'askpeople',label:'Ask People',icon:'chat',color:'#ff5e00',group:'Company',desc:'People-team ticketing console (security-group gated)'},
@@ -7879,12 +7882,13 @@ function adminIntegrations(){
   </div>
   <div class="grid g3">${DB.integrations.map(i=>`
     <div class="card pad">
-      <div class="row between"><span style="font-size:26px">${i.icon}</span>${badge(i.status)}</div>
+      <div class="row between"><span style="font-size:26px">${i.icon}</span>${i.native?finPill('✓ Native','var(--ok-text)'):badge(i.status)}</div>
       <b class="small" style="display:block;margin-top:10px">${i.name}</b>
       <p class="tiny muted" style="margin-top:4px;min-height:34px">${i.blurb}</p>
-      ${i.status==='connected'?`<button class="btn sm ghost block mt12" onclick="UI.toast('Demo: ${i.name} settings would open here','${i.icon}')">Manage</button>`
+      ${i.native?`<button class="btn sm soft block mt12" data-act="nav" data-arg="${i.mod}">Open native module →</button>`
+      :i.status==='connected'?`<button class="btn sm ghost block mt12" onclick="UI.toast('Demo: ${i.name} settings would open here','${i.icon}')">Manage</button>`
       :`<button class="btn sm soft block mt12" data-act="connectIntegration" data-arg="${i.id}">Connect</button>`}</div>`).join('')}</div>
-  <p class="tiny faint mt12">In production these are OAuth flows; here, Connect simply flips state so you can feel the admin experience.</p>`;
+  <p class="tiny faint mt12">✓ Native means the capability is built into Mosaic — no external integration, no data sync, no second bill. GitHub remains a code-host connection.</p>`;
 }
 ACT.connectIntegration=id=>{
   const i=byId(DB.integrations,id);if(!i)return;
@@ -13288,6 +13292,375 @@ function budgetRows(){
   });
 }
 /* ===================================================================
+   BACKGROUND CHECKS (native) — replaces Checkr. FCRA-compliant
+   screening ordered at the offer stage: package tiers, per-screen
+   results, individualized-assessment adjudication and the two-notice
+   adverse-action flow with an enforced dispute window.
+   =================================================================== */
+const BG_PACKAGES={basic:{label:'Basic',price:29.99,tat:'1–2 days',days:2,screens:['ssn','criminal-natl']},standard:{label:'Standard',price:54.99,tat:'2–4 days',days:4,screens:['ssn','criminal-natl','criminal-county','employment']},pro:{label:'Pro',price:89.99,tat:'3–6 days',days:6,screens:['ssn','criminal-natl','criminal-county','employment','education','mvr']}};
+const BG_SCREEN_LABEL={ssn:'SSN trace','criminal-natl':'National criminal','criminal-county':'County criminal',employment:'Employment verification',education:'Education verification',mvr:'Motor vehicle record'};
+const BG_STATUS_META={ordered:['#94a3b8','Ordered'],pending:['#0ea5e9','Pending'],consider:['#f59e0b','Consider'],clear:['#22c55e','Clear'],dispute:['#8b5cf6','In dispute'],adverse:['#ef4444','Adverse']};
+const bgPill=s=>{const m=BG_STATUS_META[s]||['#94a3b8',s];return finPill(m[1],m[0]);};
+const RES_TXT={ssn:'SSN valid · 3 address matches','criminal-natl':'No records across national database','criminal-county':'County records checked — clear',employment:'Verified: prior employer, 2018–2026',education:'Degree verified · B.S.',mvr:'Clean driving record · valid license'};
+function buildBackgroundChecks(cands,employees){
+  const hn=s=>parseInt(hash32(s),16)||0,recruiter=((employees||[]).find(e=>e.name==='Sam Torres')||{}).id||'E007';
+  const pool=cands.filter(c=>['offer','interview'].includes(c.stage));
+  const checks=[];let i=0;
+  pool.forEach(c=>{
+    const isHero=c.name==='Alex Rivera',h=hn(c.id+'bg');
+    const pkg=isHero?'pro':['standard','pro','basic','standard'][h%4],P=BG_PACKAGES[pkg];
+    let status=isHero?'consider':(c.stage==='offer'?(h%5===0?'consider':'clear'):(h%3===0?'clear':'pending'));
+    const ordDays=isHero?6:2+h%8;
+    const screenings=P.screens.map((k,si)=>{
+      let ss='clear',res=RES_TXT[k]||'Verified',cAt=daysAgo(Math.max(0,ordDays-1-si));
+      if(status==='pending'&&si>=P.screens.length-2){ss='pending';res=null;cAt=null;}
+      if(status==='consider'&&k==='criminal-county'){ss='consider';res='1 misdemeanor — Travis County, 2019 · disposition: dismissed';}
+      return {kind:k,status:ss,result:res,completedAt:cAt};
+    });
+    const completed=status==='clear'||status==='consider';
+    checks.push({id:'BG-'+(101+i),candidateId:c.id,reqId:c.reqId,pkg,status,orderedAt:daysAgo(ordDays),orderedBy:recruiter,candConsentAt:daysAgo(ordDays),etaAt:daysAhead(Math.max(1,P.days-ordDays)),completedAt:completed?daysAgo(1):null,price:P.price,screenings,adjudication:null,adverse:null,activity:[{at:daysAgo(ordDays),by:'Sam Torres',text:'Ordered '+P.label+' package — FCRA disclosure & authorization captured'}]});
+    i++;
+  });
+  /* one check already mid adverse-action (dispute off-ramp), if a non-hero consider exists */
+  const disp=checks.find(b=>b.status==='consider'&&b.candidateId!==(pool.find(c=>c.name==='Alex Rivera')||{}).id);
+  if(disp){disp.adjudication={decision:'adverse',by:recruiter,at:daysAgo(2)};disp.adverse={preNoticeAt:daysAgo(2),waitDays:5,disputeDeadline:daysAhead(3),disputeRaised:true,postNoticeAt:null,reason:'County criminal record — individualized assessment pending candidate response'};disp.status='dispute';}
+  return checks;
+}
+const bgById=id=>((DB.backgroundChecks||[]).find(b=>b.id===id));
+const canBG=()=>isAdmin();
+function bgCand(b){return byId(DB.candidates,b.candidateId)||{name:b.candidateId};}
+Views.bgcheck=param=>{
+  if(!DB.backgroundChecks)return '<div class="card empty"><div class="big">🛡️</div>Screening not initialized.</div>';
+  if(param&&/^BG-/.test(param))return bgDetail(param);
+  const inProg=DB.backgroundChecks.filter(b=>['ordered','pending'].includes(b.status)).length,adj=DB.backgroundChecks.filter(b=>b.status==='consider'&&!b.adjudication).length;
+  const tabs=[['bgoverview','Overview',0],['pipeline','Pipeline',adj],['packages','Packages',0]];
+  if(param)UIS.bgTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.bgTab||'bgoverview'))?(UIS.bgTab||'bgoverview'):'bgoverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Background checks</h1>
+    <div class="page-sub">FCRA-compliant screening — order, adjudicate &amp; issue adverse-action notices from the offer stage (migrated off Checkr)</div></div>
+    <button class="btn primary" style="--brand:#0d9488;--brand-deep:#0f766e" data-act="bgOrderPrompt">${I.plus} Order a check</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setBgTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='bgoverview'?bgOverview():tab==='packages'?bgPackages():bgPipeline()}`;
+};
+ACT.setBgTab=a=>{UIS.bgTab=a;history.replaceState(null,'','#/bgcheck/'+a);render();};
+function bgOverview(){
+  const B=DB.backgroundChecks,byS={};['ordered','pending','consider','clear','dispute'].forEach(s=>byS[s]=B.filter(b=>b.status===s).length);
+  const adj=B.filter(b=>b.status==='consider'&&!b.adjudication),clearRate=pct(byS.clear,B.length),cols={ordered:'#94a3b8',pending:'#0ea5e9',consider:'#f59e0b',clear:'#22c55e',dispute:'#8b5cf6'};
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('In progress',byS.ordered+byS.pending,'awaiting results','#0ea5e9')}
+    ${statCard('Needs adjudication',adj.length,'consider hits','var(--warn-text)',undefined,'','#/bgcheck/pipeline')}
+    ${statCard('Clear',byS.clear,clearRate+'% clear rate','var(--ok-text)')}
+    ${statCard('Adverse / dispute',byS.dispute,'FCRA process active','var(--bad-text)')}
+  </div>
+  <div class="grid g2 mb16">
+    <div class="card"><div class="card-head"><h3>Screening pipeline</h3></div><div class="card-body">
+      ${['ordered','pending','consider','clear','dispute'].map(s=>`<div style="margin-bottom:10px"><div class="tiny" style="display:flex;justify-content:space-between"><span>${BG_STATUS_META[s][1]}</span><b>${byS[s]}</b></div><div style="height:8px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${pct(byS[s],B.length)}%;background:${cols[s]};border-radius:5px"></div></div></div>`).join('')}</div></div>
+    <div class="card"><div class="card-head"><h3>Needs your decision</h3></div>
+      <table class="tbl"><tbody>${adj.length?adj.map(b=>{const c=bgCand(b);return `<tr class="click" data-act="openBgDetail" data-arg="${b.id}"><td>${esc(c.name)}<div class="tiny faint">${b.reqId} · ${BG_PACKAGES[b.pkg].label}</div></td><td>${bgPill(b.status)}</td><td class="r"><button class="btn xs soft" data-act="openBgDetail" data-arg="${b.id}">⚖️ Adjudicate</button></td></tr>`;}).join(''):'<tr><td class="faint">Nothing to adjudicate — all clear ✓</td></tr>'}</tbody></table></div>
+  </div>`;
+}
+function bgPipeline(){
+  const B=DB.backgroundChecks.slice().sort((a,b)=>a.orderedAt<b.orderedAt?1:-1);
+  return `
+  <div class="card"><div class="card-head"><h3>All background checks</h3><span class="spacer"></span><span class="tiny faint">${B.length} checks</span></div>
+    <table class="tbl"><thead><tr><th>Candidate</th><th>Req</th><th>Package</th><th>Ordered</th><th>ETA</th><th>Status</th><th></th></tr></thead><tbody>
+    ${B.map(b=>{const c=bgCand(b);const done=b.screenings.filter(s=>s.status!=='pending').length;return `<tr class="click" data-act="openBgDetail" data-arg="${b.id}"><td><b class="small">${esc(c.name)}</b><div class="tiny faint">${done}/${b.screenings.length} screens back</div></td><td class="tiny">${b.reqId}</td><td class="small">${BG_PACKAGES[b.pkg].label} <span class="tiny faint">${fmt$(b.price)}</span></td><td class="tiny">${fmtDshort(b.orderedAt)}</td><td class="tiny">${b.status==='clear'||b.status==='dispute'?'—':fmtDshort(b.etaAt)}</td><td>${bgPill(b.status)}</td><td class="r"><button class="btn xs soft" data-act="openBgDetail" data-arg="${b.id}">Open</button></td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function bgPackages(){
+  return `<div class="grid g3">${Object.entries(BG_PACKAGES).map(([k,p])=>`<div class="card pad"><div class="row between"><b>${p.label}</b><span class="num">${fmt$(p.price)}</span></div><div class="tiny faint">Turnaround: ${p.tat}</div><div class="mt12">${p.screens.map(s=>`<div class="tiny" style="padding:4px 0;border-top:1px solid var(--line)">✓ ${esc(BG_SCREEN_LABEL[s])}</div>`).join('')}</div></div>`).join('')}</div>
+  <div class="card pad mt16" style="border-left:3px solid #0d9488"><b>FCRA compliance built in</b><div class="tiny faint mt4">Every order captures disclosure &amp; authorization before it runs. A "consider" result routes to individualized-assessment adjudication; an adverse decision triggers the two-notice flow — pre-adverse notice (with a copy of the report + summary of rights), a mandatory dispute window, then the final adverse-action notice only after the window closes.</div></div>`;
+}
+function bgDetail(id){
+  const b=bgById(id);if(!b)return '<div class="card empty">Check not found.</div>';
+  const c=bgCand(b),P=BG_PACKAGES[b.pkg],adv=b.adverse;
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">${esc(c.name)}</h1><div class="page-sub">${b.id} · ${P.label} package · req ${b.reqId} · ordered ${fmtDshort(b.orderedAt)} by ${esc((emp(b.orderedBy)||{}).name||'')}</div></div>
+    <button class="btn ghost" data-act="nav" data-arg="#/bgcheck/pipeline">‹ All checks</button>${b.reqId?`<button class="btn ghost" data-act="nav" data-arg="#/recruit/${b.reqId}">View req ↗</button>`:''}</div>
+  <div class="grid g4 mb16">
+    ${statCard('Overall',BG_STATUS_META[b.status][1],b.completedAt?'completed '+fmtDshort(b.completedAt):'ETA '+fmtDshort(b.etaAt),BG_STATUS_META[b.status][0])}
+    ${statCard('Screens',b.screenings.filter(s=>s.status!=='pending').length+'/'+b.screenings.length,'returned','#0d9488')}
+    ${statCard('Consent',b.candConsentAt<=b.orderedAt?'✓ On file':'⚠ Missing','FCRA disclosure & auth',b.candConsentAt<=b.orderedAt?'var(--ok-text)':'var(--bad-text)')}
+    ${statCard('Cost',fmt$(b.price),P.tat+' TAT','#94a3b8')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Screenings</h3>${b.screenings.some(s=>s.status==='pending')?`<span class="spacer"></span><button class="btn xs soft" data-act="bgAdvanceDemo" data-arg="${b.id}">▶ Simulate results</button>`:''}</div>
+      <table class="tbl"><tbody>${b.screenings.map(s=>`<tr><td><b class="small">${esc(BG_SCREEN_LABEL[s.kind])}</b>${s.result?`<div class="tiny faint">${esc(s.result)}</div>`:'<div class="tiny faint">awaiting result…</div>'}</td><td class="r">${bgPill(s.status)}</td></tr>`).join('')}</tbody></table></div>
+    <div class="card"><div class="card-head"><h3>Adjudication</h3></div><div class="card-body">
+      ${b.adjudication?`<div class="row between" style="padding:6px 0"><span>Decision</span>${b.adjudication.decision==='adverse'?finPill('Adverse action','var(--bad-text)'):finPill(b.adjudication.decision==='engaged'?'Individualized assessment':'Cleared to proceed','var(--ok-text)')}</div><div class="tiny faint">By ${esc((emp(b.adjudication.by)||{}).name||'')} · ${fmtDshort(b.adjudication.at)}</div>`:''}
+      ${b.status==='consider'&&!b.adjudication?`<div class="tiny faint mb8">A "consider" result requires an individualized assessment before any adverse decision (EEOC/FCRA).</div><div class="row wrap" style="gap:8px"><button class="btn sm good" data-act="bgAdjudicate" data-arg="${b.id}|clear">✓ Clear to proceed</button><button class="btn sm" style="--brand:var(--bad-text);--brand-deep:#b91c1c" data-act="bgAdjudicate" data-arg="${b.id}|adverse">Begin adverse action</button></div>`:''}
+      ${adv?`<div class="card pad mt12" style="border-left:3px solid var(--bad-text)"><b>FCRA adverse action</b><div class="tiny faint mt4">Reason: ${esc(adv.reason)}</div>
+        <div class="mt12" style="font-size:13px">
+          <div style="padding:6px 0">1. Pre-adverse notice sent <b>${fmtDshort(adv.preNoticeAt)}</b> ✓ <span class="tiny faint">(copy of report + summary of rights)</span></div>
+          <div style="padding:6px 0;border-top:1px solid var(--line)">2. Dispute window (${adv.waitDays} business days) closes <b>${fmtDshort(adv.disputeDeadline)}</b> ${adv.disputeRaised?'· <span style="color:var(--vio-text,#6d3fd6);font-weight:700">candidate disputed</span>':''}</div>
+          <div style="padding:6px 0;border-top:1px solid var(--line)">3. Final adverse notice ${adv.postNoticeAt?'sent <b>'+fmtDshort(adv.postNoticeAt)+'</b> ✓':'<span class="faint">available after '+fmtDshort(adv.disputeDeadline)+'</span>'}</div>
+        </div>
+        <div class="row wrap mt12" style="gap:8px">${!adv.postNoticeAt&&!adv.disputeRaised?`<button class="btn xs soft" data-act="bgDispute" data-arg="${b.id}">Candidate disputed</button>`:''}${!adv.postNoticeAt?`<button class="btn xs" style="--brand:var(--bad-text);--brand-deep:#b91c1c" data-act="bgPostNotice" data-arg="${b.id}">Send final adverse notice</button>`:''}</div></div>`:''}
+      ${b.status==='clear'?'<div class="empty" style="padding:20px"><div class="big">✓</div>Cleared — the hire can proceed.</div>':''}
+    </div></div>
+  </div>
+  <div class="card mt16"><div class="card-head"><h3>Activity</h3></div><table class="tbl"><tbody>${b.activity.slice().reverse().map(a=>`<tr><td class="tiny" style="width:80px">${fmtDshort(a.at)}</td><td class="small">${esc(a.text)}<div class="tiny faint">${esc(a.by)}</div></td></tr>`).join('')}</tbody></table></div>`;
+}
+/* Background-check interactions */
+ACT.openBgDetail=id=>{try{UI.closeDrawer();}catch(e){}location.hash='#/bgcheck/'+id;render();};
+ACT.bgOrderPrompt=cid=>{const pool=DB.candidates.filter(c=>['offer','interview','screening'].includes(c.stage)&&!DB.backgroundChecks.some(b=>b.candidateId===c.id));
+  const opts=pool.map(c=>`<option value="${c.id}" ${c.id===cid?'selected':''}>${esc(c.name)} · ${c.reqId}</option>`).join('')||'<option value="">— no eligible candidates —</option>';
+  UI.modal({title:'Order a background check',sub:'Requires candidate disclosure & authorization (FCRA)',
+    body:`<div class="field"><label>Candidate</label><select id="bg-cand">${opts}</select></div>
+      <div class="field"><label>Package</label><select id="bg-pkg">${Object.entries(BG_PACKAGES).map(([k,p])=>`<option value="${k}" ${k==='standard'?'selected':''}>${p.label} — ${fmt$(p.price)} · ${p.tat}</option>`).join('')}</select></div>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-top:6px"><input type="checkbox" id="bg-consent" style="margin-top:3px"> The candidate has completed the FCRA disclosure and signed the authorization form.</label>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0d9488;--brand-deep:#0f766e" data-act="bgOrderConfirm">Order check</button>`});};
+ACT.bgOrderConfirm=()=>{const cid=document.getElementById('bg-cand').value,pkg=document.getElementById('bg-pkg').value;
+  if(!cid){UI.toast('No candidate selected.');return;}
+  if(!document.getElementById('bg-consent').checked){UI.toast('Capture disclosure & authorization first.','🛡️');return;}
+  const P=BG_PACKAGES[pkg],c=byId(DB.candidates,cid),nums=DB.backgroundChecks.map(b=>+String(b.id).slice(3)).filter(Number.isFinite);
+  DB.backgroundChecks.unshift({id:'BG-'+((nums.length?Math.max(...nums):100)+1),candidateId:cid,reqId:c.reqId,pkg,status:'pending',orderedAt:todayISO(),orderedBy:DB.me.employeeId,candConsentAt:todayISO(),etaAt:daysAhead(P.days),completedAt:null,price:P.price,screenings:P.screens.map(k=>({kind:k,status:'pending',result:null,completedAt:null})),adjudication:null,adverse:null,activity:[{at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Ordered '+P.label+' package — disclosure & authorization captured'}]});
+  audit('bgcheck.order','Ordered '+P.label+' for '+(c||{}).name);Store.save();UI.closeModal();UI.toast('🛡️ '+P.label+' check ordered for '+(c||{}).name+'.');render();};
+ACT.bgAdvanceDemo=id=>{const b=bgById(id);if(!b)return;let anyPend=false;b.screenings.forEach((s,i)=>{if(s.status==='pending'){s.status='clear';s.result=RES_TXT[s.kind]||'Verified';s.completedAt=todayISO();anyPend=true;}});
+  if(anyPend){const consider=b.screenings.some(s=>s.status==='consider');b.status=consider?'consider':'clear';b.completedAt=todayISO();b.activity.push({at:todayISO(),by:'Screening vendor',text:'All screenings returned — '+(consider?'consider':'clear')});}
+  Store.save();UI.toast('Results returned — '+b.status+'.');render();};
+ACT.bgAdjudicate=arg=>{const [id,dec]=String(arg).split('|');const b=bgById(id);if(!b)return;
+  b.adjudication={decision:dec,by:DB.me.employeeId,at:todayISO()};
+  if(dec==='clear'){b.status='clear';b.activity.push({at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Adjudicated: cleared to proceed after individualized assessment'});UI.toast('✓ Cleared to proceed.');}
+  else if(dec==='adverse'){b.adverse={preNoticeAt:todayISO(),waitDays:5,disputeDeadline:daysAhead(5),disputeRaised:false,postNoticeAt:null,reason:'County criminal record — individualized assessment'};b.activity.push({at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Pre-adverse notice sent — dispute window opened (5 business days)'});notify(b.candidateId&&byId(DB.candidates,b.candidateId)?b.orderedBy:b.orderedBy,'🛡️','Pre-adverse action notice issued','#/bgcheck/'+b.id);UI.toast('Pre-adverse notice sent — dispute window opened.');}
+  audit('bgcheck.adjudicate',dec+' — '+bgCand(b).name);Store.save();render();};
+ACT.bgDispute=id=>{const b=bgById(id);if(!b||!b.adverse)return;b.adverse.disputeRaised=true;b.status='dispute';b.activity.push({at:todayISO(),by:'Candidate',text:'Candidate disputed the report — sent to re-investigation'});audit('bgcheck.dispute',bgCand(b).name+' disputed');Store.save();UI.toast('Dispute logged — final notice paused pending re-investigation.');render();};
+ACT.bgPostNotice=id=>{const b=bgById(id);if(!b||!b.adverse)return;
+  if(todayISO()<b.adverse.disputeDeadline){UI.toast('FCRA: wait until the dispute window closes ('+fmtDshort(b.adverse.disputeDeadline)+').','🛡️');return;}
+  b.adverse.postNoticeAt=todayISO();b.status='adverse';b.activity.push({at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Final adverse-action notice sent — candidate not advanced'});audit('bgcheck.adverse','Final adverse notice — '+bgCand(b).name);Store.save();UI.toast('Final adverse-action notice sent.');render();};
+
+/* ===================================================================
+   IDENTITY, SSO & ACCESS (native) — replaces Okta. App catalog,
+   entitlements, birthright provisioning (joiner-mover-leaver), MFA
+   posture and access-review certification campaigns.
+   =================================================================== */
+function buildAccess(employees){
+  const hn=s=>parseInt(hash32(s),16)||0;  /* hash32 returns a HEX STRING — parseInt to a number before any % (NaN index would crash) */
+  const active=employees.filter(e=>e.status==='active'||e.status==='onboarding');
+  const APPS=[
+    {id:'APP-gws',name:'Google Workspace',icon:'📧',category:'Productivity',type:'SCIM',mfa:true,birthright:'all',cost:18},
+    {id:'APP-slack',name:'Slack',icon:'💬',category:'Communication',type:'SCIM',mfa:true,birthright:'all',cost:12},
+    {id:'APP-zoom',name:'Zoom',icon:'🎥',category:'Communication',type:'SAML',mfa:false,birthright:'all',cost:15},
+    {id:'APP-1pw',name:'1Password',icon:'🔑',category:'Security',type:'SCIM',mfa:true,birthright:'all',cost:8},
+    {id:'APP-notion',name:'Notion',icon:'📓',category:'Productivity',type:'SAML',mfa:false,birthright:'all',cost:10},
+    {id:'APP-github',name:'GitHub',icon:'🐙',category:'Engineering',type:'SCIM',mfa:true,birthright:['eng','data','it']},
+    {id:'APP-jira',name:'Jira',icon:'📋',category:'Engineering',type:'SAML',mfa:false,birthright:['eng','product']},
+    {id:'APP-datadog',name:'Datadog',icon:'🐶',category:'Engineering',type:'SAML',mfa:true,birthright:['eng','it'],cost:23},
+    {id:'APP-aws',name:'AWS Console',icon:'☁️',category:'Engineering',type:'SAML',mfa:true,birthright:['eng','data','it'],provisioning:'manual'},
+    {id:'APP-pagerduty',name:'PagerDuty',icon:'📟',category:'Engineering',type:'SAML',mfa:false,birthright:['eng','it'],cost:21},
+    {id:'APP-figma',name:'Figma',icon:'🎨',category:'Design',type:'SAML',mfa:false,birthright:['design','product'],cost:15},
+    {id:'APP-sfdc',name:'Salesforce',icon:'☁️',category:'Sales',type:'SAML',mfa:true,birthright:['sales','cx'],cost:150},
+    {id:'APP-netsuite',name:'NetSuite',icon:'🧾',category:'Finance',type:'SAML',mfa:true,birthright:['fin','ops'],provisioning:'manual',cost:110},
+    {id:'APP-carta',name:'Carta',icon:'📈',category:'Finance',type:'SAML',mfa:true,birthright:['fin','exec'],provisioning:'manual'},
+    {id:'APP-brex',name:'Brex',icon:'💳',category:'Finance',type:'SAML',mfa:true,birthright:['fin','exec']},
+    {id:'APP-greenhouse',name:'Greenhouse',icon:'🌱',category:'HR',type:'SAML',mfa:false,birthright:['people']}
+  ].map(a=>({provisioning:'automatic',cost:0,owner:'E013',status:'active',...a}));
+  const match=(app,e)=>app.birthright==='all'||(Array.isArray(app.birthright)&&app.birthright.includes(e.dept));
+  const assignments=[];
+  active.forEach(e=>APPS.forEach(app=>{if(match(app,e))assignments.push({id:'ENT-'+e.id+'-'+app.id,employeeId:e.id,appId:app.id,grantedAt:e.hireDate||'2022-01-15',grantedBy:'birthright',source:'birthright',lastActiveAt:daysAgo(hn(e.id+app.id+'la')%21),status:'active'});}));
+  const anomApps=['APP-aws','APP-sfdc','APP-netsuite','APP-datadog'];
+  active.filter(e=>hn(e.id+'anom')%23===0).slice(0,8).forEach((e,i)=>{const app=anomApps[i%anomApps.length];if(!assignments.some(a=>a.employeeId===e.id&&a.appId===app))assignments.push({id:'ENT-'+e.id+'-'+app,employeeId:e.id,appId:app,grantedAt:daysAgo(200+i*10),grantedBy:'E013',source:'manual',lastActiveAt:daysAgo(120+i*12),status:'active',anomaly:true});});
+  const mfa=active.map(e=>{const en=hn(e.id+'mfa')%100<88&&e.status!=='onboarding';const facs=['authenticator','webauthn','sms','biometric'];const n=en?1+hn(e.id+'f')%3:0;return {employeeId:e.id,enrolled:en,factors:en?facs.slice(0,n):[],lastVerified:en?daysAgo(hn(e.id+'v')%14):null};});
+  const reqApps=['APP-figma','APP-datadog','APP-sfdc','APP-aws','APP-notion','APP-jira'],reasons=['New project ramp-up','Team transfer','Vendor evaluation','Joining on-call rotation','Cross-functional initiative'];
+  const requesters=active.filter(e=>hn(e.id+'req')%19===0).slice(0,7);
+  const requests=requesters.map((e,i)=>({id:'AQR-'+(100+i),employeeId:e.id,appId:reqApps[i%reqApps.length],reason:reasons[i%reasons.length],requestedAt:daysAgo(i%6),status:i<4?'pending':(i%2?'approved':'denied'),approverId:'E013',decidedAt:i<4?null:daysAgo(i%3)}));
+  const evActions=['granted','revoked','birthright-applied','mfa-reset','suspended'],events=[];
+  for(let i=0;i<32;i++){const e=active[hn('ev'+i)%active.length],app=APPS[hn('eva'+i)%APPS.length];events.push({id:'EV-'+i,at:daysAgo((i*2)%60),actorId:'E013',action:evActions[hn('evk'+i)%evActions.length],employeeId:e.id,appId:app.id});}
+  events.sort((a,b)=>a.at<b.at?1:-1);
+  APPS.forEach(app=>app.seats=assignments.filter(a=>a.appId===app.id&&a.status==='active').length);
+  const finFolks=active.filter(e=>['fin','ops'].includes(e.dept)).slice(0,8),awsHolders=assignments.filter(a=>a.appId==='APP-aws').slice(0,10);
+  const campaigns=[
+    {id:'ACR-1',name:'SOX quarterly — Finance-system access',scope:'app:APP-netsuite',appId:'APP-netsuite',startedAt:daysAgo(4),dueAt:daysAhead(5),ownerId:'E004',status:'open',items:finFolks.map((e,i)=>({employeeId:e.id,appId:'APP-netsuite',decision:i<3?'keep':null,reviewerId:'E004'}))},
+    {id:'ACR-2',name:'AWS Console access recertification',scope:'app:APP-aws',appId:'APP-aws',startedAt:daysAgo(2),dueAt:daysAhead(6),ownerId:'E013',status:'open',items:awsHolders.map(a=>({employeeId:a.employeeId,appId:'APP-aws',decision:null,reviewerId:'E013'}))},
+    {id:'ACR-3',name:'Q1 privileged-app review',scope:'all',appId:null,startedAt:daysAgo(95),dueAt:daysAgo(80),ownerId:'E007',status:'done',completedAt:daysAgo(82),items:active.slice(0,12).map((e,i)=>({employeeId:e.id,appId:'APP-1pw',decision:i<2?'revoke':'keep',reviewerId:'E007'}))}
+  ];
+  return {apps:APPS,assignments,mfa,requests,events,campaigns};
+}
+const canIT=()=>isAdmin()||groupsOf(DB.me.employeeId).some(g=>g.id==='g-it'||g.id==='g-sysadmin');
+function accApp(id){return byId((DB.access||{}).apps||[],id);}
+function accActive(){return ((DB.access||{}).assignments||[]).filter(a=>a.status==='active');}
+function accHeld(eid){return accActive().filter(a=>a.employeeId===eid);}
+function accExpected(e){return ((DB.access||{}).apps||[]).filter(a=>a.birthright==='all'||(Array.isArray(a.birthright)&&a.birthright.includes(e.dept)));}
+function accStale(){return accActive().filter(a=>a.anomaly||a.lastActiveAt<daysAgo(90));}
+function accMfaOf(eid){return ((DB.access||{}).mfa||[]).find(m=>m.employeeId===eid);}
+Views.access=param=>{
+  const A=DB.access;if(!A)return '<div class="card empty"><div class="big">🔐</div>Identity layer not initialized.</div>';
+  const pend=A.requests.filter(r=>r.status==='pending').length,notEnr=A.mfa.filter(m=>!m.enrolled).length,openC=A.campaigns.filter(c=>c.status!=='done').length;
+  const tabs=[['aoverview','Overview',0],['catalog','App catalog',pend],['people','Entitlements',0],['birthright','Provisioning',0],['mfa','MFA',notEnr],['campaigns','Access reviews',openC]];
+  if(param)UIS.accessTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.accessTab||'aoverview'))?(UIS.accessTab||'aoverview'):'aoverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Access</h1>
+    <div class="page-sub">Single sign-on, app catalog and lifecycle provisioning — the native identity layer (migrated off Okta)</div></div>
+    <button class="btn ghost" data-act="accCampaignNew">Run access review</button>
+    <button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accGrantOpen">${I.plus} Grant access</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setAccessTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='aoverview'?accOverview():tab==='catalog'?accCatalog():tab==='people'?accPeople():tab==='birthright'?accRules():tab==='mfa'?accMfa():accCampaigns()}`;
+};
+ACT.setAccessTab=a=>{UIS.accessTab=a;history.replaceState(null,'','#/access/'+a);render();};
+function accOverview(){
+  const A=DB.access,act=accActive(),enr=A.mfa.filter(m=>m.enrolled).length,stale=accStale().length;
+  const byCat={};act.forEach(a=>{const app=accApp(a.appId);if(app)byCat[app.category]=(byCat[app.category]||0)+1;});
+  const cols=['#4338ca','#0ea5e9','#22c55e','#f59e0b','#ec4899','#8b5cf6','#14b8a6'];
+  const recent=A.events.slice(0,6);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('SSO apps',A.apps.length,A.apps.filter(a=>a.provisioning==='automatic').length+' auto-provisioned','#4338ca',undefined,'','#/access/catalog')}
+    ${statCard('Active entitlements',act.length,(act.length/Math.max(1,A.mfa.length)).toFixed(1)+' apps / person','var(--c-people)')}
+    ${statCard('MFA enrolled',pct(enr,A.mfa.length)+'%',pct(enr,A.mfa.length)>=90?'on target':'below 90% target',pct(enr,A.mfa.length)>=90?'var(--ok-text)':'var(--warn-text)',undefined,'','#/access/mfa')}
+    ${statCard('Stale / over-provisioned',stale,'need review','var(--warn-text)',undefined,'','#/access/campaigns')}
+  </div>
+  <div class="grid g2 mb16">
+    <div class="card"><div class="card-head"><h3>Entitlements by category</h3></div><div class="card-body" style="display:grid;place-items:center">
+      ${Chart.donut(Object.entries(byCat).map(([k,v],i)=>({label:k,v,color:cols[i%cols.length]})),170,0.62,'Entitlements by category')}
+      <div class="row wrap mt12 legend" style="justify-content:center">${Object.entries(byCat).map(([k,v],i)=>`<span><i style="background:${cols[i%cols.length]}"></i>${esc(k)} ${v}</span>`).join('')}</div></div></div>
+    <div class="card"><div class="card-head"><h3>Recent provisioning activity</h3></div>
+      <table class="tbl"><tbody>${recent.map(ev=>{const e=emp(ev.employeeId),app=accApp(ev.appId);return `<tr><td class="tiny">${fmtDshort(ev.at)}</td><td>${e?`${av(e,'sm')} <b class="small">${esc(e.name.split(' ')[0])}</b>`:''} <span class="tiny faint">${ev.action}</span></td><td class="small r">${app?esc(app.name):''}</td></tr>`;}).join('')}</tbody></table></div>
+  </div>
+  <div class="card"><div class="card-head"><h3>Attention</h3></div><div class="card-body">
+    <div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>🕓 Access requests pending approval</span><button class="btn xs soft" data-act="setAccessTab" data-arg="catalog">${A.requests.filter(r=>r.status==='pending').length} pending →</button></div>
+    <div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>🔐 Employees without MFA</span><button class="btn xs soft" data-act="setAccessTab" data-arg="mfa">${A.mfa.filter(m=>!m.enrolled).length} not enrolled →</button></div>
+    <div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>📋 Open access-review campaigns</span><button class="btn xs soft" data-act="setAccessTab" data-arg="campaigns">${A.campaigns.filter(c=>c.status!=='done').length} open →</button></div>
+    <div class="row between" style="padding:8px 0"><span>⚠️ Over-provisioned / stale entitlements</span><button class="btn xs soft" data-act="accReconcile">${accStale().length} to reconcile →</button></div></div>`;
+}
+function accCatalog(){
+  const A=DB.access;
+  return `
+  <div class="grid g3">${A.apps.map(app=>{const br=app.birthright==='all'?'All employees':Array.isArray(app.birthright)?app.birthright.map(deptName).join(', '):'Request only';
+    return `<div class="card pad click" data-act="accAppOpen" data-arg="${app.id}" style="cursor:pointer">
+      <div class="row" style="gap:10px;align-items:center"><div style="font-size:26px">${app.icon}</div><div style="flex:1"><b>${esc(app.name)}</b><div class="tiny faint">${esc(app.category)}</div></div>${app.mfa?'<span title="MFA required">🔒</span>':''}</div>
+      <div class="row wrap mt8" style="gap:5px">${badge('b-vio',app.type)}${app.provisioning==='automatic'?finPill('Auto','var(--ok-text)'):finPill('Manual','var(--warn-text)')}</div>
+      <div class="tiny faint mt8">Birthright: ${esc(br)}</div>
+      <div class="row between mt8" style="border-top:1px solid var(--line);padding-top:8px"><span class="tiny faint">${app.seats} ${app.seats===1?'person':'people'}</span><span class="tiny faint">${app.cost?fmt$(app.cost*app.seats)+'/mo':'—'}</span></div></div>`;}).join('')}</div>`;
+}
+function accPeople(){
+  const A=DB.access,emps=DB.employees.filter(e=>e.status==='active'||e.status==='onboarding').sort((a,b)=>accHeld(b.id).length-accHeld(a.id).length);
+  return `
+  <div class="card"><div class="card-head"><h3>Employee entitlements</h3><span class="spacer"></span><span class="tiny faint">${emps.length} people</span></div>
+    <table class="tbl"><thead><tr><th>Employee</th><th>Dept</th><th class="r">Apps</th><th>MFA</th><th>Last active</th><th></th></tr></thead><tbody>
+    ${emps.slice(0,60).map(e=>{const held=accHeld(e.id),m=accMfaOf(e.id),la=held.map(a=>a.lastActiveAt).sort().slice(-1)[0];return `<tr class="click" data-act="accPersonOpen" data-arg="${e.id}"><td>${av(e,'sm')} <b class="small">${esc(e.name)}</b></td><td class="tiny">${deptName(e.dept)}</td><td class="r num">${held.length}</td><td>${m&&m.enrolled?finPill('✓ '+m.factors.length+'F','var(--ok-text)'):finPill('Not enrolled','var(--bad-text)')}</td><td class="tiny faint">${la?fmtDshort(la):'—'}</td><td class="r"><button class="btn xs soft" data-act="accPersonOpen" data-arg="${e.id}">Manage</button></td></tr>`;}).join('')}</tbody></table>
+    ${emps.length>60?'<div class="pad tiny faint">Showing first 60 of '+emps.length+'.</div>':''}</div>`;
+}
+function accRules(){
+  const A=DB.access,active=DB.employees.filter(e=>e.status==='active');
+  const rules=A.apps.filter(a=>a.birthright&&a.birthright!=='none');
+  return `
+  <div class="card mb16" style="border-left:3px solid #4338ca"><div class="card-body">
+    <b>Joiner → Mover → Leaver</b> <span class="tiny faint">— birthright provisioning</span>
+    <div class="grid g3 mt12"><div><b class="small">🟢 Joiner</b><div class="tiny faint">On hire, birthright apps auto-grant on day one.</div></div>
+    <div><b class="small">🔄 Mover</b><div class="tiny faint">On dept or role change, entitlements reconcile automatically.</div></div>
+    <div><b class="small">🔴 Leaver</b><div class="tiny faint">On offboard, every entitlement is revoked in one action.</div></div></div>
+    <div class="row wrap mt12" style="gap:8px"><button class="btn sm soft" data-act="accSimJoiner">▶ Simulate a joiner</button><button class="btn sm primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accReconcile">Reconcile drift now</button></div></div>
+  <div class="card"><div class="card-head"><h3>Birthright rules</h3></div>
+    <table class="tbl"><thead><tr><th>When</th><th>Grant</th><th class="r">Covers</th><th>Provisioning</th></tr></thead><tbody>
+    ${rules.map(app=>{const trig=app.birthright==='all'?'Any employee':app.birthright.map(deptName).join(' / ');const cov=active.filter(e=>app.birthright==='all'||app.birthright.includes(e.dept)).length;return `<tr><td class="small">${esc(trig)}</td><td>${app.icon} <b class="small">${esc(app.name)}</b></td><td class="r num">${cov}</td><td>${app.provisioning==='automatic'?finPill('Automatic','var(--ok-text)'):finPill('Manual','var(--warn-text)')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function accMfa(){
+  const A=DB.access,enr=A.mfa.filter(m=>m.enrolled),notEnr=A.mfa.filter(m=>!m.enrolled);
+  const facCount={};enr.forEach(m=>m.factors.forEach(f=>facCount[f]=(facCount[f]||0)+1));
+  const cols=['#4338ca','#22c55e','#f59e0b','#ec4899'];
+  return `
+  <div class="grid g3 mb16">
+    ${statCard('MFA enrolled',pct(enr.length,A.mfa.length)+'%',enr.length+' of '+A.mfa.length,'var(--ok-text)')}
+    ${statCard('Not enrolled',notEnr.length,'compliance gap','var(--bad-text)')}
+    ${statCard('Apps requiring MFA',A.apps.filter(a=>a.mfa).length,'of '+A.apps.length+' in catalog','#4338ca')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Not enrolled — needs attention</h3></div>
+      <table class="tbl"><tbody>${notEnr.slice(0,14).map(m=>{const e=emp(m.employeeId);return e?`<tr><td>${av(e,'sm')} <b class="small">${esc(e.name)}</b><div class="tiny faint">${deptName(e.dept)}${e.status==='onboarding'?' · new — pending':''}</div></td><td class="r"><button class="btn xs soft" data-act="accMfaRemind" data-arg="${e.id}">Send reminder</button></td></tr>`:'';}).join('')||'<tr><td class="faint">Everyone is enrolled 🎉</td></tr>'}</tbody></table></div>
+    <div class="card"><div class="card-head"><h3>Factor distribution</h3></div><div class="card-body" style="display:grid;place-items:center">
+      ${Chart.donut(Object.entries(facCount).map(([k,v],i)=>({label:k,v,color:cols[i%cols.length]})),160,0.6,'MFA factor distribution')}
+      <div class="row wrap mt12 legend" style="justify-content:center">${Object.entries(facCount).map(([k,v],i)=>`<span><i style="background:${cols[i%cols.length]}"></i>${esc(k)} ${v}</span>`).join('')}</div></div></div>
+  </div>`;
+}
+function accCampaigns(){
+  const A=DB.access;
+  return `
+  <div class="card"><div class="card-head"><h3>Access-review campaigns</h3><span class="spacer"></span><button class="btn xs primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accCampaignNew">New review</button></div><div class="card-body">
+    ${A.campaigns.map(c=>{const dec=c.items.filter(i=>i.decision).length,tot=c.items.length,over=c.status!=='done'&&c.dueAt<todayISO();return `<div class="card pad mb12 click" data-act="accCampOpen" data-arg="${c.id}" style="cursor:pointer">
+      <div class="row between"><div><b>${esc(c.name)}</b><div class="tiny faint">${c.scope.startsWith('app:')?(accApp(c.appId)||{}).name+' access':esc(c.scope)} · owner ${esc((emp(c.ownerId)||{}).name||'')}</div></div>${c.status==='done'?finPill('Completed','var(--ok-text)'):over?finPill('Overdue','var(--bad-text)'):finPill('Open · due '+fmtDshort(c.dueAt),'var(--warn-text)')}</div>
+      <div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:10px"><div style="height:100%;width:${pct(dec,tot)}%;background:#4338ca;border-radius:5px"></div></div>
+      <div class="tiny faint mt4">${dec} of ${tot} reviewed${c.status==='done'?' · '+c.items.filter(i=>i.decision==='revoke').length+' revoked':''}</div></div>`;}).join('')}
+  </div></div>`;
+}
+/* Identity interactions */
+ACT.accAppOpen=id=>{const app=accApp(id);if(!app)return;const holders=accActive().filter(a=>a.appId===id);
+  UI.modal({title:app.icon+' '+esc(app.name),sub:app.type+' · '+(app.provisioning==='automatic'?'auto-provisioned':'manual')+' · '+holders.length+' people'+(app.mfa?' · MFA required':''),wide:true,
+    body:`<div class="row wrap mb12" style="gap:6px">${badge('b-vio',app.type)}${app.mfa?finPill('MFA required','var(--ok-text)'):''}<span class="tiny faint" style="align-self:center">Birthright: ${app.birthright==='all'?'All employees':Array.isArray(app.birthright)?app.birthright.map(deptName).join(', '):'Request only'}</span></div>
+      <table class="tbl"><thead><tr><th>Person</th><th>Source</th><th>Last active</th><th></th></tr></thead><tbody>
+      ${holders.slice(0,40).map(a=>{const e=emp(a.employeeId);return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':esc(a.employeeId)}</td><td>${a.anomaly?finPill('⚠ off-birthright','var(--bad-text)'):a.source==='birthright'?finPill('Birthright','var(--ok-text)'):finPill(a.source,'var(--warn-text)')}</td><td class="tiny faint">${fmtDshort(a.lastActiveAt)}</td><td class="r"><button class="btn xs soft" data-act="accRevoke" data-arg="${a.id}" onclick="UI.closeModal()">Revoke</button></td></tr>`;}).join('')}</tbody></table>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button><button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accGrantOpen" data-arg="app:${id}">${I.plus} Add person</button>`});};
+ACT.accPersonOpen=id=>{const e=emp(id);if(!e)return;const held=accHeld(id),m=accMfaOf(id),exp=accExpected(e);
+  UI.modal({title:esc(e.name)+' — access profile',sub:deptName(e.dept)+' · '+held.length+' apps · MFA '+(m&&m.enrolled?'enrolled ('+m.factors.join(', ')+')':'NOT enrolled'),wide:true,
+    body:`<div class="row wrap mb12" style="gap:6px">${held.map(a=>{const app=accApp(a.appId);return app?`<span class="chip" style="display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:12px">${app.icon} ${esc(app.name)}${a.anomaly?' ⚠':''} <button class="mn-x" style="position:static;font-size:13px" data-act="accRevoke" data-arg="${a.id}" title="Revoke" onclick="UI.closeModal()">×</button></span>`:'';}).join('')}</div>
+      <div class="tiny faint">${exp.length} apps expected by birthright · ${held.filter(a=>a.anomaly).length} off-birthright</div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>${m&&m.enrolled?`<button class="btn soft" data-act="accMfaReset" data-arg="${id}" onclick="UI.closeModal()">Reset MFA</button>`:''}<button class="btn soft" style="color:var(--bad-text)" data-act="accDeprovision" data-arg="${id}" onclick="UI.closeModal()">Deprovision all</button><button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accGrantOpen" data-arg="emp:${id}">${I.plus} Add app</button>`});};
+ACT.accGrantOpen=arg=>{const a=String(arg||'');const preEmp=a.startsWith('emp:')?a.slice(4):'',preApp=a.startsWith('app:')?a.slice(4):'';
+  const eopts=DB.employees.filter(e=>e.status==='active'||e.status==='onboarding').map(e=>`<option value="${e.id}" ${e.id===preEmp?'selected':''}>${esc(e.name)}</option>`).join('');
+  const aopts=DB.access.apps.map(app=>`<option value="${app.id}" ${app.id===preApp?'selected':''}>${esc(app.name)}</option>`).join('');
+  UI.modal({title:'Grant app access',body:`<div class="field"><label>Employee</label><select id="acc-emp">${eopts}</select></div><div class="field"><label>Application</label><select id="acc-app">${aopts}</select></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accGrantSave">Grant access</button>`});};
+ACT.accGrantSave=()=>{const eid=document.getElementById('acc-emp').value,aid=document.getElementById('acc-app').value;
+  if(accActive().some(a=>a.employeeId===eid&&a.appId===aid)){UI.toast('Already has that app.');return;}
+  DB.access.assignments.unshift({id:'ENT-'+eid+'-'+aid+'-'+DB.access.events.length,employeeId:eid,appId:aid,grantedAt:todayISO(),grantedBy:DB.me.employeeId,source:'manual',lastActiveAt:todayISO(),status:'active'});
+  const app=accApp(aid);app.seats=(app.seats||0)+1;DB.access.events.unshift({id:'EV-'+Date.now().toString(36),at:todayISO(),actorId:DB.me.employeeId,action:'granted',employeeId:eid,appId:aid});
+  audit('access.grant',(emp(eid)||{}).name+' → '+app.name);notify(eid,'🔐','You were granted access to '+app.name,'#/access');Store.save();UI.closeModal();UI.toast('✓ Access granted to '+app.name+'.');render();};
+ACT.accRevoke=id=>{const a=(DB.access.assignments||[]).find(x=>x.id===id);if(!a||a.status!=='active')return;a.status='revoked';
+  const app=accApp(a.appId);if(app)app.seats=Math.max(0,(app.seats||1)-1);DB.access.events.unshift({id:'EV-'+Date.now().toString(36),at:todayISO(),actorId:DB.me.employeeId,action:'revoked',employeeId:a.employeeId,appId:a.appId});
+  audit('access.revoke',(emp(a.employeeId)||{}).name+' ✗ '+(app||{}).name);Store.save();UI.toast('Access revoked'+(app?' — '+app.name:'')+'.');render();};
+ACT.accDeprovision=id=>{const held=accHeld(id);if(!held.length){UI.toast('No active access to revoke.');return;}
+  held.forEach(a=>{a.status='revoked';const app=accApp(a.appId);if(app)app.seats=Math.max(0,(app.seats||1)-1);});
+  DB.access.events.unshift({id:'EV-'+Date.now().toString(36),at:todayISO(),actorId:DB.me.employeeId,action:'revoked',employeeId:id,appId:null,detail:'Deprovisioned all ('+held.length+' apps)'});
+  audit('access.deprovision',(emp(id)||{}).name+' — all access revoked ('+held.length+' apps)');Store.save();UI.toast('🔴 Deprovisioned — '+held.length+' apps revoked.');render();};
+ACT.accReconcile=()=>{const active=DB.employees.filter(e=>e.status==='active'),missing=[],extra=[];
+  active.forEach(e=>{const exp=accExpected(e),held=accHeld(e.id);exp.forEach(app=>{if(app.provisioning==='automatic'&&!held.some(a=>a.appId===app.id))missing.push({e,app});});held.forEach(a=>{if(a.anomaly)extra.push({e,a});});});
+  UI.modal({title:'Reconcile birthright drift',sub:missing.length+' missing grants · '+extra.length+' off-birthright entitlements',wide:true,
+    body:`${missing.length?`<b class="small">Will grant (${missing.length})</b><div class="row wrap mt8 mb12" style="gap:6px">${missing.slice(0,30).map(m=>`<span class="tiny" style="padding:3px 8px;border:1px solid var(--line);border-radius:7px">${esc(m.e.name.split(' ')[0])} → ${m.app.icon} ${esc(m.app.name)}</span>`).join('')}${missing.length>30?'<span class="tiny faint">+'+(missing.length-30)+' more</span>':''}</div>`:''}
+      ${extra.length?`<b class="small">Will flag for review (${extra.length})</b><div class="row wrap mt8" style="gap:6px">${extra.map(x=>`<span class="tiny" style="padding:3px 8px;border:1px solid var(--bad-text);border-radius:7px;color:var(--bad-text)">${esc(x.e.name.split(' ')[0])} ⚠ ${(accApp(x.a.appId)||{}).name}</span>`).join('')}</div>`:''}
+      ${!missing.length&&!extra.length?'<div class="empty"><div class="big">✓</div>No drift — everyone matches their birthright.</div>':''}`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button>${(missing.length||extra.length)?`<button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accReconcileApply">Apply reconciliation</button>`:''}`});};
+ACT.accReconcileApply=()=>{const active=DB.employees.filter(e=>e.status==='active');let g=0;
+  active.forEach(e=>{const held=accHeld(e.id);accExpected(e).forEach(app=>{if(app.provisioning==='automatic'&&!held.some(a=>a.appId===app.id)){DB.access.assignments.push({id:'ENT-'+e.id+'-'+app.id+'-r'+g,employeeId:e.id,appId:app.id,grantedAt:todayISO(),grantedBy:'birthright',source:'birthright',lastActiveAt:todayISO(),status:'active'});app.seats=(app.seats||0)+1;g++;}});});
+  DB.access.events.unshift({id:'EV-'+Date.now().toString(36),at:todayISO(),actorId:DB.me.employeeId,action:'birthright-applied',employeeId:null,appId:null,detail:'Reconciled — '+g+' grants applied'});
+  audit('access.reconcile',g+' birthright grants applied');Store.save();UI.closeModal();UI.toast('✓ Reconciled — '+g+' missing grants applied.');render();};
+ACT.accSimJoiner=()=>{const depts=[...new Set(DB.employees.map(e=>e.dept))];
+  UI.modal({title:'Simulate a joiner',sub:'Preview the exact app bundle a new hire would receive on day one',
+    body:`<div class="field"><label>Department</label><select id="sim-dept" onchange="ACT.accSimPreview()">${depts.map(d=>`<option value="${d}">${deptName(d)}</option>`).join('')}</select></div><div id="sim-out"></div>`,
+    foot:`<button class="btn primary" data-act="closeModal">Done</button>`});setTimeout(()=>{try{ACT.accSimPreview();}catch(e){}},60);};
+ACT.accSimPreview=()=>{const d=document.getElementById('sim-dept').value,apps=DB.access.apps.filter(a=>a.provisioning==='automatic'&&(a.birthright==='all'||(Array.isArray(a.birthright)&&a.birthright.includes(d))));
+  const out=document.getElementById('sim-out');if(out)out.innerHTML=`<div class="tiny faint mb8">${apps.length} apps auto-provision on day one:</div><div class="row wrap" style="gap:6px">${apps.map(a=>`<span style="padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:12px">${a.icon} ${esc(a.name)}</span>`).join('')}</div>`;};
+ACT.accReqDecide=arg=>{const [id,verb]=String(arg).split('|');const r=(DB.access.requests||[]).find(x=>x.id===id);if(!r||r.status!=='pending')return;
+  r.status=verb==='approve'?'approved':'denied';r.decidedAt=todayISO();
+  if(verb==='approve'&&!accActive().some(a=>a.employeeId===r.employeeId&&a.appId===r.appId)){DB.access.assignments.unshift({id:'ENT-'+r.employeeId+'-'+r.appId+'-q',employeeId:r.employeeId,appId:r.appId,grantedAt:todayISO(),grantedBy:DB.me.employeeId,source:'request',lastActiveAt:todayISO(),status:'active'});const app=accApp(r.appId);if(app)app.seats=(app.seats||0)+1;}
+  audit('access.request',verb+' '+(emp(r.employeeId)||{}).name+' → '+(accApp(r.appId)||{}).name);Store.save();UI.toast(verb==='approve'?'✓ Approved & provisioned.':'Request denied.');render();};
+ACT.accMfaReset=id=>{const m=accMfaOf(id);if(!m)return;m.enrolled=false;m.factors=[];m.lastVerified=null;
+  DB.access.events.unshift({id:'EV-'+Date.now().toString(36),at:todayISO(),actorId:DB.me.employeeId,action:'mfa-reset',employeeId:id,appId:null});
+  notify(id,'🔐','Your MFA was reset — please re-enroll a factor','#/access');audit('access.mfa',(emp(id)||{}).name+' MFA reset');Store.save();UI.toast('MFA reset — re-enrollment required.');render();};
+ACT.accMfaRemind=id=>{notify(id,'🔐','Reminder: enroll in multi-factor authentication to keep your access','#/access');UI.toast('Reminder sent to '+(emp(id)||{}).name.split(' ')[0]+'.');};
+ACT.accCampaignNew=()=>{const aopts=DB.access.apps.map(a=>`<option value="app:${a.id}">${esc(a.name)} access</option>`).join('');
+  UI.modal({title:'New access review',sub:'Certify who should keep access',body:`<div class="field"><label>Name</label><input id="camp-name" placeholder="e.g. Q3 privileged access review"></div><div class="field"><label>Scope</label><select id="camp-scope"><option value="all">All privileged apps</option>${aopts}</select></div><div class="field"><label>Due in (days)</label><input type="number" id="camp-due" value="7" min="1"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accCampaignSave">Launch review</button>`});};
+ACT.accCampaignSave=()=>{const name=(document.getElementById('camp-name').value||'').trim(),scope=document.getElementById('camp-scope').value,due=+document.getElementById('camp-due').value||7;
+  if(!name){UI.toast('Name the review.');return;}const appId=scope.startsWith('app:')?scope.slice(4):null;
+  const holders=appId?accActive().filter(a=>a.appId===appId):accStale();
+  DB.access.campaigns.unshift({id:'ACR-'+Date.now().toString(36),name,scope,appId,startedAt:todayISO(),dueAt:daysAhead(due),ownerId:DB.me.employeeId,status:'open',items:holders.slice(0,25).map(a=>({employeeId:a.employeeId,appId:a.appId,decision:null,reviewerId:DB.me.employeeId}))});
+  audit('access.campaign','Launched review: '+name);Store.save();UI.closeModal();UI.toast('📋 Review launched — '+Math.min(25,holders.length)+' items to certify.');render();};
+ACT.accCampOpen=id=>{const c=(DB.access.campaigns||[]).find(x=>x.id===id);if(!c)return;
+  const done=c.status==='done';
+  UI.modal({title:esc(c.name),sub:(done?'Completed '+fmtDshort(c.completedAt):'Due '+fmtDshort(c.dueAt))+' · owner '+((emp(c.ownerId)||{}).name||''),wide:true,
+    body:`<table class="tbl"><thead><tr><th>Person</th><th>App</th><th>Last active</th><th class="r">Decision</th></tr></thead><tbody>
+      ${c.items.map((it,i)=>{const e=emp(it.employeeId),app=accApp(it.appId),ent=accActive().find(a=>a.employeeId===it.employeeId&&a.appId===it.appId);return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':esc(it.employeeId)}</td><td class="small">${app?app.icon+' '+esc(app.name):''}</td><td class="tiny faint">${ent?fmtDshort(ent.lastActiveAt):'—'}</td><td class="r">${done?(it.decision==='revoke'?finPill('Revoked','var(--bad-text)'):finPill('Kept','var(--ok-text)')):`<button class="btn xs ${it.decision==='keep'?'good':'soft'}" data-act="accCertDecide" data-arg="${c.id}|${i}|keep">Keep</button> <button class="btn xs ${it.decision==='revoke'?'primary':'soft'}" style="${it.decision==='revoke'?'--brand:var(--bad-text);--brand-deep:var(--bad-text)':''}" data-act="accCertDecide" data-arg="${c.id}|${i}|revoke">Revoke</button>`}</td></tr>`;}).join('')}</tbody></table>`,
+    foot:done?`<button class="btn primary" data-act="closeModal">Close</button>`:`<button class="btn ghost" data-act="closeModal">Save & close</button><button class="btn primary" style="--brand:#4338ca;--brand-deep:#3730a3" data-act="accCertFinish" data-arg="${id}">Complete review</button>`});};
+ACT.accCertDecide=arg=>{const [cid,idx,verb]=String(arg).split('|');const c=(DB.access.campaigns||[]).find(x=>x.id===cid);if(!c||c.status==='done')return;
+  const it=c.items[+idx];if(it)it.decision=verb;Store.save();ACT.accCampOpen(cid);};
+ACT.accCertFinish=id=>{const c=(DB.access.campaigns||[]).find(x=>x.id===id);if(!c)return;
+  const undecided=c.items.filter(i=>!i.decision).length;if(undecided){UI.toast(undecided+' items still need a Keep/Revoke decision.');return;}
+  let rev=0;c.items.filter(i=>i.decision==='revoke').forEach(it=>{const a=accActive().find(x=>x.employeeId===it.employeeId&&x.appId===it.appId);if(a){a.status='revoked';const app=accApp(a.appId);if(app)app.seats=Math.max(0,(app.seats||1)-1);rev++;notify(it.employeeId,'🔐','Access to '+(accApp(it.appId)||{}).name+' was removed in a security review','#/access');}});
+  c.status='done';c.completedAt=todayISO();DB.access.events.unshift({id:'EV-'+Date.now().toString(36),at:todayISO(),actorId:DB.me.employeeId,action:'campaign-completed',employeeId:null,appId:null,detail:c.name+' — '+rev+' revoked'});
+  audit('access.campaign','Completed '+c.name+' — '+rev+' revoked');Store.save();UI.closeModal();UI.toast('✓ Review complete — '+rev+' access revoked.');render();};
+
+/* ===================================================================
    CAP TABLE & EQUITY (native) — replaces Carta. Share classes,
    financing rounds, option grants with cliff/vesting, 409A history,
    fully-diluted ownership and a non-participating exit waterfall.
@@ -13301,7 +13674,7 @@ function buildEquity(employees){
   let allocated=0;
   employees.filter(e=>e.status==='active'&&!founders[e.id]).forEach(e=>{const q=(e.comp&&e.comp.equity)||0;if(q<=0)return;allocated+=q;
     const gd=e.hireDate||'2022-01-15',yr=+String(gd).slice(0,4);
-    grants.push({id:'GR-'+e.id,employeeId:e.id,classId:'SC-pool',type:hash32(e.id+'opt')%3===0?'NSO':'ISO',qty:q,strike:strikeByYear[yr]||6.0,grantDate:gd,cliffMonths:12,vestMonths:48,status:'active'});});
+    grants.push({id:'GR-'+e.id,employeeId:e.id,classId:'SC-pool',type:parseInt(hash32(e.id+'opt'),16)%3===0?'NSO':'ISO',qty:q,strike:strikeByYear[yr]||6.0,grantDate:gd,cliffMonths:12,vestMonths:48,status:'active'});});
   const commonIssued=Object.values(founders).reduce((a,b)=>a+b,0),seedSh=6200000,aSh=7400000,bSh=5100000,poolReserved=9000000;
   const shareClasses=[
     {id:'SC-common',name:'Common',kind:'common',color:'#6366f1',pps:0,liqPref:0,seniority:0,authorized:12000000,issued:commonIssued,holder:'Founders & common'},

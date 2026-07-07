@@ -3847,6 +3847,10 @@ function moduleBadge(mod){
 }
 function renderSidebar(){
   const groups=groupBy(MODULES.filter(m=>canSee(m.id)),'group');
+  /* renderSidebar rebuilds the whole nav on every route change, which would snap the scroll
+     back to the top — so remember where the nav was scrolled and restore it after the rebuild.
+     Keeps your place in the list (esp. on mobile, where the drawer closes then reopens on nav). */
+  const _prevNav=$('#sidebar .nav-scroll');const _navSy=_prevNav?_prevNav.scrollTop:0;
   $('#sidebar').innerHTML=`
     <div class="logo-row">${logoSVG(30)}<div><div class="logo-name">Mosaic</div><div class="logo-sub">${esc(brandName())}</div></div></div>
     <nav class="nav-scroll">
@@ -3860,6 +3864,7 @@ function renderSidebar(){
         </a>`;}).join('')).join('')}
     </nav>
     <div class="sidebar-foot"><a class="linklike" href="#/map" style="font-weight:700">🗺️ Capability map</a> · <a class="linklike" href="#" onclick="event.preventDefault();ACT.kbHelp()">⌨️ Shortcuts</a><br><b>Mosaic</b> · one platform, every piece.<br>Created by Wes Griffin · Designed &amp; built with AI.<br>© 2026 Wes Griffin · All rights reserved.</div>`;
+  if(_navSy){const _newNav=$('#sidebar .nav-scroll');if(_newNav)_newNav.scrollTop=_navSy;}
 }
 function renderTopbar(){
   const m=modOf(ROUTE.mod)||MODULES[0];

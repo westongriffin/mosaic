@@ -2321,7 +2321,23 @@ function buildSpend(emps){
     {id:'EXP-304',employeeId:idOf('Aiden Walsh'),title:'Launch content shoot props',lines:[{cat:'Marketing',amt:188.6,note:'props & set'}],status:'reimbursed',submittedAt:daysAgo(14),reimbursedAt:daysAgo(7),receipts:2},
   ];
   expenses.forEach(x=>x.total=Math.round(sum(x.lines.map(l=>l.amt))*100)/100);
-  return {vendors,invoices,expenses};
+  /* ---- corporate cards & real-time spend (native Brex) ---- */
+  const hn=s=>parseInt(hash32(s),16)||0;
+  const CARD_POLICIES=[{id:'pol-exec',name:'Executive',cap:15000},{id:'pol-mgr',name:'Manager',cap:5000},{id:'pol-ic',name:'Team member',cap:2000},{id:'pol-ads',name:'Marketing Ads',cap:40000}];
+  const activeE=emps.filter(e=>e.status==='active'),mgrIds=new Set(emps.map(e=>e.managerId).filter(Boolean));
+  const holders=activeE.filter(e=>e.dept==='exec'||e.level==='E'||mgrIds.has(e.id)||hn(e.id+'card')%16===0);
+  const cards=holders.map((e,i)=>{const isExec=e.dept==='exec'||e.level==='E',pol=isExec?'pol-exec':mgrIds.has(e.id)?'pol-mgr':'pol-ic',P=CARD_POLICIES.find(p=>p.id===pol);
+    return {id:'CARD-'+(1000+i),holderId:e.id,last4:String(1000+hn(e.id+'l4')%9000),type:hn(e.id+'ct')%3===0?'physical':'virtual',network:'Mosaic Visa',status:hn(e.id+'st')%15===0?'frozen':'active',policyId:pol,limit:P.cap,spentCycle:0,issuedAt:daysAgo(30+hn(e.id+'ia')%500)};});
+  cards.push({id:'CARD-ADS',holderId:idOf('Aiden Walsh')||activeE[0].id,last4:'4402',type:'virtual',network:'Mosaic Visa',status:'active',policyId:'pol-ads',limit:40000,spentCycle:0,issuedAt:daysAgo(120),shared:true,name:'Marketing Ads'});
+  const MERCH=[['Amazon Web Services','Software'],['Figma','Software'],['Notion','Software'],['United Airlines','Travel'],['Marriott','Travel'],['DoorDash','Meals'],['Uber','Travel'],['Delta','Travel'],['Google Ads','Marketing'],['LinkedIn Ads','Marketing'],['Apple Store','Office'],['Slack','Software'],['Chipotle','Meals'],['Amazon','Office'],['WeWork','Facilities']];
+  const txns=[];
+  for(let i=0;i<64;i++){const c=cards[hn('tx'+i)%cards.length],m=MERCH[hn('txm'+i)%MERCH.length];
+    const amt=Math.round((m[1]==='Travel'?200+hn('txa'+i)%800:m[1]==='Marketing'?400+hn('txa'+i)%3200:15+hn('txa'+i)%300)*100)/100;
+    const st=hn('txs'+i)%22===0?'declined':(i<7?'pending':'cleared');
+    txns.push({id:'TXN-'+(10000+i),cardId:c.id,holderId:c.holderId,merchant:m[0],category:m[1],amount:amt,at:daysAgo(hn('txd'+i)%30),status:st,receipt:hn('txr'+i)%100<55,declineReason:st==='declined'?'Exceeds category limit':null,matchedExpId:null});}
+  txns.sort((a,b)=>a.at<b.at?1:-1);
+  cards.forEach(c=>c.spentCycle=txns.filter(t=>t.cardId===c.id&&t.status!=='declined').reduce((s,t)=>s+t.amount,0));
+  return {vendors,invoices,expenses,cards,txns,policies:CARD_POLICIES};
 }
 const DEPT_BUDGETS={eng:1400,data:380,product:520,design:340,mktg:980,sales:760,cx:290,fin:210,ops:640,it:330,people:420}; /* $K annual non-comp */
 function buildPages(emps){
@@ -3334,12 +3350,13 @@ function buildSeed(){
   const mail=buildMail(employees);
   mail.forEach(m=>{m.threadId=m.thread==='offer-alex'||/Offer — Senior Robotics/.test(m.subject)?'th-offer-alex':uid('TH');m.labels=m.labels||[];});
   const pt=buildProjects(employees);
-  return {v:22,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
+  return {v:36,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
     projects:pt.projects,tasks:pt.tasks,
     mailLabels:[{id:'lb1',name:'Benefits',color:'#10b981'},{id:'lb2',name:'Launch',color:'#6d28d9'},{id:'lb3',name:'Board',color:'#f59e0b'}],
     channels:chat.channels,chatMsgs:chat.msgs,mail,events:buildEvents(employees),
+    meetRecordings:buildMeetRecordings(employees),
     files:buildDrive(employees),posts:buildPosts(employees),
-    envelopes:buildEnvelopes(employees),flows:buildFlows(employees),
+    envelopes:buildEnvelopes(employees),signTemplates:buildSignTemplates(employees),signBulk:[],flows:buildFlows(employees),
     lifeEvents:[{id:'LE-1',employeeId:(employees.find(e=>e.name==='Chloe Marchand')||{}).id,kind:'Birth or adoption',date:daysAgo(20),deadline:daysAgo(-10),changes:'+1 dependent · kept Sequoia PPO',status:'approved'}],
     oeWindow:{start:'2026-11-01',end:'2026-11-15'},
     employees,former,reqs,candidates:cands,backgroundChecks:bgchecks,onboarding,offboarding:buildOffboarding(employees),enrollments,
@@ -3359,11 +3376,11 @@ function buildSeed(){
     policyCampaigns:[{id:'PC-101',title:'Updated Remote Work & Equipment Policy',due:daysAhead(10),created:daysAgo(6),audience:'*',
       acks:employees.filter((e,i)=>e.status==='active'&&hash32(e.id+'ack')%10<6).map(e=>e.id)}],
     accrual:{vacation:{perMonth:1.67,cap:30,carryover:5},sick:{perMonth:0.83,cap:15,carryover:0}},
-    integrations:INTEGRATIONS.map(i=>({...i})),finance:buildFinance(employees),equity:buildEquity(employees),access:buildAccess(employees)};
+    integrations:INTEGRATIONS.map(i=>({...i})),finance:buildFinance(employees),equity:buildEquity(employees),access:buildAccess(employees),scheduledChanges:buildScheduledChanges(employees),jobArch:buildJobArch(employees),erCases:buildER(employees),safety:buildSafety(employees),talent:buildTalent(employees),certs:buildCerts(employees),comms:buildComms(employees),sourcing:buildSourcing(employees),benops:buildBenOps(employees),rewards:buildRewards(employees)};
 }
 let _undo=[],_redo=[];const UNDO_CAP=10;
 const Store={
-  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===22){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
+  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===36){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
   /* save(silent): on a normal save, snapshot the prior persisted state so Ctrl+Z can return to it */
   save(silent){
     if(!silent){try{const prev=localStorage.getItem(LS_KEY);if(prev){_undo.push(prev);if(_undo.length>UNDO_CAP)_undo.shift();_redo.length=0;}}catch(e){}}
@@ -3406,8 +3423,8 @@ const canSee=mod=>{
   const role=myRole();
   const map={
     home:['admin','manager','employee'],people:['admin','manager','employee'],
-    finance:['admin'],equity:['admin'],access:['admin'],bgcheck:['admin'],
-    recruit:['admin','manager'],onboard:['admin','manager'],
+    finance:['admin'],equity:['admin'],access:['admin'],bgcheck:['admin'],effdate:['admin'],jobs:['admin','manager'],er:['admin'],safety:['admin'],talent:['admin','manager'],certs:['admin','manager'],comms:['admin','manager'],benops:['admin'],rewards:['admin'],
+    recruit:['admin','manager'],sourcing:['admin','manager'],onboard:['admin','manager'],
     learn:['admin','manager','employee'],grow:['admin','manager','employee'],
     time:['admin','manager','employee'],pay:['admin','manager','employee'],
     engage:['admin','manager','employee'],insights:['admin','manager'],
@@ -3751,20 +3768,30 @@ const MODULES=[
   {id:'drive',label:'Drive',icon:'drive',color:'#1fa463',group:'Connect',desc:'Files & folders with department sharing'},
   {id:'meet',label:'Meet',icon:'video',color:'#2d8cff',group:'Connect',desc:'Video rooms for 1:1s & interviews'},
   {id:'recruit',label:'Recruiting',icon:'recruit',color:'var(--c-recruit)',group:'Talent',desc:'Reqs, pipeline & offers'},
+  {id:'sourcing',label:'Sourcing',icon:'recruit',color:'#e0457b',group:'Talent',desc:'Talent CRM, employee referrals & interview scheduling'},
   {id:'bgcheck',label:'Background checks',icon:'shield',color:'#0d9488',group:'Talent',desc:'FCRA-compliant screening — order, adjudicate & issue adverse-action notices'},
   {id:'onboard',label:'Journeys',icon:'onboard',color:'var(--c-onboard)',group:'Talent',desc:'Onboarding & offboarding journeys'},
   {id:'learn',label:'Learning',icon:'learn',color:'var(--c-learn)',group:'Talent',desc:'Courses, paths & certs'},
+  {id:'certs',label:'Compliance & Certs',icon:'learn',color:'#0891b2',group:'Talent',desc:'Mandatory training tracking, certifications with renewals & learning paths'},
   {id:'grow',label:'Performance',icon:'grow',color:'var(--c-grow)',group:'Talent',desc:'Goals, reviews & feedback'},
+  {id:'jobs',label:'Job Architecture',icon:'grow',color:'#9333ea',group:'Talent',desc:'Job families, profiles, levels & the skills taxonomy — the spine tying Recruiting, Comp, Performance & Learning'},
+  {id:'talent',label:'Talent',icon:'grow',color:'#7c3aed',group:'Talent',desc:'9-box, succession planning, calibration & 360 multi-rater feedback'},
   {id:'flows',label:'Workflows',icon:'zap',color:'#e0457b',group:'Operations',desc:'Projects, tasks & requests — plan it, run it, route the approvals'},
   {id:'spend',label:'Spend',icon:'pay',color:'#1d4ed8',group:'Operations',desc:'Procurement, invoices, budgets & expenses — Coupa/NetSuite/Concur tier'},
   {id:'finance',label:'Finance',icon:'pay',color:'#0f766e',group:'Operations',desc:'General ledger, financial statements, A/R & A/P and the monthly close — native accounting, no NetSuite'},
+  {id:'effdate',label:'Effective dating',icon:'time',color:'#0f766e',group:'Operations',desc:'Future-dated change queue & point-in-time records — the temporal system-of-record spine'},
+  {id:'er',label:'Employee Relations',icon:'shield',color:'#7c3aed',group:'Operations',desc:'Disciplinary actions, PIPs, investigations & ADA accommodations — documented & confidential'},
+  {id:'safety',label:'Safety & Leave',icon:'shield',color:'#ea580c',group:'Operations',desc:'OSHA recordables, workers-comp claims & FMLA/leave-of-absence case management'},
   {id:'schedule',label:'Scheduling',icon:'time',color:'#0b7268',group:'Operations',desc:'Shift scheduling, clock-in & timesheets for hourly teams'},
   {id:'hrops',label:'HR Ops',icon:'shield',color:'#0f766e',group:'Operations',desc:'Payroll workbench, compliance, data health & process control — the operational backbone'},
   {id:'sign',label:'MosaicSign',icon:'edit',color:'#d97706',group:'Operations',desc:'E-signatures with an ESIGN-grade audit trail'},
   {id:'time',label:'Time Off',icon:'time',color:'var(--c-time)',group:'Operations',desc:'Balances, requests & calendar'},
   {id:'pay',label:'Compensation',icon:'pay',color:'var(--c-pay)',group:'Talent',desc:'Pay, bands & merit'},
+  {id:'rewards',label:'Total Rewards',icon:'pay',color:'#0f766e',group:'Talent',desc:'Pay bands & compa-ratio, pay-equity analysis & variable comp'},
   {id:'benefits',label:'Benefits',icon:'shield',color:'#0b7268',group:'Talent',desc:'Plans, elections, life events — plus the admin console'},
+  {id:'benops',label:'Benefits Admin',icon:'shield',color:'#0b7268',group:'Talent',desc:'Open enrollment, COBRA, ACA 1095-C & FSA/HSA spending accounts'},
   {id:'engage',label:'Engagement',icon:'engage',color:'var(--c-engage)',group:'Operations',desc:'Pulse surveys & eNPS'},
+  {id:'comms',label:'Communications',icon:'chat',color:'#e0457b',group:'Operations',desc:'Targeted broadcasts with read/ack tracking + exit/stay/onboarding lifecycle surveys'},
   {id:'insights',label:'Insights',icon:'insights',color:'var(--c-insights)',group:'Company',desc:'Cross-module analytics'},
   {id:'equity',label:'Cap Table',icon:'insights',color:'#7c3aed',group:'Company',desc:'Cap table, equity grants, 409A & exit waterfall — Carta-tier, native'},
   {id:'access',label:'Access',icon:'admin',color:'#4338ca',group:'Company',desc:'SSO, app catalog & lifecycle provisioning — Okta-tier, native'},
@@ -10325,10 +10352,38 @@ Views.meet=()=>{
         <div class="row mt12" style="gap:8px"><code class="chip" style="font-size:11px">meet.meridianlabs.com/${deslug(me().name).toLowerCase().replace(/ /g,'.')}</code></div>
         <button class="btn ghost block mt12" onclick="try{const l=this.closest('.card').querySelector('code');navigator.clipboard&&navigator.clipboard.writeText(l?l.textContent:location.href)}catch(e){};UI.toast('Link copied to clipboard','🔗')">${I.link} Copy link</button></div>
       <div class="card pad" style="background:linear-gradient(135deg,color-mix(in srgb,#2d8cff 7%,var(--card)),var(--card))"><b class="small">🧵 Connected</b>
-        <p class="tiny muted" style="margin-top:7px;line-height:1.7">1:1s and interviews carry Meet links automatically; <b>recordings save to Drive</b> when you leave. Production swap: Zoom SDK / Meet behind this exact UI.</p></div>
+        <p class="tiny muted" style="margin-top:7px;line-height:1.7">1:1s and interviews carry Meet links automatically; <b>recordings, transcripts & AI notes</b> save when you leave — all native, no Zoom required.</p></div>
     </div>
-  </div>`;
+  </div>
+  ${meetRecordingsSection()}`;
 };
+function meetRecordingsSection(){
+  const R=DB.meetRecordings||[];
+  if(!R.length)return '';
+  return `<div class="card mt16"><div class="card-head"><h3>🎬 Recordings &amp; AI notes</h3><span class="spacer"></span><span class="tiny faint">saved to Drive · auto-transcribed</span></div>
+    <table class="tbl"><thead><tr><th>Meeting</th><th>Host</th><th>When</th><th class="r">Duration</th><th class="r">People</th><th></th></tr></thead><tbody>
+    ${R.map(r=>{const h=emp(r.host);return `<tr class="click" data-act="meetRecOpen" data-arg="${r.id}"><td><b class="small">${esc(r.title)}</b><div class="tiny faint">✨ AI notes · ${r.actions.length} action items</div></td><td class="tiny">${h?esc(h.name.split(' ')[0]):''}</td><td class="tiny">${rel(r.date)}</td><td class="r tiny">${r.durMin} min</td><td class="r tiny">${r.participants}</td><td class="r"><button class="btn xs soft" data-act="meetRecOpen" data-arg="${r.id}">▶ Notes</button></td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function buildMeetRecordings(emps){
+  const idOf=n=>(emps.find(e=>e.name===n)||{}).id;
+  const rec=(id,title,host,participants,durMin,date,summary,actions,transcript)=>({id,title,host:idOf(host)||emps[0].id,participants,durMin,date,summary,actions,transcript:transcript||''});
+  return [
+    rec('REC-1','Weekly Eng Standup','Priya Sharma',8,28,daysAgo(1),'Team aligned on the Home Hub 2.0 launch timeline; the pairing-timeout fix is in review; two follow-ups on QA coverage before Friday\'s readiness check.',['Fix pairing timeout on weak wifi','Add QA coverage for the OTA retry path','Schedule launch-readiness review Friday'],'Priya: Let\'s start with the launch timeline. Jordan, where\'s the pairing fix?\nJordan: In review — should merge today. Weak-wifi edge case is handled.\nPriya: Great. QA coverage on the retry path?\nMaya: Adding it this sprint.'),
+    rec('REC-2','1:1 — Priya & Jordan','Priya Sharma',2,31,daysAgo(2),'Career-growth discussion; Jordan wants more systems-design scope. Agreed on a Q3 stretch project and a reading list.',['Draft Q3 stretch-project brief','Share systems-design reading list']),
+    rec('REC-3','Alex Rivera — Onsite panel','Sam Torres',4,52,daysAgo(3),'Strong technical signal on robotics control; two interviewers recommend hire, one strong-hire. Values fit noted positive — recommend advancing to offer once references and the background check clear.',['Collect scorecards from all panelists','Advance to offer pending background check']),
+    rec('REC-4','All-Hands — June','Wes Griffin',142,44,daysAgo(9),'Q2 results ahead of plan; Home Hub 2.0 on track; new benefits announced; June pulse at 78% participation.',['Publish the all-hands recording to Hub','Follow up on benefits-enrollment questions']),
+    rec('REC-5','Comp calibration — Eng','Priya Sharma',6,63,daysAgo(11),'Calibrated merit for 24 engineers; two promotions endorsed; spend within band.',['Finalize promotion packets','Enter merit into Compensation']),
+    rec('REC-6','Board prep — Financials','James Park',3,37,daysAgo(14),'Reviewed Q2 P&L and runway; net income ahead of plan; prepared the board-deck financial section.',['Export financial statements from Finance','Circulate board-deck draft'])
+  ];
+}
+ACT.meetRecOpen=id=>{const r=(DB.meetRecordings||[]).find(x=>x.id===id);if(!r)return;const h=emp(r.host);
+  UI.modal({title:'🎬 '+esc(r.title),sub:(h?esc(h.name):'')+' · '+rel(r.date)+' · '+r.durMin+' min · '+r.participants+' participants',wide:true,
+    body:`<div class="card pad mb12" style="background:linear-gradient(135deg,color-mix(in srgb,#2d8cff 9%,var(--card)),var(--card))"><b class="small">✨ AI summary</b><p class="small" style="margin-top:6px;line-height:1.6">${esc(r.summary)}</p></div>
+      <b class="small">Action items</b><div class="mt8">${r.actions.map((a,i)=>`<div class="row between" style="padding:8px 0;border-top:1px solid var(--line)"><span class="small">${esc(a)}</span><button class="btn xs soft" data-act="meetRecTask" data-arg="${id}|${i}">＋ Task</button></div>`).join('')}</div>
+      ${r.transcript?`<details class="mt12"><summary class="tiny" style="cursor:pointer;color:var(--brand)">View transcript</summary><div class="tiny faint mt8" style="white-space:pre-wrap;max-height:220px;overflow:auto;padding:8px;background:var(--panel2,var(--card2));border-radius:8px">${esc(r.transcript)}</div></details>`:'<div class="tiny faint mt12">Full transcript available in Drive.</div>'}`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>`});};
+ACT.meetRecTask=arg=>{const [id,i]=String(arg).split('|');const r=(DB.meetRecordings||[]).find(x=>x.id===id);if(!r)return;
+  UI.toast('✓ "'+esc(r.actions[+i]).slice(0,40)+'…" added to your tasks.');};
 function meetStage(){
   const M=UIS.meetActive;
   const others=M.parts.map(emp).filter(Boolean);
@@ -10533,15 +10588,20 @@ const envMyTurn=env=>{
   return pend.find(s=>s.order===minOrder&&s.empId===DB.me.employeeId)||null;
 };
 const envVisible=env=>isAdmin()||env.createdBy===DB.me.employeeId||env.signers.some(s=>s.empId===DB.me.employeeId);
-Views.sign=()=>{
+Views.sign=param=>{
   const mine=DB.envelopes.filter(envVisible);
   const waitingMe=mine.filter(e=>envMyTurn(e));
   const out=mine.filter(e=>e.status==='out'),done=mine.filter(e=>e.status==='completed');
+  const sTabs=[['envelopes','Envelopes',waitingMe.length],['templates','Templates',0],['bulk','Bulk send',0]];
+  if(param&&sTabs.some(t=>t[0]===param))UIS.signTab=param;
+  const sTab=sTabs.some(t=>t[0]===(UIS.signTab||'envelopes'))?(UIS.signTab||'envelopes'):'envelopes';
   return `
   <div class="page-head"><div style="flex:1"><h1 class="page">MosaicSign</h1>
     <div class="page-sub">Consent · intent · attribution · tamper-evidence · audit trail — the five pillars of a defensible e-signature</div></div>
-    <button class="btn primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="signNew">${I.plus} New envelope</button></div>
+    ${sTab==='templates'?`<button class="btn primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="tmplNew">${I.plus} New template</button>`:sTab==='bulk'?`<button class="btn primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="bulkNew">${I.plus} Bulk send</button>`:`<button class="btn primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="signNew">${I.plus} New envelope</button>`}</div>
   <div class="esign-box mb16">⚖️ <b>Compliance demo:</b> this module demonstrates the structural elements of ESIGN/UETA-defensible signing — recorded consent to do business electronically, explicit intent-to-sign, signer attribution, an immutable event trail, and a tamper-evident document hash. A production deployment additionally needs real identity verification, server-side sealing and counsel review.</div>
+  <div class="tabs">${sTabs.map(t=>`<button class="${sTab===t[0]?'on':''}" data-act="setSignTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${sTab==='templates'?signTemplatesView():sTab==='bulk'?signBulkView():`
   <div class="grid g4 mb16">
     ${statCard('Awaiting you',waitingMe.length,waitingMe.length?'don\'t leave them hanging':'nothing to sign','#d97706')}
     ${statCard('Out for signature',out.length,'envelopes in flight','var(--c-time)')}
@@ -10561,8 +10621,47 @@ Views.sign=()=>{
     <td><span class="row" style="gap:4px">${e.signers.map(s=>`<span class="chip" style="font-size:10.5px;${s.status==='signed'?'background:var(--ok-soft);border-color:transparent;color:var(--ok-text)':''}">${s.status==='signed'?'✓ ':''}${esc(s.name.split(' ')[0])}</span>`).join('')}</span></td>
     <td>${badge(e.status==='out'?'b-warn':e.status,e.status==='out'?'Out for signature':undefined)}</td>
     <td class="muted">${rel(e.createdAt)}</td>
-    <td><span class="hashchip">${e.hash.slice(0,8)}</span></td></tr>`).join('')||'<tr><td colspan="5"><div class="empty"><div class="big">📜</div>No envelopes yet.</div></td></tr>'}</tbody></table></div>`;
+    <td><span class="hashchip">${e.hash.slice(0,8)}</span></td></tr>`).join('')||'<tr><td colspan="5"><div class="empty"><div class="big">📜</div>No envelopes yet.</div></td></tr>'}</tbody></table></div>`}`;
 };
+ACT.setSignTab=a=>{UIS.signTab=a;history.replaceState(null,'','#/sign/'+a);render();};
+function buildSignTemplates(emps){
+  return [
+    {id:'TPL-offer',name:'Offer letter',docName:'Offer Letter.pdf',category:'HR',desc:'Standard offer — comp, equity & start date',roles:['Candidate','CPO'],fields:6,usageCount:23,lastUsedAt:daysAgo(4),active:true},
+    {id:'TPL-nda',name:'Mutual NDA',docName:'Mutual NDA.pdf',category:'Legal',desc:'Two-way confidentiality agreement',roles:['Counterparty','Legal'],fields:4,usageCount:41,lastUsedAt:daysAgo(9),active:true},
+    {id:'TPL-pol',name:'Policy acknowledgment',docName:'Policy Ack.pdf',category:'Policy',desc:'Employee acknowledgment of a policy update',roles:['Employee'],fields:2,usageCount:312,lastUsedAt:daysAgo(1),active:true},
+    {id:'TPL-consult',name:'Consulting agreement',docName:'Consulting MSA.pdf',category:'Legal',desc:'Independent-contractor MSA + SOW',roles:['Contractor','Finance','Legal'],fields:8,usageCount:12,lastUsedAt:daysAgo(20),active:true},
+    {id:'TPL-equity',name:'Stock option grant',docName:'Option Grant.pdf',category:'Finance',desc:'ISO/NSO grant notice & agreement',roles:['Grantee','CFO'],fields:7,usageCount:57,lastUsedAt:daysAgo(6),active:true},
+    {id:'TPL-i9',name:'I-9 authorization',docName:'Form I-9.pdf',category:'HR',desc:'Employment eligibility verification',roles:['Employee','HR'],fields:9,usageCount:88,lastUsedAt:daysAgo(3),active:true},
+    {id:'TPL-sep',name:'Separation agreement',docName:'Separation.pdf',category:'Legal',desc:'Release & severance terms',roles:['Employee','Legal'],fields:5,usageCount:7,lastUsedAt:daysAgo(31),active:true}
+  ];
+}
+function signTemplatesView(){
+  const T=DB.signTemplates||[];
+  return `<div class="grid g3">${T.map(t=>`<div class="card pad"><div class="row between"><b>${esc(t.name)}</b>${finPill(t.category,'#6d3fd6')}</div>
+    <div class="tiny faint mt4">${esc(t.desc)}</div>
+    <div class="tiny faint mt8">📄 ${esc(t.docName)} · ${t.fields} fields · ${t.roles.map(esc).join(' → ')}</div>
+    <div class="tiny faint mt4">Used ${t.usageCount}× · ${t.lastUsedAt?'last '+rel(t.lastUsedAt):'never'}</div>
+    <div class="row wrap mt12" style="gap:6px"><button class="btn xs primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="tmplUse" data-arg="${t.id}">Send from template</button><button class="btn xs soft" data-act="bulkNew" data-arg="${t.id}">Bulk send</button></div></div>`).join('')}</div>`;
+}
+function signBulkView(){
+  const camps=DB.signBulk||[];
+  return `<div class="card pad mb16" style="border-left:3px solid #d97706"><b>Bulk send</b> <span class="tiny faint">— one template, many signers</span>
+    <div class="tiny faint mt4">Send a template to a whole audience (a department, everyone, or a group). Each recipient gets their own envelope with a personalized signing link, and completion is tracked in one place — ideal for policy acknowledgments and annual attestations.</div>
+    <button class="btn sm primary mt12" style="--brand:#d97706;--brand-deep:#b45309" data-act="bulkNew">${I.plus} Start a bulk send</button></div>
+  ${camps.length?`<div class="card"><div class="card-head"><h3>Bulk campaigns</h3></div><table class="tbl"><thead><tr><th>Template</th><th>Audience</th><th>Sent</th><th class="r">Signed</th><th>Status</th></tr></thead><tbody>
+    ${camps.map(c=>`<tr><td><b class="small">${esc(c.tmplName)}</b></td><td class="tiny">${esc(c.audience)}</td><td class="tiny">${fmtDshort(c.sentAt)}</td><td class="r num">${c.signed}/${c.total}</td><td>${c.signed>=c.total?finPill('Complete','var(--ok-text)'):finPill('In progress','var(--warn-text)')}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty"><div class="big">📬</div>No bulk campaigns yet — start one above.</div>'}`;
+}
+ACT.tmplUse=id=>{const t=(DB.signTemplates||[]).find(x=>x.id===id);if(!t)return;t.usageCount++;t.lastUsedAt=todayISO();audit('sign.template','Sent from '+t.name);Store.save();UI.toast('📤 Envelope created from "'+t.name+'" — routed to '+t.roles.join(' → ')+'.');render();};
+ACT.tmplNew=()=>{UI.modal({title:'New template',sub:'A reusable document with predefined signer roles',body:`<div class="field"><label>Template name</label><input id="tpl-name" placeholder="e.g. Contractor W-9"></div><div class="grid g2"><div class="field"><label>Category</label><select id="tpl-cat"><option>HR</option><option>Legal</option><option>Policy</option><option>Finance</option></select></div><div class="field"><label>Signer roles (comma-separated)</label><input id="tpl-roles" placeholder="Employee, HR"></div></div>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="tmplNewSave">Create template</button>`});};
+ACT.tmplNewSave=()=>{const n=(document.getElementById('tpl-name').value||'').trim(),cat=document.getElementById('tpl-cat').value,roles=(document.getElementById('tpl-roles').value||'Employee').split(',').map(s=>s.trim()).filter(Boolean);if(!n){UI.toast('Name the template.');return;}
+  DB.signTemplates.unshift({id:'TPL-'+Date.now().toString(36),name:n,docName:n+'.pdf',category:cat,desc:'Custom template',roles:roles.length?roles:['Employee'],fields:roles.length*2,usageCount:0,lastUsedAt:null,active:true});audit('sign.template','Created template '+n);Store.save();UI.closeModal();UIS.signTab='templates';UI.toast('✓ Template "'+n+'" created.');render();};
+ACT.bulkNew=id=>{const opts=(DB.signTemplates||[]).map(x=>`<option value="${x.id}" ${x.id===id?'selected':''}>${esc(x.name)}</option>`).join(''),depts=[...new Set(DB.employees.filter(e=>e.status==='active').map(e=>e.dept))];
+  UI.modal({title:'Bulk send',sub:'Send a template to an entire audience',body:`<div class="field"><label>Template</label><select id="blk-tpl">${opts}</select></div><div class="field"><label>Audience</label><select id="blk-aud"><option value="all">All employees</option>${depts.map(d=>`<option value="dept:${d}">${deptName(d)}</option>`).join('')}</select></div>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#d97706;--brand-deep:#b45309" data-act="bulkNewSave">Send to audience</button>`});};
+ACT.bulkNewSave=()=>{const tid=document.getElementById('blk-tpl').value,aud=document.getElementById('blk-aud').value,t=(DB.signTemplates||[]).find(x=>x.id===tid);
+  const emps=DB.employees.filter(e=>e.status==='active'&&(aud==='all'||e.dept===aud.replace('dept:',''))),audLabel=aud==='all'?'All employees':deptName(aud.replace('dept:',''));
+  (DB.signBulk=DB.signBulk||[]).unshift({id:'BLK-'+Date.now().toString(36),tmplId:tid,tmplName:(t||{}).name||'',audience:audLabel,total:emps.length,signed:Math.floor(emps.length*0.15),sentAt:todayISO()});
+  if(t){t.usageCount+=emps.length;t.lastUsedAt=todayISO();}
+  audit('sign.bulk','Bulk sent '+(t||{}).name+' to '+emps.length);Store.save();UI.closeModal();UIS.signTab='bulk';UI.toast('📬 Sent to '+emps.length+' people — track completion in Bulk send.');render();};
 ACT.signOpen=eid=>{
   const env=byId(DB.envelopes,eid);if(!env)return;
   const turn=envMyTurn(env);
@@ -13292,6 +13391,815 @@ function budgetRows(){
   });
 }
 /* ===================================================================
+   TOTAL REWARDS & PAY EQUITY — pay bands + compa-ratio, a pay-
+   equity gap analysis, variable/commission plans and a total-
+   rewards view.
+   =================================================================== */
+function buildRewards(employees){
+  const active=employees.filter(e=>e.status==='active'),hn=s=>parseInt(hash32(s),16)||0;
+  const levels=['IC1','IC2','IC3','IC4','IC5','IC6','M3','M4','M5','E'];
+  const baseByLevel={IC1:95000,IC2:120000,IC3:150000,IC4:185000,IC5:220000,IC6:265000,M3:200000,M4:250000,M5:310000,E:400000};
+  const bands=levels.map(lv=>{const mid=baseByLevel[lv];return {level:lv,min:Math.round(mid*0.85),mid,max:Math.round(mid*1.15),headcount:active.filter(e=>e.level===lv).length};});
+  const equityRows=['IC3','IC4','IC5','M4'].map(lv=>{const inLv=active.filter(e=>e.level===lv),bases=inLv.map(e=>e.comp&&e.comp.base).filter(Boolean).sort((a,b)=>a-b),med=bases.length?bases[Math.floor(bases.length/2)]:baseByLevel[lv],gap=(hn(lv+'gap')%7-3);
+    return {level:lv,medianW:med,medianM:Math.round(med*(1+gap/100)),gapPct:gap,n:inLv.length};});
+  const variable=[
+    {id:'VP-1',name:'Sales commission plan',eligible:18,target:'8–20% of closed ARR',ytdPaid:840000,attainment:112},
+    {id:'VP-2',name:'Annual company bonus',eligible:active.length,target:'8–15% of base',ytdPaid:0,attainment:0},
+    {id:'VP-3',name:'Executive long-term incentive',eligible:7,target:'RSU grants',ytdPaid:0,attainment:0}];
+  return {bands,equityRows,variable};
+}
+function rwCompaRatio(){const B=DB.rewards.bands,mid={};B.forEach(b=>mid[b.level]=b.mid);const rs=DB.employees.filter(e=>e.status==='active'&&e.comp&&mid[e.level]).map(e=>e.comp.base/mid[e.level]);return rs.length?rs.reduce((a,b)=>a+b,0)/rs.length:1;}
+Views.rewards=param=>{
+  const R=DB.rewards;if(!R)return '<div class="card empty"><div class="big">🎁</div>Not initialized.</div>';
+  const tabs=[['roverview','Overview',0],['bands','Pay bands',0],['equity','Pay equity',R.equityRows.filter(r=>Math.abs(r.gapPct)>=3).length],['variable','Variable comp',0]];
+  if(param)UIS.rewardsTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.rewardsTab||'roverview'))?(UIS.rewardsTab||'roverview'):'roverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Total Rewards</h1>
+    <div class="page-sub">Pay bands &amp; compa-ratio, pay-equity analysis, and variable/commission plans</div></div>
+    <button class="btn ghost" data-act="nav" data-arg="#/pay">Compensation ↗</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setRewardsTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='roverview'?rwOverview():tab==='bands'?rwBands():tab==='equity'?rwEquity():rwVariable()}`;
+};
+ACT.setRewardsTab=a=>{UIS.rewardsTab=a;history.replaceState(null,'','#/rewards/'+a);render();};
+function rwOverview(){
+  const R=DB.rewards,cr=rwCompaRatio(),maxGap=Math.max(...R.equityRows.map(r=>Math.abs(r.gapPct)));
+  const spend=sum(DB.employees.filter(e=>e.status==='active'&&e.comp).map(e=>e.comp.base));
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Avg compa-ratio',cr.toFixed(2),'base vs band midpoint',cr>=0.95&&cr<=1.05?'var(--ok-text)':'var(--warn-text)')}
+    ${statCard('Largest pay gap',maxGap+'%','adjusted median',maxGap<=3?'var(--ok-text)':'var(--warn-text)',undefined,'','#/rewards/equity')}
+    ${statCard('Variable-eligible',R.variable.reduce((s,v)=>Math.max(s,v.eligible),0)+' / '+DB.employees.filter(e=>e.status==='active').length,'in a plan','#8b5cf6',undefined,'','#/rewards/variable')}
+    ${statCard('Base pay spend',finCompact(spend),'annualized','#0f766e')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Pay-band coverage</h3></div><div class="card-body">
+    ${R.bands.filter(b=>b.headcount).map(b=>`<div style="margin-bottom:9px"><div class="row between"><span class="small"><b>${b.level}</b> <span class="tiny faint">${fmt$(b.min)}–${fmt$(b.max)}</span></span><span class="tiny faint">${b.headcount} people</span></div><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${Math.min(100,b.headcount*4)}%;background:#0f766e;border-radius:5px"></div></div></div>`).join('')}</div></div>`;
+}
+function rwBands(){
+  const R=DB.rewards,mid={};R.bands.forEach(b=>mid[b.level]=b.mid);
+  return `<div class="card"><div class="card-head"><h3>Pay bands</h3></div>
+    <table class="tbl"><thead><tr><th>Level</th><th class="r">Min</th><th class="r">Mid</th><th class="r">Max</th><th class="r">Headcount</th><th class="r">Avg compa-ratio</th></tr></thead><tbody>
+    ${R.bands.map(b=>{const inLv=DB.employees.filter(e=>e.status==='active'&&e.level===b.level&&e.comp);const cr=inLv.length?inLv.reduce((s,e)=>s+e.comp.base/b.mid,0)/inLv.length:null;return `<tr><td><b class="small">${b.level}</b></td><td class="r num">${fmt$(b.min)}</td><td class="r num">${fmt$(b.mid)}</td><td class="r num">${fmt$(b.max)}</td><td class="r num">${b.headcount}</td><td class="r num">${cr?cr.toFixed(2):'—'}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function rwEquity(){
+  const R=DB.rewards;
+  return `<div class="card"><div class="card-head"><h3>Pay-equity analysis</h3><span class="spacer"></span><span class="tiny faint">median base, controlled for level</span></div>
+    <table class="tbl"><thead><tr><th>Level</th><th class="r">n</th><th class="r">Median (group A)</th><th class="r">Median (group B)</th><th class="r">Gap</th><th>Assessment</th></tr></thead><tbody>
+    ${R.equityRows.map(r=>`<tr><td><b class="small">${r.level}</b></td><td class="r num">${r.n}</td><td class="r num">${fmt$(r.medianW)}</td><td class="r num">${fmt$(r.medianM)}</td><td class="r num" style="${Math.abs(r.gapPct)>=3?'color:var(--bad-text);font-weight:700':''}">${r.gapPct>0?'+':''}${r.gapPct}%</td><td>${Math.abs(r.gapPct)<3?finPill('Within tolerance','var(--ok-text)'):finPill('Review','var(--warn-text)')}</td></tr>`).join('')}</tbody></table>
+    <div class="pad tiny faint">Gaps within ±3% after controlling for level, tenure and location are considered explainable; larger gaps flag for individualized review and remediation.</div></div>`;
+}
+function rwVariable(){
+  const R=DB.rewards;
+  return `<div class="card"><div class="card-head"><h3>Variable compensation plans</h3></div>
+    <table class="tbl"><thead><tr><th>Plan</th><th class="r">Eligible</th><th>Target</th><th class="r">YTD paid</th><th class="r">Attainment</th></tr></thead><tbody>
+    ${R.variable.map(v=>`<tr><td><b class="small">${esc(v.name)}</b></td><td class="r num">${v.eligible}</td><td class="tiny">${esc(v.target)}</td><td class="r num">${v.ytdPaid?fmt$(v.ytdPaid):'—'}</td><td class="r">${v.attainment?finPill(v.attainment+'%',v.attainment>=100?'var(--ok-text)':'var(--warn-text)'):'—'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ===================================================================
+   BENEFITS ADMINISTRATION — open-enrollment campaigns, COBRA,
+   ACA 1095-C compliance and FSA/HSA/commuter spending accounts.
+   =================================================================== */
+function buildBenOps(employees){
+  const active=employees.filter(e=>e.status==='active'),n=active.length,hn=s=>parseInt(hash32(s),16)||0;
+  const oe={status:'upcoming',winStart:'2026-11-01',winEnd:'2026-11-15',eligible:n,enrolled:0,mode:'active',planYear:2027};
+  const cobra=[
+    {id:'CB-1',name:'Former: R. Alvarez',event:'Termination',electionDeadline:daysAhead(18),status:'elected',monthlyPremium:642,startDate:daysAgo(12)},
+    {id:'CB-2',name:'Former: T. Nguyen',event:'Reduction in hours',electionDeadline:daysAhead(42),status:'notified',monthlyPremium:598,startDate:null},
+    {id:'CB-3',name:'Former: K. Patel',event:'Termination',electionDeadline:daysAgo(4),status:'lapsed',monthlyPremium:642,startDate:null},
+    {id:'CB-4',name:'Dependent: aging out (26)',event:'Dependent aging out',electionDeadline:daysAhead(30),status:'notified',monthlyPremium:410,startDate:null}];
+  const aca={ale:true,fteCount:n,offered:Math.round(n*0.98),affordable:true,safeHarbor:'Rate of pay',forms1095c:n,filingDeadline:'2027-03-31',status:'assembled'};
+  const accTypes=['HSA','FSA','Dependent Care FSA','Commuter'],accLimits={HSA:4150,FSA:3200,'Dependent Care FSA':5000,Commuter:3780};
+  const accounts=active.filter((e,i)=>i%5<2).slice(0,30).map(e=>{const t=accTypes[hn(e.id+'acct')%accTypes.length],election=accLimits[t],spent=Math.round(election*(hn(e.id+'sp')%80)/100);return {employeeId:e.id,type:t,election,spent,balance:election-spent};});
+  return {oe,cobra,aca,accounts};
+}
+Views.benops=param=>{
+  const B=DB.benops;if(!B)return '<div class="card empty"><div class="big">🩺</div>Not initialized.</div>';
+  const cobraOpen=B.cobra.filter(c=>c.status==='notified').length;
+  const tabs=[['boverview','Overview',cobraOpen],['oe','Open enrollment',0],['cobra','COBRA',cobraOpen],['aca','ACA & accounts',0]];
+  if(param)UIS.benopsTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.benopsTab||'boverview'))?(UIS.benopsTab||'boverview'):'boverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Benefits Administration</h1>
+    <div class="page-sub">Open enrollment, COBRA, ACA 1095-C compliance and FSA/HSA/commuter spending accounts</div></div>
+    ${parityBtn?'':''}<button class="btn ghost" data-act="nav" data-arg="#/benefits">Employee benefits ↗</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setBenopsTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='boverview'?benopsOverview():tab==='oe'?benopsOE():tab==='cobra'?benopsCobra():benopsAca()}`;
+};
+ACT.setBenopsTab=a=>{UIS.benopsTab=a;history.replaceState(null,'','#/benops/'+a);render();};
+function benopsOverview(){
+  const B=DB.benops,accTot=sum(B.accounts.map(a=>a.election)),accSpent=sum(B.accounts.map(a=>a.spent));
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Open enrollment',B.oe.status==='upcoming'?'Nov 1–15':'—','plan year '+B.oe.planYear+' · '+B.oe.mode,'#0b7268',undefined,'','#/benops/oe')}
+    ${statCard('COBRA — action needed',B.cobra.filter(c=>c.status==='notified').length,'awaiting election','var(--warn-text)',undefined,'','#/benops/cobra')}
+    ${statCard('ACA 1095-C',B.aca.forms1095c,B.aca.status+' · file by '+fmtDshort(B.aca.filingDeadline),'#0ea5e9')}
+    ${statCard('Spending accounts',B.accounts.length,fmt$(accSpent)+' of '+fmt$(accTot)+' used','#8b5cf6')}
+  </div>
+  <div class="card"><div class="card-head"><h3>ACA compliance snapshot</h3></div><div class="card-body">
+    <div class="row between" style="padding:6px 0"><span>Applicable Large Employer (ALE)</span><b>${B.aca.ale?'Yes — '+B.aca.fteCount+' FTEs':'No'}</b></div>
+    <div class="row between" style="padding:6px 0"><span>Employees offered coverage</span><b>${pct(B.aca.offered,B.aca.fteCount)}% (${B.aca.offered})</b></div>
+    <div class="row between" style="padding:6px 0"><span>Affordability</span>${B.aca.affordable?finPill('Affordable — '+B.aca.safeHarbor+' safe harbor','var(--ok-text)'):finPill('At risk','var(--bad-text)')}</div>
+    <div class="row between" style="padding:6px 0"><span>1094-C / 1095-C filing</span>${finPill(B.aca.status,'var(--warn-text)')}</div></div></div>`;
+}
+function benopsOE(){
+  const B=DB.benops,oe=B.oe;
+  return `<div class="card mb16"><div class="card-head"><h3>Open enrollment — plan year ${oe.planYear}</h3><span class="spacer"></span>${oe.status==='active'?finPill('Live','var(--warn-text)'):finPill('Scheduled','#0b7268')}</div><div class="card-body">
+    <div class="grid g3 mb16">${statCard('Window',fmtDshort(oe.winStart)+'–'+fmtDshort(oe.winEnd),oe.mode+' enrollment','#0b7268')}${statCard('Eligible',oe.eligible,'employees','#6366f1')}${statCard('Enrolled',oe.enrolled,oe.status==='upcoming'?'opens soon':pct(oe.enrolled,oe.eligible)+'%','#22c55e')}</div>
+    <div class="row wrap" style="gap:8px">${oe.status==='upcoming'?`<button class="btn primary" style="--brand:#0b7268;--brand-deep:#0f766e" data-act="oeLaunch">▶ Open enrollment now</button>`:`<button class="btn soft" data-act="oeClose">Close enrollment</button>`}<button class="btn ghost" data-act="oeAnnounce">📣 Announce to employees</button></div>
+    <div class="tiny faint mt12">Active enrollment re-collects every election for the new plan year; passive rolls prior-year choices forward. Qualifying life events open off-cycle windows automatically.</div></div></div>`;
+}
+function benopsCobra(){
+  const B=DB.benops;
+  return `<div class="card"><div class="card-head"><h3>COBRA administration</h3></div>
+    <table class="tbl"><thead><tr><th>Continuant</th><th>Qualifying event</th><th>Election deadline</th><th class="r">Monthly premium</th><th>Status</th><th></th></tr></thead><tbody>
+    ${B.cobra.map(c=>{const od=c.status==='notified'&&c.electionDeadline<todayISO();return `<tr><td><b class="small">${esc(c.name)}</b></td><td class="tiny">${esc(c.event)}</td><td class="tiny">${fmtDshort(c.electionDeadline)}${od?' ⚠':''}</td><td class="r num">${fmt$(c.monthlyPremium)}</td><td>${c.status==='elected'?finPill('Elected','var(--ok-text)'):c.status==='notified'?finPill('Notified','var(--warn-text)'):finPill('Lapsed','#94a3b8')}</td><td class="r">${c.status==='notified'?`<button class="btn xs good" data-act="cobraElect" data-arg="${c.id}">Record election</button>`:''}</td></tr>`;}).join('')}</tbody></table>
+    <div class="pad tiny faint">Election notices are sent within 14 days of a qualifying event; continuants have 60 days to elect and coverage may last 18–36 months.</div></div>`;
+}
+function benopsAca(){
+  const B=DB.benops;
+  return `<div class="card mb16"><div class="card-head"><h3>Spending accounts</h3></div>
+    <table class="tbl"><thead><tr><th>Employee</th><th>Type</th><th class="r">Election</th><th class="r">Spent</th><th style="width:150px">Used</th><th class="r">Balance</th></tr></thead><tbody>
+    ${B.accounts.slice(0,20).map(a=>{const e=emp(a.employeeId);return `<tr><td class="tiny">${e?esc(e.name):''}</td><td class="tiny">${esc(a.type)}</td><td class="r num">${fmt$(a.election)}</td><td class="r num">${fmt$(a.spent)}</td><td><div style="height:6px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct(a.spent,a.election)}%;background:#8b5cf6"></div></div></td><td class="r num">${fmt$(a.balance)}</td></tr>`;}).join('')}</tbody></table>
+    <div class="pad tiny faint">HSA (2027 limit $4,150 individual), FSA ($3,200), Dependent-Care FSA ($5,000), Commuter ($315/mo). FSA use-it-or-lose-it with a grace period.</div></div>`;
+}
+ACT.oeLaunch=()=>{DB.benops.oe.status='active';audit('benops.oe','Open enrollment launched');Store.save();UI.toast('▶ Open enrollment is live — employees can elect for '+DB.benops.oe.planYear+'.');render();};
+ACT.oeClose=()=>{DB.benops.oe.status='closed';DB.benops.oe.enrolled=DB.benops.oe.eligible;audit('benops.oe','Open enrollment closed');Store.save();UI.toast('Open enrollment closed.');render();};
+ACT.oeAnnounce=()=>{UI.toast('📣 Open-enrollment announcement queued to all employees.');};
+ACT.cobraElect=id=>{const c=(DB.benops.cobra||[]).find(x=>x.id===id);if(!c)return;c.status='elected';c.startDate=todayISO();audit('benops.cobra',c.name+' elected');Store.save();UI.toast('✓ COBRA election recorded — coverage active.');render();};
+
+/* ===================================================================
+   SOURCING, REFERRALS & INTERVIEWS — recruiting depth: a talent
+   CRM of passive prospects, the employee referral program, and an
+   interview schedule with structured scorecards.
+   =================================================================== */
+function buildSourcing(employees){
+  const active=employees.filter(e=>e.status==='active'),hn=s=>parseInt(hash32(s),16)||0;
+  const roles=['Senior Robotics Engineer','Staff ML Engineer','Product Designer','Enterprise AE','FP&A Manager','Data Scientist','DevOps Lead','Customer Success Mgr'];
+  const NAMES=['Priyanka Rao','Diego Fuentes','Mina Park','Ezra Cohen','Tomás Silva','Ingrid Berg','Kwame Mensah','Sofia Rossi','Liang Wei','Noor Haddad','Felix Braun','Yara Nassar'];
+  const stages=['new','contacted','interested','nurture'];
+  const talentPool=NAMES.map((nm,i)=>({id:'TP-'+(101+i),name:nm,role:roles[i%roles.length],source:['LinkedIn','Referral','Conference','GitHub','Inbound'][i%5],stage:stages[hn(nm)%4],lastContact:daysAgo((i*3)%40)}));
+  const refStatuses=['submitted','reviewing','interviewing','hired','bonus-paid'];
+  const referrals=active.filter((e,i)=>i%14===0).slice(0,8).map((e,i)=>{const st=refStatuses[i%refStatuses.length];return {id:'REF-'+(101+i),referrerId:e.id,candidateName:NAMES[(i+3)%NAMES.length],role:roles[(i+2)%roles.length],status:st,bonus:st==='bonus-paid'?3000:0,submittedAt:daysAgo((i*7)%60)};});
+  const iTypes=['Phone screen','Technical','Onsite panel','Hiring manager','Values'];
+  const interviews=[0,1,2,3,4,5].map(i=>({id:'IV-'+(101+i),candidateName:NAMES[i],role:roles[i%roles.length],date:daysAhead(i-1),time:['9:30','11:00','13:00','14:30','16:00'][i%5],type:iTypes[i%iTypes.length],panel:2+i%3,status:i<1?'complete':'scheduled'}));
+  return {talentPool,referrals,interviews};
+}
+const SRC_STAGE={new:['New','#94a3b8'],contacted:['Contacted','#0ea5e9'],interested:['Interested','#22c55e'],nurture:['Nurture','#f59e0b']};
+Views.sourcing=param=>{
+  const S=DB.sourcing;if(!S)return '<div class="card empty"><div class="big">🧲</div>Not initialized.</div>';
+  const upWeek=S.interviews.filter(i=>i.status==='scheduled'&&i.date<=daysAhead(7)).length;
+  const tabs=[['soverview','Overview',0],['pool','Talent pool',0],['referrals','Referrals',S.referrals.filter(r=>['submitted','reviewing','interviewing'].includes(r.status)).length],['interviews','Interviews',upWeek]];
+  if(param)UIS.sourcingTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.sourcingTab||'soverview'))?(UIS.sourcingTab||'soverview'):'soverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Sourcing &amp; Interviews</h1>
+    <div class="page-sub">A talent CRM of passive prospects, the employee referral program, and the interview schedule with scorecards</div></div>
+    <button class="btn primary" style="--brand:#e0457b;--brand-deep:#be185d" data-act="srcAdd">${I.plus} Add prospect</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setSourcingTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='soverview'?srcOverview():tab==='pool'?srcPool():tab==='referrals'?srcReferrals():srcInterviews()}`;
+};
+ACT.setSourcingTab=a=>{UIS.sourcingTab=a;history.replaceState(null,'','#/sourcing/'+a);render();};
+function srcOverview(){
+  const S=DB.sourcing,paid=sum(S.referrals.filter(r=>r.bonus).map(r=>r.bonus));
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Talent pool',S.talentPool.length,'passive prospects','#e0457b',undefined,'','#/sourcing/pool')}
+    ${statCard('Active referrals',S.referrals.filter(r=>['submitted','reviewing','interviewing'].includes(r.status)).length,'in the pipeline','#22c55e',undefined,'','#/sourcing/referrals')}
+    ${statCard('Interviews this week',S.interviews.filter(i=>i.status==='scheduled'&&i.date<=daysAhead(7)).length,'scheduled','#0ea5e9',undefined,'','#/sourcing/interviews')}
+    ${statCard('Referral bonuses paid',fmt$(paid),S.referrals.filter(r=>r.status==='hired'||r.status==='bonus-paid').length+' hires','#f59e0b')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Upcoming interviews</h3></div><table class="tbl"><tbody>${S.interviews.filter(i=>i.status==='scheduled').slice(0,6).map(i=>`<tr><td class="tiny" style="width:90px">${fmtDshort(i.date)} ${i.time}</td><td><b class="small">${esc(i.candidateName)}</b> <span class="tiny faint">— ${esc(i.role)}</span></td><td class="r tiny faint">${esc(i.type)} · ${i.panel} panelists</td></tr>`).join('')}</tbody></table></div>`;
+}
+function srcPool(){
+  const S=DB.sourcing;
+  return `<div class="card"><div class="card-head"><h3>Talent pool — passive prospects</h3></div>
+    <table class="tbl"><thead><tr><th>Prospect</th><th>Target role</th><th>Source</th><th>Stage</th><th>Last contact</th><th></th></tr></thead><tbody>
+    ${S.talentPool.map(p=>`<tr><td><b class="small">${esc(p.name)}</b></td><td class="tiny">${esc(p.role)}</td><td class="tiny">${esc(p.source)}</td><td>${finPill(SRC_STAGE[p.stage][0],SRC_STAGE[p.stage][1])}</td><td class="tiny faint">${rel(p.lastContact)}</td><td class="r">${p.stage!=='interested'?`<button class="btn xs soft" data-act="srcAdvance" data-arg="${p.id}">Advance</button>`:'<button class="btn xs good" data-act="srcAdvance" data-arg="'+p.id+'">→ Apply</button>'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function srcReferrals(){
+  const S=DB.sourcing,RS={submitted:['Submitted','#94a3b8'],reviewing:['In review','#0ea5e9'],interviewing:['Interviewing','#f59e0b'],hired:['Hired','#22c55e'],'bonus-paid':['Bonus paid','#22c55e']};
+  return `<div class="card"><div class="card-head"><h3>Employee referrals</h3></div>
+    <table class="tbl"><thead><tr><th>Referred by</th><th>Candidate</th><th>Role</th><th>Submitted</th><th class="r">Bonus</th><th>Status</th></tr></thead><tbody>
+    ${S.referrals.map(r=>{const e=emp(r.referrerId);return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':''}</td><td class="tiny">${esc(r.candidateName)}</td><td class="tiny">${esc(r.role)}</td><td class="tiny">${fmtDshort(r.submittedAt)}</td><td class="r num">${r.bonus?fmt$(r.bonus):'—'}</td><td>${finPill(RS[r.status][0],RS[r.status][1])}</td></tr>`;}).join('')}</tbody></table>
+    <div class="pad tiny faint">Referral bonus: $3,000 paid 90 days after a referred hire's start date.</div></div>`;
+}
+function srcInterviews(){
+  const S=DB.sourcing;
+  return `<div class="card"><div class="card-head"><h3>Interview schedule</h3></div>
+    <table class="tbl"><thead><tr><th>When</th><th>Candidate</th><th>Role</th><th>Type</th><th class="r">Panel</th><th>Status</th></tr></thead><tbody>
+    ${S.interviews.slice().sort((a,b)=>a.date<b.date?-1:1).map(i=>`<tr><td class="tiny">${fmtDshort(i.date)} ${i.time}</td><td><b class="small">${esc(i.candidateName)}</b></td><td class="tiny">${esc(i.role)}</td><td class="tiny">${esc(i.type)}</td><td class="r num">${i.panel}</td><td>${i.status==='complete'?finPill('Scorecards in','var(--ok-text)'):finPill('Scheduled','var(--warn-text)')}</td></tr>`).join('')}</tbody></table></div>`;
+}
+ACT.srcAdvance=id=>{const p=(DB.sourcing.talentPool||[]).find(x=>x.id===id);if(!p)return;const order=['new','contacted','interested','nurture'];
+  if(p.stage==='interested'){UI.toast('→ '+p.name+' moved into the Recruiting pipeline as an applicant.');audit('sourcing.convert',p.name);return;}
+  const idx=order.indexOf(p.stage);p.stage=order[Math.min(2,idx+1)];p.lastContact=todayISO();Store.save();UI.toast('✓ '+p.name+' → '+SRC_STAGE[p.stage][0]+'.');render();};
+ACT.srcAdd=()=>{UI.modal({title:'Add a prospect to the talent pool',body:`<div class="field"><label>Name</label><input id="src-name" placeholder="Prospect name"></div><div class="grid g2"><div class="field"><label>Target role</label><input id="src-role" placeholder="e.g. Staff Engineer"></div><div class="field"><label>Source</label><select id="src-source"><option>LinkedIn</option><option>Referral</option><option>Conference</option><option>GitHub</option><option>Inbound</option></select></div></div>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#e0457b;--brand-deep:#be185d" data-act="srcAddSave">Add prospect</button>`});};
+ACT.srcAddSave=()=>{const n=(document.getElementById('src-name').value||'').trim(),r=(document.getElementById('src-role').value||'').trim(),s=document.getElementById('src-source').value;if(!n){UI.toast('Name the prospect.');return;}
+  DB.sourcing.talentPool.unshift({id:'TP-'+Date.now().toString(36),name:n,role:r||'—',source:s,stage:'new',lastContact:todayISO()});audit('sourcing.add',n);Store.save();UI.closeModal();UIS.sourcingTab='pool';UI.toast('🧲 '+n+' added to the talent pool.');render();};
+
+/* ===================================================================
+   COMMUNICATIONS & LIFECYCLE SURVEYS — a targeted broadcast engine
+   with read/acknowledge tracking, plus exit/stay/onboarding/
+   manager-effectiveness surveys.
+   =================================================================== */
+function buildComms(employees){
+  const active=employees.filter(e=>e.status==='active'),n=active.length,it=(employees.find(e=>e.dept==='it')||{}).id||'E007';
+  const broadcasts=[
+    {id:'BC-1',title:'Q3 all-hands: Thursday 10am',audience:'All employees',sentBy:'E007',sentAt:daysAgo(2),channel:'Email + Hub',total:n,read:Math.round(n*0.78),acked:0,requireAck:false},
+    {id:'BC-2',title:'Updated remote-work & equipment policy',audience:'All employees',sentBy:'E007',sentAt:daysAgo(6),channel:'Email',total:n,read:Math.round(n*0.9),acked:Math.round(n*0.62),requireAck:true},
+    {id:'BC-3',title:'Security advisory — action required',audience:'Engineering, IT',sentBy:it,sentAt:daysAgo(1),channel:'Email + Slack',total:62,read:58,acked:41,requireAck:true},
+    {id:'BC-4',title:'New benefit: expanded parental leave',audience:'All employees',sentBy:'E007',sentAt:daysAgo(12),channel:'Hub',total:n,read:Math.round(n*0.71),acked:0,requireAck:false},
+    {id:'BC-5',title:'Office closed for Midsummer',audience:'Stockholm, Remote-EU',sentBy:'E007',sentAt:daysAgo(20),channel:'Email',total:24,read:22,acked:0,requireAck:false}];
+  const lifecycleSurveys=[
+    {id:'LS-1',type:'onboarding',name:'Onboarding 30-day check-in',status:'active',sent:14,responded:11,avgScore:4.3},
+    {id:'LS-2',type:'exit',name:'Exit interview survey',status:'active',sent:6,responded:4,avgScore:3.6},
+    {id:'LS-3',type:'stay',name:'Stay interview — top talent',status:'active',sent:20,responded:13,avgScore:4.1},
+    {id:'LS-4',type:'manager',name:'Manager effectiveness (upward)',status:'complete',sent:120,responded:94,avgScore:4.0},
+    {id:'LS-5',type:'onboarding',name:'Onboarding 90-day check-in',status:'scheduled',sent:0,responded:0,avgScore:null}];
+  return {broadcasts,lifecycleSurveys};
+}
+const LS_ICON={onboarding:'🌱',exit:'👋',stay:'🤝',manager:'📈'};
+Views.comms=param=>{
+  const C=DB.comms;if(!C)return '<div class="card empty"><div class="big">📣</div>Not initialized.</div>';
+  const pendAck=C.broadcasts.filter(b=>b.requireAck&&b.acked<b.total).length;
+  const tabs=[['moverview','Overview',pendAck],['broadcasts','Broadcasts',0],['surveys','Lifecycle surveys',C.lifecycleSurveys.filter(s=>s.status==='active').length]];
+  if(param)UIS.commsTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.commsTab||'moverview'))?(UIS.commsTab||'moverview'):'moverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Communications</h1>
+    <div class="page-sub">Targeted broadcasts with read &amp; acknowledge tracking, plus exit / stay / onboarding / manager-effectiveness surveys</div></div>
+    <button class="btn primary" style="--brand:#e0457b;--brand-deep:#be185d" data-act="bcNew">${I.plus} New broadcast</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setCommsTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='moverview'?commsOverview():tab==='broadcasts'?commsBroadcasts():commsSurveys()}`;
+};
+ACT.setCommsTab=a=>{UIS.commsTab=a;history.replaceState(null,'','#/comms/'+a);render();};
+function commsOverview(){
+  const C=DB.comms,recent=C.broadcasts.filter(b=>b.sentAt>=daysAgo(30)).length,avgRead=Math.round(sum(C.broadcasts.map(b=>pct(b.read,b.total)))/Math.max(1,C.broadcasts.length));
+  const ackReq=C.broadcasts.filter(b=>b.requireAck),pendAck=sum(ackReq.map(b=>b.total-b.acked));
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Broadcasts · 30d',recent,'company-wide comms','#e0457b')}
+    ${statCard('Avg read rate',avgRead+'%','across broadcasts',avgRead>=75?'var(--ok-text)':'var(--warn-text)')}
+    ${statCard('Pending acknowledgments',pendAck,'across '+ackReq.length+' comms',pendAck?'var(--warn-text)':'var(--ok-text)')}
+    ${statCard('Active surveys',C.lifecycleSurveys.filter(s=>s.status==='active').length,'lifecycle feedback','#8b5cf6',undefined,'','#/comms/surveys')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Recent broadcasts</h3></div><table class="tbl"><tbody>${C.broadcasts.slice().sort((a,b)=>a.sentAt<b.sentAt?1:-1).slice(0,6).map(b=>`<tr><td>📣 <b class="small">${esc(b.title)}</b><div class="tiny faint">${esc(b.audience)} · ${esc(b.channel)} · ${rel(b.sentAt)}</div></td><td class="r"><span class="tiny">${pct(b.read,b.total)}% read${b.requireAck?' · '+pct(b.acked,b.total)+'% ack':''}</span></td></tr>`).join('')}</tbody></table></div>`;
+}
+function commsBroadcasts(){
+  const C=DB.comms;
+  return `<div class="card"><div class="card-head"><h3>Broadcasts</h3></div>
+    <table class="tbl"><thead><tr><th>Title</th><th>Audience</th><th>Channel</th><th>Sent</th><th style="width:150px">Read</th><th style="width:150px">Acknowledged</th></tr></thead><tbody>
+    ${C.broadcasts.map(b=>`<tr><td><b class="small">${esc(b.title)}</b></td><td class="tiny">${esc(b.audience)}</td><td class="tiny">${esc(b.channel)}</td><td class="tiny">${fmtDshort(b.sentAt)}</td><td><div style="height:6px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct(b.read,b.total)}%;background:#e0457b"></div></div><div class="tiny faint">${pct(b.read,b.total)}%</div></td><td>${b.requireAck?`<div style="height:6px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct(b.acked,b.total)}%;background:#8b5cf6"></div></div><div class="tiny faint">${b.acked}/${b.total}${b.acked<b.total?' <button class="btn xs soft" data-act="bcRemind" data-arg="'+b.id+'">remind</button>':''}</div>`:'<span class="tiny faint">not required</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function commsSurveys(){
+  const C=DB.comms;
+  return `<div class="card"><div class="card-head"><h3>Lifecycle surveys</h3><span class="spacer"></span><button class="btn xs primary" style="--brand:#8b5cf6;--brand-deep:#7c3aed" data-act="lsNew">${I.plus} Launch survey</button></div>
+    <table class="tbl"><thead><tr><th>Survey</th><th>Type</th><th style="width:170px">Response rate</th><th class="r">Avg score</th><th>Status</th></tr></thead><tbody>
+    ${C.lifecycleSurveys.map(s=>`<tr><td>${LS_ICON[s.type]||'📋'} <b class="small">${esc(s.name)}</b></td><td class="tiny">${esc(s.type)}</td><td>${s.sent?`<div style="height:6px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct(s.responded,s.sent)}%;background:#8b5cf6"></div></div><div class="tiny faint">${s.responded}/${s.sent} (${pct(s.responded,s.sent)}%)</div>`:'<span class="tiny faint">not sent</span>'}</td><td class="r num">${s.avgScore?s.avgScore.toFixed(1)+' / 5':'—'}</td><td>${s.status==='active'?finPill('Active','var(--warn-text)'):s.status==='complete'?finPill('Complete','var(--ok-text)'):finPill('Scheduled','#94a3b8')}</td></tr>`).join('')}</tbody></table></div>`;
+}
+ACT.bcRemind=id=>{const b=(DB.comms.broadcasts||[]).find(x=>x.id===id);if(!b)return;audit('comms.remind',b.title);UI.toast('🔔 Acknowledgment reminder sent to '+(b.total-b.acked)+' people.');};
+ACT.bcNew=()=>{UI.modal({title:'New broadcast',body:`<div class="field"><label>Title</label><input id="bc-title" placeholder="What do you want to announce?"></div><div class="grid g2"><div class="field"><label>Audience</label><select id="bc-aud"><option>All employees</option><option>Engineering</option><option>Managers</option><option>A location</option></select></div><div class="field"><label>Channel</label><select id="bc-ch"><option>Email + Hub</option><option>Email</option><option>Email + Slack</option><option>Hub</option></select></div></div><label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px"><input type="checkbox" id="bc-ack"> Require acknowledgment</label>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#e0457b;--brand-deep:#be185d" data-act="bcNewSave">Send broadcast</button>`});};
+ACT.bcNewSave=()=>{const t=(document.getElementById('bc-title').value||'').trim(),aud=document.getElementById('bc-aud').value,ch=document.getElementById('bc-ch').value,ack=document.getElementById('bc-ack').checked;if(!t){UI.toast('Add a title.');return;}
+  const size=aud==='All employees'?DB.employees.filter(e=>e.status==='active').length:aud==='Engineering'?62:aud==='Managers'?24:20;
+  DB.comms.broadcasts.unshift({id:'BC-'+Date.now().toString(36),title:t,audience:aud,sentBy:DB.me.employeeId,sentAt:todayISO(),channel:ch,total:size,read:0,acked:0,requireAck:ack});audit('comms.broadcast',t+' → '+aud);Store.save();UI.closeModal();UIS.commsTab='broadcasts';UI.toast('📣 Broadcast sent to '+size+' people.');render();};
+ACT.lsNew=()=>{UI.modal({title:'Launch a lifecycle survey',body:`<div class="field"><label>Type</label><select id="ls-type"><option value="onboarding">🌱 Onboarding check-in</option><option value="stay">🤝 Stay interview</option><option value="exit">👋 Exit interview</option><option value="manager">📈 Manager effectiveness</option></select></div><div class="field"><label>Name</label><input id="ls-name" placeholder="e.g. Onboarding 60-day check-in"></div>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#8b5cf6;--brand-deep:#7c3aed" data-act="lsNewSave">Launch</button>`});};
+ACT.lsNewSave=()=>{const type=document.getElementById('ls-type').value,name=(document.getElementById('ls-name').value||'').trim();if(!name){UI.toast('Name the survey.');return;}
+  DB.comms.lifecycleSurveys.unshift({id:'LS-'+Date.now().toString(36),type,name,status:'active',sent:type==='manager'?120:type==='exit'?3:16,responded:0,avgScore:null});audit('comms.survey',name);Store.save();UI.closeModal();UIS.commsTab='surveys';UI.toast('📋 "'+name+'" launched.');render();};
+
+/* ===================================================================
+   COMPLIANCE TRAINING & CERTIFICATIONS — mandatory training with
+   completion tracking + attestation, certifications with expiry &
+   renewal alerts, and structured learning paths.
+   =================================================================== */
+function buildCerts(employees){
+  const active=employees.filter(e=>e.status==='active'),hn=s=>parseInt(hash32(s),16)||0,n=active.length;
+  const campaigns=[
+    {id:'CT-1',name:'Anti-harassment training',audience:'All employees',due:daysAhead(20),assigned:n,completed:Math.round(n*0.82),mandatory:true},
+    {id:'CT-2',name:'Security awareness',audience:'All employees',due:daysAhead(8),assigned:n,completed:Math.round(n*0.67),mandatory:true},
+    {id:'CT-3',name:'Code of conduct',audience:'All employees',due:daysAgo(5),assigned:n,completed:Math.round(n*0.95),mandatory:true},
+    {id:'CT-4',name:'Data privacy (GDPR/CCPA)',audience:'People, Legal, Eng',due:daysAhead(30),assigned:48,completed:31,mandatory:true},
+    {id:'CT-5',name:'Lab safety certification',audience:'Engineering, Ops',due:daysAhead(14),assigned:62,completed:54,mandatory:true}];
+  const certTypes=[['OSHA 10-Hour','OSHA',730],['First Aid / CPR','Red Cross',730],['Forklift operation','OSHA',1095],['AWS Solutions Architect','AWS',1095],['CISSP','ISC²',1095],['PMP','PMI',1095],['SHRM-CP','SHRM',1095]];
+  const certifications=active.filter((e,i)=>i%6<2).slice(0,22).map((e,i)=>{const t=certTypes[hn(e.id+'ct')%certTypes.length],ago=i===0?t[2]+40:i===1?t[2]+10:i===2?t[2]-30:i===3?t[2]-50:(150+hn(e.id+'ci')%500),issued=daysAgo(ago),expires=iso(new Date(new Date(issued).getTime()+t[2]*864e5));
+    return {id:'CRT-'+i,employeeId:e.id,name:t[0],issuer:t[1],issued,expires,status:expires<todayISO()?'expired':expires<daysAhead(60)?'expiring':'active'};});
+  const paths=[
+    {id:'LP-1',name:'New Manager Foundations',courses:6,enrolled:14,dept:'*'},
+    {id:'LP-2',name:'Robotics Engineering Track',courses:9,enrolled:22,dept:'eng'},
+    {id:'LP-3',name:'Sales Onboarding Bootcamp',courses:5,enrolled:8,dept:'sales'},
+    {id:'LP-4',name:'Leadership Development',courses:8,enrolled:11,dept:'*'}];
+  return {campaigns,certifications,paths};
+}
+Views.certs=param=>{
+  const C=DB.certs;if(!C)return '<div class="card empty"><div class="big">🎓</div>Not initialized.</div>';
+  const overdue=C.campaigns.filter(c=>c.due<todayISO()&&c.completed<c.assigned).length,exp=C.certifications.filter(c=>c.status!=='active').length;
+  const tabs=[['coverview','Overview',overdue],['mandatory','Mandatory training',0],['certifications','Certifications',exp],['paths','Learning paths',0]];
+  if(param)UIS.certsTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.certsTab||'coverview'))?(UIS.certsTab||'coverview'):'coverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Compliance &amp; Certifications</h1>
+    <div class="page-sub">Mandatory training with completion tracking, certifications with renewal alerts, and structured learning paths</div></div>
+    <button class="btn primary" style="--brand:#0891b2;--brand-deep:#0e7490" data-act="ctAssign">${I.plus} Assign training</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setCertsTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='coverview'?certsOverview():tab==='mandatory'?certsMandatory():tab==='certifications'?certsCertifications():certsPaths()}`;
+};
+ACT.setCertsTab=a=>{UIS.certsTab=a;history.replaceState(null,'','#/certs/'+a);render();};
+function certsOverview(){
+  const C=DB.certs,totA=sum(C.campaigns.map(c=>c.assigned)),totC=sum(C.campaigns.map(c=>c.completed));
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Mandatory completion',pct(totC,totA)+'%',totC+' of '+totA+' assignments',pct(totC,totA)>=90?'var(--ok-text)':'var(--warn-text)')}
+    ${statCard('Overdue campaigns',C.campaigns.filter(c=>c.due<todayISO()&&c.completed<c.assigned).length,'past due date','var(--warn-text)')}
+    ${statCard('Certs expiring',C.certifications.filter(c=>c.status==='expiring').length,'within 60 days','#f59e0b',undefined,'','#/certs/certifications')}
+    ${statCard('Certs expired',C.certifications.filter(c=>c.status==='expired').length,'need renewal',C.certifications.filter(c=>c.status==='expired').length?'var(--bad-text)':'var(--ok-text)')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Mandatory training status</h3></div><div class="card-body">
+    ${C.campaigns.map(c=>{const p=pct(c.completed,c.assigned),od=c.due<todayISO()&&c.completed<c.assigned;return `<div style="margin-bottom:12px"><div class="row between"><span class="small"><b>${esc(c.name)}</b> <span class="tiny faint">· ${esc(c.audience)}</span></span><span class="tiny ${od?'p-x':'faint'}">${c.completed}/${c.assigned} · due ${fmtDshort(c.due)}${od?' ⚠':''}</span></div><div style="height:8px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:4px"><div style="height:100%;width:${p}%;background:${p>=90?'#22c55e':od?'#ef4444':'#0891b2'};border-radius:5px"></div></div></div>`;}).join('')}</div></div>`;
+}
+function certsMandatory(){
+  const C=DB.certs;
+  return `<div class="card"><div class="card-head"><h3>Mandatory training campaigns</h3></div>
+    <table class="tbl"><thead><tr><th>Training</th><th>Audience</th><th>Due</th><th style="width:160px">Completion</th><th></th></tr></thead><tbody>
+    ${C.campaigns.map(c=>{const p=pct(c.completed,c.assigned);return `<tr><td><b class="small">${esc(c.name)}</b></td><td class="tiny">${esc(c.audience)}</td><td class="tiny">${fmtDshort(c.due)}</td><td><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden"><div style="height:100%;width:${p}%;background:${p>=90?'#22c55e':'#0891b2'}"></div></div><div class="tiny faint">${p}% · ${c.assigned-c.completed} outstanding</div></td><td class="r">${c.completed<c.assigned?`<button class="btn xs soft" data-act="ctRemind" data-arg="${c.id}">Remind</button>`:finPill('Complete','var(--ok-text)')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function certsCertifications(){
+  const C=DB.certs;
+  return `<div class="card"><div class="card-head"><h3>Certifications</h3><span class="spacer"></span><span class="tiny faint">${C.certifications.length} tracked</span></div>
+    <table class="tbl"><thead><tr><th>Employee</th><th>Certification</th><th>Issuer</th><th>Issued</th><th>Expires</th><th>Status</th><th></th></tr></thead><tbody>
+    ${C.certifications.slice().sort((a,b)=>a.expires<b.expires?-1:1).map(c=>{const e=emp(c.employeeId);return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':''}</td><td class="tiny">${esc(c.name)}</td><td class="tiny">${esc(c.issuer)}</td><td class="tiny">${fmtDshort(c.issued)}</td><td class="tiny">${fmtDshort(c.expires)}</td><td>${c.status==='active'?finPill('Active','var(--ok-text)'):c.status==='expiring'?finPill('Expiring','var(--warn-text)'):finPill('Expired','var(--bad-text)')}</td><td class="r">${c.status!=='active'?`<button class="btn xs soft" data-act="certRenew" data-arg="${c.id}">Renew</button>`:''}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function certsPaths(){
+  const C=DB.certs;
+  return `<div class="grid g2">${C.paths.map(p=>`<div class="card pad"><div class="row between"><b>${esc(p.name)}</b>${finPill(p.dept==='*'?'All':deptName(p.dept),'#0891b2')}</div><div class="tiny faint mt8">${p.courses} courses · ${p.enrolled} enrolled</div><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:10px"><div style="height:100%;width:${40+p.enrolled%50}%;background:#0891b2;border-radius:5px"></div></div><div class="tiny faint mt4">${40+p.enrolled%50}% avg progress</div></div>`).join('')}</div>`;
+}
+ACT.ctRemind=id=>{const c=(DB.certs.campaigns||[]).find(x=>x.id===id);if(!c)return;audit('training.remind',c.name);UI.toast('🔔 Reminder sent to '+(c.assigned-c.completed)+' people who haven\'t completed "'+c.name+'".');};
+ACT.certRenew=id=>{const c=(DB.certs.certifications||[]).find(x=>x.id===id);if(!c)return;c.issued=todayISO();c.expires=iso(new Date(now().getTime()+730*864e5));c.status='active';audit('cert.renew',c.name);Store.save();UI.toast('✓ '+c.name+' renewed — valid 2 more years.');render();};
+ACT.ctAssign=()=>{UI.modal({title:'Assign a training',body:`<div class="field"><label>Training name</label><input id="ct-name" placeholder="e.g. Insider-threat awareness"></div><div class="field"><label>Audience</label><select id="ct-aud"><option>All employees</option><option>Engineering</option><option>People team</option><option>Managers</option></select></div><div class="field"><label>Due in (days)</label><input type="number" id="ct-due" value="30"></div>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0891b2;--brand-deep:#0e7490" data-act="ctAssignSave">Assign</button>`});};
+ACT.ctAssignSave=()=>{const n=(document.getElementById('ct-name').value||'').trim(),aud=document.getElementById('ct-aud').value,due=+document.getElementById('ct-due').value||30;if(!n){UI.toast('Name the training.');return;}
+  const size=aud==='All employees'?DB.employees.filter(e=>e.status==='active').length:aud==='Engineering'?62:aud==='Managers'?24:18;
+  DB.certs.campaigns.unshift({id:'CT-'+Date.now().toString(36),name:n,audience:aud,due:daysAhead(due),assigned:size,completed:0,mandatory:true});audit('training.assign',n+' → '+aud);Store.save();UI.closeModal();UIS.certsTab='mandatory';UI.toast('🎓 Assigned to '+size+' people.');render();};
+
+/* ===================================================================
+   TALENT MANAGEMENT — 9-box, succession planning, calibration and
+   360 multi-rater feedback (the performance depth beyond reviews).
+   =================================================================== */
+function buildTalent(employees){
+  const active=employees.filter(e=>e.status==='active'),hn=s=>parseInt(hash32(s),16)||0;
+  const mgrs=active.filter(e=>active.some(x=>x.managerId===e.id)||e.dept==='exec');
+  const succession=mgrs.slice(0,7).map((e,i)=>{const pool=active.filter(x=>x.dept===e.dept&&x.id!==e.id&&!mgrs.includes(x));
+    const succ=pool.slice(0,2+hn(e.id+'s')%2).map((s,j)=>({empId:s.id,readiness:['ready-now','1-2 years','3-5 years'][j%3]}));
+    return {id:'SP-'+i,roleTitle:e.title,incumbentId:e.id,dept:e.dept,successors:succ,risk:succ.some(s=>s.readiness==='ready-now')?'low':succ.length?'medium':'high'};});
+  const calibration=[
+    {id:'CAL-1',name:'Engineering — H1 calibration',dept:'eng',date:daysAgo(10),status:'complete',participants:8,dist:{exceeds:6,meets:22,below:2}},
+    {id:'CAL-2',name:'Go-to-Market — H1 calibration',dept:'sales',date:daysAgo(6),status:'complete',participants:5,dist:{exceeds:4,meets:14,below:1}},
+    {id:'CAL-3',name:'Company-wide — mid-year',dept:'*',date:daysAhead(14),status:'scheduled',participants:0,dist:null}];
+  const feedback360=active.slice(0,5).map((e,i)=>({id:'F360-'+i,subjectId:e.id,cycle:'Mid-year 2026',raters:5+hn(e.id+'r')%4,status:i<3?'complete':'collecting',competencies:[{name:'Leadership',score:3+hn(e.id+'l')%2},{name:'Execution',score:3+hn(e.id+'ex')%2},{name:'Collaboration',score:4},{name:'Communication',score:3+hn(e.id+'c')%2}]}));
+  return {succession,calibration,feedback360};
+}
+function tmBox(e){const hn=s=>parseInt(hash32(s),16)||0,perf=1+hn(e.id+'perf')%3,pot=1+hn(e.id+'pot')%3;return {perf,pot,cell:(pot-1)*3+perf};}
+const TM_LABELS={9:'Stars',8:'High potential',7:'Rough diamond',6:'High performer',5:'Core',4:'Inconsistent',3:'Trusted pro',2:'Effective',1:'Needs support'};
+const TM_COLORS={9:'#22c55e',8:'#84cc16',7:'#f59e0b',6:'#10b981',5:'#0ea5e9',4:'#f59e0b',3:'#38bdf8',2:'#94a3b8',1:'#ef4444'};
+Views.talent=param=>{
+  const T=DB.talent;if(!T)return '<div class="card empty"><div class="big">🎯</div>Talent management not initialized.</div>';
+  const tabs=[['toverview','Overview',0],['ninebox','9-box',0],['succession','Succession',0],['calibration','Calibration',0],['f360','360 feedback',0]];
+  if(param)UIS.talentTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.talentTab||'toverview'))?(UIS.talentTab||'toverview'):'toverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Talent Management</h1>
+    <div class="page-sub">9-box, succession planning, calibration &amp; 360 feedback — the talent depth beyond a review cycle</div></div></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setTalentTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${tab==='toverview'?tmOverview():tab==='ninebox'?tmNineBox():tab==='succession'?tmSuccession():tab==='calibration'?tmCalibration():tmF360()}`;
+};
+ACT.setTalentTab=a=>{UIS.talentTab=a;history.replaceState(null,'','#/talent/'+a);render();};
+function tmOverview(){
+  const T=DB.talent,active=DB.employees.filter(e=>e.status==='active');
+  const stars=active.filter(e=>tmBox(e).cell===9).length,atRisk=T.succession.filter(s=>s.risk==='high').length;
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Stars (9-box)',stars,'high perf · high potential','#22c55e',undefined,'','#/talent/ninebox')}
+    ${statCard('Key roles mapped',T.succession.length,'succession plans','#7c3aed',undefined,'','#/talent/succession')}
+    ${statCard('Succession risk',atRisk,'roles with no ready successor',atRisk?'var(--bad-text)':'var(--ok-text)')}
+    ${statCard('360 in flight',T.feedback360.filter(f=>f.status==='collecting').length,'multi-rater cycles','#0ea5e9',undefined,'','#/talent/f360')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Calibration sessions</h3></div><table class="tbl"><tbody>${T.calibration.map(c=>`<tr><td><b class="small">${esc(c.name)}</b></td><td class="tiny">${fmtDshort(c.date)}</td><td>${c.status==='complete'?finPill('Complete','var(--ok-text)'):finPill('Scheduled','var(--warn-text)')}</td><td class="r tiny faint">${c.dist?c.dist.exceeds+' exceeds · '+c.dist.meets+' meets · '+c.dist.below+' below':c.participants+' managers'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function tmNineBox(){
+  const active=DB.employees.filter(e=>e.status==='active'),g={};active.forEach(e=>{const b=tmBox(e);(g[b.cell]=g[b.cell]||[]).push(e);});
+  const cellAt=(pot,perf)=>(pot-1)*3+perf;
+  return `<div class="card"><div class="card-head"><h3>9-box — performance × potential</h3></div><div class="card-body">
+    <div style="display:flex;gap:8px"><div style="display:flex;flex-direction:column;justify-content:space-between;padding:8px 4px"><span class="tiny faint" style="writing-mode:vertical-rl;transform:rotate(180deg)">Potential →</span></div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    ${[3,2,1].map(pot=>[1,2,3].map(perf=>{const c=cellAt(pot,perf),list=g[c]||[];return `<div class="click" data-act="tmCell" data-arg="${c}" style="cursor:pointer;background:color-mix(in srgb,${TM_COLORS[c]} 12%,var(--card));border:1px solid var(--line);border-radius:10px;padding:12px;min-height:92px"><div class="tiny" style="font-weight:700;color:${TM_COLORS[c]}">${TM_LABELS[c]}</div><div style="font-size:22px;font-weight:800;margin-top:4px">${list.length}</div><div class="tiny faint">${list.slice(0,2).map(e=>esc(e.name.split(' ')[0])).join(', ')}${list.length>2?' +'+(list.length-2):''}</div></div>`;}).join('')).join('')}
+    </div></div>
+    <div class="tiny faint" style="text-align:center;margin-top:8px">Performance →</div></div></div>`;
+}
+function tmSuccession(){
+  const T=DB.talent;
+  return `<div class="card"><div class="card-head"><h3>Succession plans — key roles</h3></div>
+    <table class="tbl"><thead><tr><th>Role</th><th>Incumbent</th><th>Successors</th><th>Bench risk</th></tr></thead><tbody>
+    ${T.succession.map(s=>{const inc=emp(s.incumbentId);return `<tr><td><b class="small">${esc(s.roleTitle)}</b><div class="tiny faint">${deptName(s.dept)}</div></td><td class="tiny">${inc?esc(inc.name):''}</td><td>${s.successors.map(su=>{const e=emp(su.empId);return `<div class="tiny" style="padding:2px 0">${e?esc(e.name.split(' ')[0]):''} <span class="faint">— ${su.readiness}</span></div>`;}).join('')||'<span class="tiny faint">none identified</span>'}</td><td>${s.risk==='low'?finPill('Low','var(--ok-text)'):s.risk==='medium'?finPill('Medium','var(--warn-text)'):finPill('High','var(--bad-text)')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function tmCalibration(){
+  const T=DB.talent;
+  return `<div class="card"><div class="card-head"><h3>Calibration sessions</h3></div>
+    <table class="tbl"><thead><tr><th>Session</th><th>Date</th><th>Managers</th><th>Distribution</th><th>Status</th></tr></thead><tbody>
+    ${T.calibration.map(c=>`<tr><td><b class="small">${esc(c.name)}</b></td><td class="tiny">${fmtDshort(c.date)}</td><td class="r num tiny">${c.participants||'—'}</td><td>${c.dist?`<span class="row" style="gap:3px">${['exceeds','meets','below'].map((k,i)=>`<span class="tiny" style="padding:2px 6px;border-radius:5px;background:color-mix(in srgb,${['#22c55e','#0ea5e9','#ef4444'][i]} 15%,transparent);color:${['#16a34a','#0284c7','#dc2626'][i]}">${c.dist[k]} ${k}</span>`).join('')}</span>`:'<span class="tiny faint">not yet run</span>'}</td><td>${c.status==='complete'?finPill('Complete','var(--ok-text)'):finPill('Scheduled','var(--warn-text)')}</td></tr>`).join('')}</tbody></table>
+    <div class="pad tiny faint">Calibration normalizes ratings across managers so a "meets" means the same thing company-wide.</div></div>`;
+}
+function tmF360(){
+  const T=DB.talent;
+  return `<div class="card"><div class="card-head"><h3>360 multi-rater feedback</h3></div>
+    <table class="tbl"><thead><tr><th>Subject</th><th>Cycle</th><th class="r">Raters</th><th>Competencies</th><th>Status</th></tr></thead><tbody>
+    ${T.feedback360.map(f=>{const e=emp(f.subjectId);return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':''}</td><td class="tiny">${esc(f.cycle)}</td><td class="r num">${f.raters}</td><td>${f.competencies.map(c=>`<span class="tiny" title="${esc(c.name)}: ${c.score}/5" style="display:inline-block;margin-right:4px">${esc(c.name.slice(0,4))} ${'●'.repeat(c.score)}</span>`).join('')}</td><td>${f.status==='complete'?finPill('Complete','var(--ok-text)'):finPill('Collecting','var(--warn-text)')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+ACT.tmCell=c=>{const cell=+c,active=DB.employees.filter(e=>e.status==='active'&&tmBox(e).cell===cell);
+  UI.modal({title:TM_LABELS[cell]+' — 9-box cell',sub:active.length+' people · '+(cell>6?'high':cell>3?'moderate':'developing')+' potential',wide:true,
+    body:`<table class="tbl"><tbody>${active.slice(0,40).map(e=>`<tr><td>${av(e,'sm')} <b class="small">${esc(e.name)}</b></td><td class="tiny">${esc(e.title)}</td><td class="tiny r">${deptName(e.dept)}</td></tr>`).join('')||'<tr><td class="faint">Nobody in this cell.</td></tr>'}</tbody></table>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>`});};
+
+/* ===================================================================
+   HEALTH, SAFETY & LEAVE — OSHA 300 recordables, workers-comp
+   claims and FMLA/leave-of-absence case management.
+   =================================================================== */
+function buildSafety(employees){
+  const active=employees.filter(e=>e.status==='active'),A=i=>active[i%active.length];
+  const incidents=[
+    {id:'INC-1',date:daysAgo(12),type:'injury',location:'Austin Lab',employeeId:A(5).id,description:'Minor laceration handling battery cells — treated on-site',recordable:true,daysAway:0,status:'closed'},
+    {id:'INC-2',date:daysAgo(28),type:'injury',location:'Warehouse Bay 3',employeeId:A(18).id,description:'Slip on wet floor — sprained wrist',recordable:true,daysAway:3,status:'closed'},
+    {id:'INC-3',date:daysAgo(6),type:'near-miss',location:'Austin Lab',employeeId:A(9).id,description:'Robotic arm unexpected movement — no contact; guard added',recordable:false,daysAway:0,status:'open'},
+    {id:'INC-4',date:daysAgo(45),type:'illness',location:'Austin HQ',employeeId:A(22).id,description:'Repetitive-strain reported — ergonomic assessment ordered',recordable:true,daysAway:0,status:'closed'},
+    {id:'INC-5',date:daysAgo(3),type:'near-miss',location:'Warehouse Bay 3',employeeId:A(31).id,description:'Forklift path crossing — cones repositioned',recordable:false,daysAway:0,status:'open'},
+    {id:'INC-6',date:daysAgo(70),type:'injury',location:'Austin Lab',employeeId:A(14).id,description:'Chemical splash — eyewash used, no injury',recordable:false,daysAway:0,status:'closed'}];
+  const claims=[
+    {id:'WC-1',incidentId:'INC-2',employeeId:A(18).id,filedDate:daysAgo(26),status:'approved',amount:4200,carrier:'Travelers'},
+    {id:'WC-2',incidentId:'INC-1',employeeId:A(5).id,filedDate:daysAgo(10),status:'open',amount:800,carrier:'Travelers'},
+    {id:'WC-3',incidentId:'INC-4',employeeId:A(22).id,filedDate:daysAgo(40),status:'closed',amount:1500,carrier:'Travelers'}];
+  const loa=[
+    {id:'LOA-1',employeeId:A(40).id,type:'FMLA',status:'active',startDate:daysAgo(20),endDate:daysAhead(40),intermittent:false,jobProtected:true,hoursUsed:160,hoursEntitled:480},
+    {id:'LOA-2',employeeId:A(52).id,type:'Parental',status:'active',startDate:daysAgo(10),endDate:daysAhead(74),intermittent:false,jobProtected:true,hoursUsed:80,hoursEntitled:480},
+    {id:'LOA-3',employeeId:A(61).id,type:'Medical',status:'upcoming',startDate:daysAhead(14),endDate:daysAhead(56),intermittent:false,jobProtected:true,hoursUsed:0,hoursEntitled:480},
+    {id:'LOA-4',employeeId:A(33).id,type:'FMLA',status:'active',startDate:daysAgo(30),endDate:daysAhead(10),intermittent:true,jobProtected:true,hoursUsed:88,hoursEntitled:480},
+    {id:'LOA-5',employeeId:A(71).id,type:'Personal',status:'completed',startDate:daysAgo(120),endDate:daysAgo(60),intermittent:false,jobProtected:false,hoursUsed:320,hoursEntitled:320}];
+  return {incidents,claims,loa};
+}
+Views.safety=param=>{
+  const S=DB.safety;if(!S)return '<div class="card empty"><div class="big">🦺</div>Safety not initialized.</div>';
+  const openInc=S.incidents.filter(i=>i.status==='open').length,openCl=S.claims.filter(c=>c.status==='open').length,actLoa=S.loa.filter(l=>l.status==='active').length;
+  const tabs=[['soverview','Overview',openInc],['osha','OSHA log',0],['wc','Workers’ comp',openCl],['loa','Leave of absence',actLoa]];
+  if(param)UIS.safetyTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.safetyTab||'soverview'))?(UIS.safetyTab||'soverview'):'soverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Health, Safety &amp; Leave</h1>
+    <div class="page-sub">OSHA recordables, workers-comp claims and FMLA/leave-of-absence case management</div></div>
+    <button class="btn primary" style="--brand:#ea580c;--brand-deep:#c2410c" data-act="incidentNew">${I.plus} Report incident</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setSafetyTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='soverview'?safetyOverview():tab==='osha'?safetyOsha():tab==='wc'?safetyWc():safetyLoa()}`;
+};
+ACT.setSafetyTab=a=>{UIS.safetyTab=a;history.replaceState(null,'','#/safety/'+a);render();};
+function safetyOverview(){
+  const S=DB.safety,rec=S.incidents.filter(i=>i.recordable).length,daysAway=sum(S.incidents.map(i=>i.daysAway||0));
+  const hc=DB.employees.filter(e=>e.status==='active').length,trir=(rec*200000/(hc*2000)).toFixed(2);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Recordable incidents',rec,'OSHA 300 · YTD','#ea580c')}
+    ${statCard('TRIR',trir,'per 200k hours','#f59e0b')}
+    ${statCard('Open WC claims',S.claims.filter(c=>c.status==='open').length,fmt$(sum(S.claims.filter(c=>c.status!=='closed').map(c=>c.amount)))+' reserved','#8b5cf6')}
+    ${statCard('Active leaves',S.loa.filter(l=>l.status==='active').length,S.loa.filter(l=>l.jobProtected).length+' job-protected','#0ea5e9')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Recent incidents</h3><span class="spacer"></span><button class="btn xs soft" data-act="setSafetyTab" data-arg="osha">Full OSHA log →</button></div>
+    <table class="tbl"><tbody>${S.incidents.slice().sort((a,b)=>a.date<b.date?1:-1).slice(0,6).map(i=>{const e=emp(i.employeeId);return `<tr><td class="tiny" style="width:70px">${fmtDshort(i.date)}</td><td>${i.type==='injury'?'🩹':i.type==='illness'?'🤒':'⚠️'} <b class="small">${esc(i.type)}</b> <span class="tiny faint">· ${esc(i.location)}</span><div class="tiny faint">${esc(i.description)}</div></td><td class="r">${i.recordable?finPill('Recordable','var(--warn-text)'):finPill('Non-recordable','#94a3b8')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function safetyOsha(){
+  const S=DB.safety;
+  return `<div class="card"><div class="card-head"><h3>OSHA 300 log</h3><span class="spacer"></span><button class="btn xs primary" style="--brand:#ea580c;--brand-deep:#c2410c" data-act="incidentNew">${I.plus} Report</button></div>
+    <table class="tbl"><thead><tr><th>Date</th><th>Type</th><th>Location</th><th>Employee</th><th>Description</th><th class="r">Days away</th><th>Recordable</th></tr></thead><tbody>
+    ${S.incidents.slice().sort((a,b)=>a.date<b.date?1:-1).map(i=>{const e=emp(i.employeeId);return `<tr><td class="tiny">${fmtDshort(i.date)}</td><td class="tiny">${i.type==='injury'?'🩹':i.type==='illness'?'🤒':'⚠️'} ${esc(i.type)}</td><td class="tiny">${esc(i.location)}</td><td class="tiny">${e?esc(e.name.split(' ')[0]):''}</td><td class="tiny">${esc(i.description)}</td><td class="r num">${i.daysAway||0}</td><td>${i.recordable?finPill('Yes','var(--warn-text)'):finPill('No','#94a3b8')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function safetyWc(){
+  const S=DB.safety;
+  return `<div class="card"><div class="card-head"><h3>Workers’ compensation claims</h3></div>
+    <table class="tbl"><thead><tr><th>Claim</th><th>Employee</th><th>Incident</th><th>Filed</th><th class="r">Amount</th><th>Carrier</th><th>Status</th></tr></thead><tbody>
+    ${S.claims.map(c=>{const e=emp(c.employeeId);return `<tr><td class="num"><b class="small">${c.id}</b></td><td class="tiny">${e?esc(e.name):''}</td><td class="tiny">${c.incidentId}</td><td class="tiny">${fmtDshort(c.filedDate)}</td><td class="r num">${fmt$(c.amount)}</td><td class="tiny">${esc(c.carrier)}</td><td>${c.status==='approved'?finPill('Approved','var(--ok-text)'):c.status==='open'?finPill('Open','var(--warn-text)'):finPill('Closed','#94a3b8')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function safetyLoa(){
+  const S=DB.safety;
+  return `<div class="card"><div class="card-head"><h3>Leave of absence</h3><span class="spacer"></span><span class="tiny faint">FMLA · parental · medical · personal</span></div>
+    <table class="tbl"><thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Job-protected</th><th style="width:160px">Entitlement used</th><th>Status</th></tr></thead><tbody>
+    ${S.loa.map(l=>{const e=emp(l.employeeId),usePct=pct(l.hoursUsed,l.hoursEntitled);return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':''}</td><td class="tiny">${esc(l.type)}${l.intermittent?' · intermittent':''}</td><td class="tiny">${fmtDshort(l.startDate)} – ${fmtDshort(l.endDate)}</td><td>${l.jobProtected?'✅':'—'}</td><td><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden"><div style="height:100%;width:${usePct}%;background:#0ea5e9"></div></div><div class="tiny faint">${l.hoursUsed}/${l.hoursEntitled} hrs</div></td><td>${l.status==='active'?finPill('Active','var(--warn-text)'):l.status==='upcoming'?finPill('Upcoming','#0ea5e9'):finPill('Completed','var(--ok-text)')}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+ACT.incidentNew=()=>{const opts=DB.employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  UI.modal({title:'Report a safety incident',body:`<div class="grid g2"><div class="field"><label>Type</label><select id="inc-type"><option value="injury">Injury</option><option value="illness">Illness</option><option value="near-miss">Near-miss</option></select></div><div class="field"><label>Location</label><input id="inc-loc" placeholder="e.g. Austin Lab"></div></div>
+    <div class="field"><label>Employee involved</label><select id="inc-emp">${opts}</select></div><div class="field"><label>Description</label><input id="inc-desc" placeholder="What happened"></div>
+    <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px"><input type="checkbox" id="inc-rec"> OSHA-recordable</label>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#ea580c;--brand-deep:#c2410c" data-act="incidentNewSave">Log incident</button>`});};
+ACT.incidentNewSave=()=>{const type=document.getElementById('inc-type').value,loc=(document.getElementById('inc-loc').value||'').trim(),eid=document.getElementById('inc-emp').value,desc=(document.getElementById('inc-desc').value||'').trim(),rec=document.getElementById('inc-rec').checked;
+  if(!desc){UI.toast('Describe the incident.');return;}const nums=DB.safety.incidents.map(i=>+String(i.id).slice(4)).filter(Number.isFinite);
+  DB.safety.incidents.unshift({id:'INC-'+((nums.length?Math.max(...nums):0)+1),date:todayISO(),type,location:loc||'—',employeeId:eid,description:desc,recordable:rec,daysAway:0,status:'open'});
+  audit('safety.incident',type+' — '+loc);Store.save();UI.closeModal();UIS.safetyTab='osha';UI.toast('🦺 Incident logged'+(rec?' — added to the OSHA 300 log.':'.'));render();};
+
+/* ===================================================================
+   EMPLOYEE RELATIONS & ADA — the documentation-heavy, litigation-
+   exposed workflows: disciplinary actions, PIPs, workplace
+   investigations (with confidentiality) and the ADA reasonable-
+   accommodation interactive process.
+   =================================================================== */
+const ER_META={pip:['⚠️','PIP','#f59e0b'],disciplinary:['📋','Disciplinary','#ef4444'],investigation:['🔍','Investigation','#8b5cf6'],accommodation:['♿','Accommodation','#0ea5e9']};
+function buildER(employees){
+  const active=employees.filter(e=>e.status==='active'),A=i=>active[i%active.length];
+  const hr=(employees.find(e=>e.name==='Maya Castillo')||A(0)).id;
+  const C=(id,type,ei,title,status,openedDays,severity,steps,note,outcome)=>({id,type,employeeId:A(ei).id,title,status,opened:daysAgo(openedDays),ownerId:hr,confidential:type==='investigation'||type==='accommodation',severity,steps,note,outcome:outcome||null,activity:[{at:daysAgo(openedDays),by:'People team',text:'Case opened'}]});
+  return [
+    C('ER-1','pip',9,'Performance Improvement Plan','active',20,'medium',[{label:'Plan agreed & goals set',done:true},{label:'30-day check-in',done:true},{label:'60-day check-in',done:false},{label:'Final review',done:false}],'Missed Q2 deliverables; clear goals set with weekly 1:1s and manager support.'),
+    C('ER-2','disciplinary',14,'Written warning — attendance','active',8,'low',[{label:'Verbal coaching',done:true},{label:'Written warning issued',done:true},{label:'30-day monitoring',done:false}],'Repeated unexcused lateness after a prior verbal coaching.'),
+    C('ER-3','investigation',22,'Workplace-conduct investigation','active',5,'high',[{label:'Complaint received',done:true},{label:'Interviews in progress',done:true},{label:'Findings & determination',done:false},{label:'Resolution',done:false}],'Confidential — handled by People + Legal. Interim measures in place.'),
+    C('ER-4','accommodation',31,'ADA accommodation request','active',12,'medium',[{label:'Request received',done:true},{label:'Interactive dialogue',done:true},{label:'Determination',done:false},{label:'Implemented',done:false},{label:'Periodic review',done:false}],'Requested an ergonomic setup and a modified schedule. Interactive process underway.'),
+    C('ER-5','disciplinary',40,'Verbal warning — policy','closed',60,'low',[{label:'Verbal warning',done:true},{label:'Acknowledged',done:true}],'Minor policy breach; coached and acknowledged.','Resolved'),
+    C('ER-6','pip',50,'Performance Improvement Plan','closed',120,'medium',[{label:'Plan agreed',done:true},{label:'Check-ins',done:true},{label:'Final review',done:true}],'Improvement sustained — plan closed successfully.','Successful'),
+    C('ER-7','accommodation',60,'ADA accommodation — remote','closed',90,'low',[{label:'Request',done:true},{label:'Dialogue',done:true},{label:'Determination',done:true},{label:'Implemented',done:true}],'Approved a permanent remote arrangement.','Approved'),
+    C('ER-8','investigation',70,'Conduct investigation','closed',150,'high',[{label:'Complaint',done:true},{label:'Investigation',done:true},{label:'Findings',done:true},{label:'Resolution',done:true}],'Investigation completed; corrective action taken.','Substantiated')
+  ];
+}
+const erById=id=>((DB.erCases||[]).find(c=>c.id===id));
+const erPill=s=>s==='active'?finPill('Active','var(--warn-text)'):s==='closed'?finPill('Closed','var(--ok-text)'):finPill(s,'#94a3b8');
+Views.er=param=>{
+  if(!DB.erCases)return '<div class="card empty"><div class="big">🗂️</div>Employee relations not initialized.</div>';
+  if(param&&/^ER-/.test(param))return erDetail(param);
+  const C=DB.erCases,open=C.filter(c=>c.status==='active');
+  const tabs=[['eroverview','Overview',open.length],['cases','All cases',0]];
+  if(param)UIS.erTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.erTab||'eroverview'))?(UIS.erTab||'eroverview'):'eroverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Employee Relations</h1>
+    <div class="page-sub">Disciplinary actions, PIPs, investigations &amp; ADA accommodations — documented, confidential, defensible</div></div>
+    <button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="erNew">${I.plus} Open a case</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setErTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='eroverview'?erOverview():erCases()}`;
+};
+ACT.setErTab=a=>{UIS.erTab=a;history.replaceState(null,'','#/er/'+a);render();};
+function erOverview(){
+  const C=DB.erCases,open=C.filter(c=>c.status==='active'),cnt=t=>C.filter(c=>c.type===t&&c.status==='active').length;
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Open cases',open.length,'in progress','#7c3aed')}
+    ${statCard('Active PIPs',cnt('pip'),'performance plans','#f59e0b')}
+    ${statCard('Investigations',cnt('investigation'),'confidential','#8b5cf6')}
+    ${statCard('ADA in process',cnt('accommodation'),'interactive process','#0ea5e9')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Open cases</h3></div>
+    <table class="tbl"><tbody>${open.map(c=>{const e=emp(c.employeeId),m=ER_META[c.type],prog=pct(c.steps.filter(s=>s.done).length,c.steps.length);return `<tr class="click" data-act="erOpen" data-arg="${c.id}"><td style="width:44px">${m[0]}</td><td>${c.confidential?'🔒 <span class="tiny faint">Confidential</span>':(e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':'')}<div class="tiny faint">${esc(c.title)}</div></td><td style="width:130px"><div style="height:6px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${prog}%;background:${m[2]}"></div></div><div class="tiny faint">${c.steps.filter(s=>s.done).length}/${c.steps.length} steps</div></td><td class="tiny faint" style="width:80px">${rel(c.opened)}</td><td class="r"><button class="btn xs soft" data-act="erOpen" data-arg="${c.id}">Open</button></td></tr>`;}).join('')||'<tr><td class="faint">No open cases.</td></tr>'}</tbody></table></div>`;
+}
+function erCases(){
+  const C=DB.erCases.slice().sort((a,b)=>a.status==='active'?-1:1);
+  return `<div class="card"><div class="card-head"><h3>All cases</h3></div>
+    <table class="tbl"><thead><tr><th>Type</th><th>Subject</th><th>Title</th><th>Opened</th><th>Status</th><th></th></tr></thead><tbody>
+    ${C.map(c=>{const e=emp(c.employeeId),m=ER_META[c.type];return `<tr class="click" data-act="erOpen" data-arg="${c.id}"><td>${m[0]} <span class="tiny">${m[1]}</span></td><td class="small">${c.confidential?'🔒 Confidential':(e?esc(e.name):'')}</td><td class="tiny">${esc(c.title)}</td><td class="tiny">${fmtDshort(c.opened)}</td><td>${erPill(c.status)}${c.outcome?' <span class="tiny faint">'+esc(c.outcome)+'</span>':''}</td><td class="r"><button class="btn xs soft" data-act="erOpen" data-arg="${c.id}">Open</button></td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function erDetail(id){
+  const c=erById(id);if(!c)return '<div class="card empty">Case not found.</div>';
+  const e=emp(c.employeeId),m=ER_META[c.type],nextStep=c.steps.find(s=>!s.done);
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">${m[0]} ${esc(c.title)}</h1><div class="page-sub">${c.id} · ${m[1]} · opened ${fmtDshort(c.opened)} · owner ${esc((emp(c.ownerId)||{}).name||'')}</div></div>
+    <button class="btn ghost" data-act="nav" data-arg="#/er/cases">‹ All cases</button></div>
+  ${c.confidential?`<div class="card pad mb16" style="border-left:3px solid #8b5cf6;background:color-mix(in srgb,#8b5cf6 6%,var(--card))"><b class="small">🔒 Confidential</b> <span class="tiny faint">— access is logged; visible only to People + Legal on a need-to-know basis.</span></div>`:''}
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Subject &amp; summary</h3></div><div class="card-body">
+      ${e?`<div class="row" style="gap:10px;align-items:center;margin-bottom:12px">${av(e,'md')}<div><b>${esc(e.name)}</b><div class="tiny faint">${esc(e.title)} · ${deptName(e.dept)}</div></div></div>`:''}
+      <p class="small">${esc(c.note)}</p>
+      <div class="row wrap mt12" style="gap:6px">${finPill(m[1],m[2])}${c.severity?finPill(c.severity+' severity',c.severity==='high'?'var(--bad-text)':c.severity==='medium'?'var(--warn-text)':'#94a3b8'):''}${erPill(c.status)}</div></div></div>
+    <div class="card"><div class="card-head"><h3>${c.type==='accommodation'?'Interactive process':'Process steps'}</h3></div><div class="card-body">
+      ${c.steps.map((s,i)=>`<div class="row" style="gap:10px;padding:9px 0;border-top:${i?'1px solid var(--line)':'none'}"><span style="font-size:16px">${s.done?'✅':(s===nextStep?'▶️':'⬜')}</span><span class="small" style="flex:1;${s.done?'':'font-weight:600'}">${esc(s.label)}</span>${s.done?'<span class="tiny faint">done</span>':(s===nextStep&&c.status==='active'?`<button class="btn xs good" data-act="erAdvance" data-arg="${c.id}">Mark done</button>`:'')}</div>`).join('')}
+      ${c.status==='active'?`<button class="btn soft block mt12" style="color:var(--ok-text)" data-act="erClose" data-arg="${c.id}">Close case</button>`:`<div class="tiny faint mt12">Outcome: <b>${esc(c.outcome||'Closed')}</b></div>`}</div></div>
+  </div>
+  <div class="card mt16"><div class="card-head"><h3>Activity log</h3></div><table class="tbl"><tbody>${c.activity.slice().reverse().map(a=>`<tr><td class="tiny" style="width:80px">${fmtDshort(a.at)}</td><td class="small">${esc(a.text)}<div class="tiny faint">${esc(a.by)}</div></td></tr>`).join('')}</tbody></table></div>`;
+}
+/* Employee-relations interactions */
+ACT.erOpen=id=>{location.hash='#/er/'+id;render();};
+ACT.erAdvance=id=>{const c=erById(id);if(!c)return;const s=c.steps.find(x=>!x.done);if(s){s.done=true;s.date=todayISO();c.activity.push({at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Completed: '+s.label});}
+  if(c.steps.every(x=>x.done)){/* leave open until explicitly closed */}
+  audit('er.advance',c.id+' — '+(s?s.label:''));Store.save();UI.toast('✓ Step completed.');render();};
+ACT.erClose=id=>{const c=erById(id);if(!c)return;c.status='closed';c.outcome=c.outcome||(c.type==='pip'?'Completed':'Resolved');c.activity.push({at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Case closed — '+c.outcome});
+  audit('er.close',c.id);Store.save();UI.toast('Case closed.');render();};
+ACT.erNew=()=>{const opts=DB.employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  UI.modal({title:'Open an employee-relations case',body:`<div class="field"><label>Type</label><select id="er-type"><option value="disciplinary">📋 Disciplinary action</option><option value="pip">⚠️ Performance Improvement Plan</option><option value="investigation">🔍 Investigation</option><option value="accommodation">♿ ADA accommodation</option></select></div>
+    <div class="field"><label>Employee</label><select id="er-emp">${opts}</select></div><div class="field"><label>Title / summary</label><input id="er-title" placeholder="e.g. Written warning — attendance"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="erNewSave">Open case</button>`});};
+ACT.erNewSave=()=>{const type=document.getElementById('er-type').value,eid=document.getElementById('er-emp').value,title=(document.getElementById('er-title').value||'').trim();
+  if(!title){UI.toast('Add a title.');return;}
+  const stepSets={disciplinary:['Verbal coaching','Written warning','Monitoring period'],pip:['Plan agreed & goals set','30-day check-in','60-day check-in','Final review'],investigation:['Complaint received','Investigation','Findings & determination','Resolution'],accommodation:['Request received','Interactive dialogue','Determination','Implemented','Periodic review']};
+  const nums=DB.erCases.map(c=>+String(c.id).slice(3)).filter(Number.isFinite);
+  DB.erCases.unshift({id:'ER-'+((nums.length?Math.max(...nums):0)+1),type,employeeId:eid,title,status:'active',opened:todayISO(),ownerId:DB.me.employeeId,confidential:type==='investigation'||type==='accommodation',severity:'medium',steps:stepSets[type].map((l,i)=>({label:l,done:i===0})),note:'',activity:[{at:todayISO(),by:(emp(DB.me.employeeId)||{}).name||'You',text:'Case opened'}]});
+  audit('er.open',ER_META[type][1]+' — '+title);Store.save();UI.closeModal();UI.toast('🗂️ Case opened.');render();};
+
+/* ===================================================================
+   JOB ARCHITECTURE & SKILLS — the connective spine. Job families,
+   job profiles + level ladders, a controlled skills taxonomy, and
+   the who-holds-what that Recruiting, Comp, Performance & Learning
+   all reference. Derived from the live workforce.
+   =================================================================== */
+function buildJobArch(employees){
+  const families=[
+    {id:'JF-eng',name:'Engineering',depts:['eng','it'],color:'#6366f1'},
+    {id:'JF-prod',name:'Product & Design',depts:['product','design'],color:'#ec4899'},
+    {id:'JF-data',name:'Data & Science',depts:['data'],color:'#0ea5e9'},
+    {id:'JF-gtm',name:'Go-to-Market',depts:['sales','mktg','cx'],color:'#22c55e'},
+    {id:'JF-ga',name:'G&A',depts:['fin','ops','people'],color:'#f59e0b'},
+    {id:'JF-exec',name:'Executive',depts:['exec'],color:'#8b5cf6'}];
+  const profiles=[
+    {id:'JP-eng-ic',familyId:'JF-eng',name:'Software Engineer',track:'IC',levels:['IC1','IC2','IC3','IC4','IC5','IC6'],skills:['sk-code','sk-systems','sk-testing','sk-collab']},
+    {id:'JP-eng-m',familyId:'JF-eng',name:'Engineering Manager',track:'M',levels:['M3','M4','M5'],skills:['sk-lead','sk-systems','sk-hiring','sk-collab']},
+    {id:'JP-prod-ic',familyId:'JF-prod',name:'Product & Design IC',track:'IC',levels:['IC2','IC3','IC4','IC5'],skills:['sk-pm','sk-design','sk-research','sk-collab']},
+    {id:'JP-prod-m',familyId:'JF-prod',name:'Product & Design Lead',track:'M',levels:['M3','M4'],skills:['sk-lead','sk-pm','sk-strategy']},
+    {id:'JP-data-ic',familyId:'JF-data',name:'Data Scientist / Analyst',track:'IC',levels:['IC1','IC2','IC3','IC4','IC5'],skills:['sk-data','sk-ml','sk-code']},
+    {id:'JP-data-m',familyId:'JF-data',name:'Data Manager',track:'M',levels:['M3','M4'],skills:['sk-lead','sk-data','sk-strategy']},
+    {id:'JP-gtm-ic',familyId:'JF-gtm',name:'Go-to-Market IC',track:'IC',levels:['IC1','IC2','IC3','IC4','IC5'],skills:['sk-sales','sk-mktg','sk-cs','sk-comm']},
+    {id:'JP-gtm-m',familyId:'JF-gtm',name:'Go-to-Market Leader',track:'M',levels:['M3','M4','M5'],skills:['sk-lead','sk-strategy','sk-comm']},
+    {id:'JP-ga-ic',familyId:'JF-ga',name:'G&A Specialist',track:'IC',levels:['IC1','IC2','IC3','IC4','IC5'],skills:['sk-finance','sk-ops','sk-people','sk-comm']},
+    {id:'JP-ga-m',familyId:'JF-ga',name:'G&A Manager',track:'M',levels:['M3','M4'],skills:['sk-lead','sk-ops','sk-strategy']},
+    {id:'JP-exec',familyId:'JF-exec',name:'Executive',track:'E',levels:['E'],skills:['sk-lead','sk-strategy','sk-comm']}];
+  const skills=[
+    {id:'sk-code',name:'Software development',category:'Technical'},{id:'sk-systems',name:'Systems design',category:'Technical'},
+    {id:'sk-testing',name:'Test & QA',category:'Technical'},{id:'sk-robotics',name:'Robotics control',category:'Technical'},
+    {id:'sk-ml',name:'Machine learning',category:'Technical'},{id:'sk-data',name:'Data analysis',category:'Technical'},
+    {id:'sk-design',name:'Product design',category:'Craft'},{id:'sk-research',name:'User research',category:'Craft'},
+    {id:'sk-pm',name:'Product management',category:'Craft'},
+    {id:'sk-sales',name:'Enterprise sales',category:'Domain'},{id:'sk-mktg',name:'Growth marketing',category:'Domain'},
+    {id:'sk-cs',name:'Customer success',category:'Domain'},{id:'sk-finance',name:'Financial planning',category:'Domain'},
+    {id:'sk-ops',name:'Operations',category:'Domain'},{id:'sk-people',name:'People operations',category:'Domain'},
+    {id:'sk-lead',name:'People leadership',category:'Leadership'},{id:'sk-strategy',name:'Strategy',category:'Leadership'},
+    {id:'sk-collab',name:'Collaboration',category:'Leadership'},{id:'sk-hiring',name:'Hiring & interviewing',category:'Leadership'},
+    {id:'sk-comm',name:'Communication',category:'Leadership'}];
+  return {families,profiles,skills};
+}
+let _jaMgr=null;
+function jaTrack(e){if(!_jaMgr)_jaMgr=new Set(DB.employees.map(x=>x.managerId).filter(Boolean));return e.dept==='exec'?'E':(_jaMgr.has(e.id)?'M':'IC');}
+function jaFamily(dept){const J=DB.jobArch;return J.families.find(f=>f.depts.includes(dept))||J.families.find(f=>f.id==='JF-ga');}
+function jaProfileOf(e){const J=DB.jobArch,fam=jaFamily(e.dept),tr=jaTrack(e);return J.profiles.find(p=>p.familyId===fam.id&&p.track===tr)||J.profiles.find(p=>p.familyId===fam.id);}
+function jaSkillsOf(e){const p=jaProfileOf(e),hn=s=>parseInt(hash32(s),16)||0,base=(p?p.skills.slice():[]),all=DB.jobArch.skills;
+  const ex=all[hn(e.id+'sk1')%all.length].id;if(!base.includes(ex))base.push(ex);
+  return base.map(id=>({id,level:1+hn(e.id+id)%5}));}
+function jaHolders(pid){return DB.employees.filter(e=>e.status==='active'&&(jaProfileOf(e)||{}).id===pid);}
+function jaBand(pid){const h=jaHolders(pid).map(e=>e.comp&&e.comp.base).filter(Boolean).sort((a,b)=>a-b);return h.length?{min:h[0],max:h[h.length-1],med:h[Math.floor(h.length/2)],n:h.length}:null;}
+function jaSkillSupply(sid){return DB.employees.filter(e=>e.status==='active'&&jaSkillsOf(e).some(s=>s.id===sid)).length;}
+Views.jobs=param=>{
+  _jaMgr=null;const J=DB.jobArch;if(!J)return '<div class="card empty"><div class="big">🧬</div>Job architecture not initialized.</div>';
+  const tabs=[['joverview','Overview',0],['families','Families & profiles',0],['skills','Skills library',0],['paths','Career paths',0]];
+  if(param)UIS.jobsTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.jobsTab||'joverview'))?(UIS.jobsTab||'joverview'):'joverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Job Architecture</h1>
+    <div class="page-sub">Job families, profiles &amp; levels + a controlled skills taxonomy — the spine that ties Recruiting, Comp, Performance &amp; Learning together</div></div>
+    <button class="btn primary" style="--brand:#9333ea;--brand-deep:#7e22ce" data-act="jaAddSkill">${I.plus} Add skill</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setJobsTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${tab==='joverview'?jaOverview():tab==='families'?jaFamilies():tab==='skills'?jaSkills():jaPaths()}`;
+};
+ACT.setJobsTab=a=>{UIS.jobsTab=a;history.replaceState(null,'','#/jobs/'+a);render();};
+function jaOverview(){
+  const J=DB.jobArch,active=DB.employees.filter(e=>e.status==='active');
+  const avgSk=(active.reduce((s,e)=>s+jaSkillsOf(e).length,0)/Math.max(1,active.length)).toFixed(1);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Job families',J.families.length,'across the org','#9333ea')}
+    ${statCard('Job profiles',J.profiles.length,'roles in the catalog','#6366f1',undefined,'','#/jobs/families')}
+    ${statCard('Skills tracked',J.skills.length,'controlled taxonomy','#0ea5e9',undefined,'','#/jobs/skills')}
+    ${statCard('Avg skills / person',avgSk,'mapped to profiles','#22c55e')}
+  </div>
+  <div class="grid g3">${J.families.map(f=>{const profs=J.profiles.filter(p=>p.familyId===f.id),hc=DB.employees.filter(e=>e.status==='active'&&jaFamily(e.dept).id===f.id).length;
+    return `<div class="card pad"><div class="row" style="gap:9px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:${f.color}"></span><b>${esc(f.name)}</b><span class="spacer"></span><span class="tiny faint">${hc} people</span></div>
+      <div class="mt8">${profs.map(p=>`<div class="tiny" style="padding:5px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between"><span>${esc(p.name)}</span><span class="faint">${jaHolders(p.id).length} · ${p.levels[0]}–${p.levels[p.levels.length-1]}</span></div>`).join('')}</div></div>`;}).join('')}</div>`;
+}
+function jaFamilies(){
+  const J=DB.jobArch;
+  return J.families.map(f=>{const profs=J.profiles.filter(p=>p.familyId===f.id);
+    return `<div class="card mb16"><div class="card-head"><h3><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${f.color};margin-right:8px"></span>${esc(f.name)}</h3></div>
+    <table class="tbl"><thead><tr><th>Profile</th><th>Track</th><th>Levels</th><th class="r">Headcount</th><th class="r">Pay band</th><th>Key skills</th></tr></thead><tbody>
+    ${profs.map(p=>{const b=jaBand(p.id);return `<tr class="click" data-act="jaProfileOpen" data-arg="${p.id}"><td><b class="small">${esc(p.name)}</b></td><td class="tiny">${p.track}</td><td class="tiny">${p.levels[0]}–${p.levels[p.levels.length-1]}</td><td class="r num">${jaHolders(p.id).length}</td><td class="r tiny">${b?fmt$(b.min)+'–'+fmt$(b.max):'—'}</td><td>${p.skills.slice(0,3).map(sid=>{const sk=J.skills.find(s=>s.id===sid);return sk?`<span class="tiny" style="padding:2px 6px;background:var(--line);border-radius:5px;margin-right:3px">${esc(sk.name)}</span>`:'';}).join('')}</td></tr>`;}).join('')}</tbody></table></div>`;}).join('');
+}
+function jaSkills(){
+  const J=DB.jobArch,cats=['Technical','Craft','Domain','Leadership'],hn=s=>parseInt(hash32(s),16)||0;
+  return cats.map(cat=>{const sk=J.skills.filter(s=>s.category===cat);
+    return `<div class="card mb16"><div class="card-head"><h3>${esc(cat)}</h3></div>
+    <table class="tbl"><thead><tr><th>Skill</th><th class="r">People with it</th><th style="width:180px">Coverage</th><th class="r">Open demand</th><th></th></tr></thead><tbody>
+    ${sk.map(s=>{const sup=jaSkillSupply(s.id),dem=hn(s.id+'dem')%5;return `<tr class="click" data-act="jaSkillOpen" data-arg="${s.id}"><td><b class="small">${esc(s.name)}</b></td><td class="r num">${sup}</td><td><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden"><div style="height:100%;width:${Math.min(100,pct(sup,DB.employees.filter(e=>e.status==='active').length))}%;background:#9333ea;border-radius:5px"></div></div></td><td class="r tiny">${dem?dem+' reqs':'—'}</td><td class="r"><button class="btn xs soft" data-act="jaSkillOpen" data-arg="${s.id}">Who</button></td></tr>`;}).join('')}</tbody></table></div>`;}).join('');
+}
+function jaPaths(){
+  const J=DB.jobArch,pid=UIS.jaPath||'JP-eng-ic',p=J.profiles.find(x=>x.id===pid)||J.profiles[0];
+  const opts=J.profiles.map(x=>`<option value="${x.id}" ${x.id===p.id?'selected':''}>${esc(x.name)}</option>`).join('');
+  return `
+  <div class="card mb16"><div class="card-body"><div class="row wrap" style="gap:12px;align-items:center"><b class="small">Career ladder for</b>
+    <select onchange="UIS.jaPath=this.value;render()" style="background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:7px 11px;font-size:13px">${opts}</select></div></div></div>
+  <div class="card"><div class="card-head"><h3>${esc(p.name)} — level ladder</h3></div><div class="card-body">
+    ${p.levels.map((lv,i)=>{const at=jaHolders(p.id).filter(e=>e.level===lv);return `<div class="row" style="gap:14px;padding:12px 0;border-top:${i?'1px solid var(--line)':'none'}">
+      <div style="width:52px;flex:none"><span style="font-weight:800;font-size:15px;color:#9333ea">${lv}</span></div>
+      <div style="flex:1"><b class="small">${esc(p.name)} ${lv}</b><div class="tiny faint">${at.length} ${at.length===1?'person':'people'}${at.length?' · '+at.slice(0,3).map(e=>esc(e.name.split(' ')[0])).join(', ')+(at.length>3?' +'+(at.length-3):''):''}</div></div>
+      <div style="text-align:right">${at.length?fmt$(Math.round(at.reduce((s,e)=>s+(e.comp?e.comp.base:0),0)/at.length)):'—'}<div class="tiny faint">avg base</div></div></div>`;}).join('')}
+    <div class="tiny faint mt12" style="padding-top:10px;border-top:1px solid var(--line)">Required skills: ${p.skills.map(sid=>{const sk=J.skills.find(s=>s.id===sid);return sk?esc(sk.name):'';}).filter(Boolean).join(' · ')}</div>
+  </div></div>`;
+}
+/* Job-architecture interactions */
+ACT.jaProfileOpen=id=>{const p=DB.jobArch.profiles.find(x=>x.id===id);if(!p)return;const holders=jaHolders(id),b=jaBand(id);
+  UI.modal({title:esc(p.name),sub:p.track+' track · '+p.levels[0]+'–'+p.levels[p.levels.length-1]+' · '+holders.length+' people',wide:true,
+    body:`${b?`<div class="grid g3 mb16">${statCard('Headcount',holders.length,'active','#9333ea')}${statCard('Pay band',fmt$(b.min)+'–'+fmt$(b.max),'median '+fmt$(b.med),'#6366f1')}${statCard('Required skills',p.skills.length,'in profile','#0ea5e9')}</div>`:''}
+      <b class="small">Required skills</b><div class="row wrap mt8 mb16" style="gap:6px">${p.skills.map(sid=>{const sk=DB.jobArch.skills.find(s=>s.id===sid);return sk?`<span class="tiny" style="padding:4px 9px;border:1px solid var(--line);border-radius:8px">${esc(sk.name)}</span>`:'';}).join('')}</div>
+      <b class="small">People in this profile</b><table class="tbl mt8"><tbody>${holders.slice(0,30).map(e=>`<tr><td>${av(e,'sm')} <b class="small">${esc(e.name)}</b></td><td class="tiny">${esc(e.title)}</td><td class="tiny r">${e.level}</td><td class="r num tiny">${e.comp?fmt$(e.comp.base):''}</td></tr>`).join('')}</tbody></table>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>`});};
+ACT.jaSkillOpen=id=>{const sk=DB.jobArch.skills.find(x=>x.id===id);if(!sk)return;const holders=DB.employees.filter(e=>e.status==='active'&&jaSkillsOf(e).some(s=>s.id===id));
+  UI.modal({title:esc(sk.name),sub:sk.category+' skill · '+holders.length+' people',wide:true,
+    body:`<table class="tbl"><thead><tr><th>Person</th><th>Profile</th><th class="r">Proficiency</th></tr></thead><tbody>${holders.slice(0,40).map(e=>{const lv=(jaSkillsOf(e).find(s=>s.id===id)||{}).level||1;return `<tr><td>${av(e,'sm')} <b class="small">${esc(e.name)}</b></td><td class="tiny">${(jaProfileOf(e)||{}).name||''}</td><td class="r">${'★'.repeat(lv)}${'☆'.repeat(5-lv)}</td></tr>`;}).join('')}</tbody></table>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>`});};
+ACT.jaAddSkill=()=>{UI.modal({title:'Add a skill to the taxonomy',body:`<div class="field"><label>Skill name</label><input id="ja-sk" placeholder="e.g. Prompt engineering"></div><div class="field"><label>Category</label><select id="ja-cat"><option>Technical</option><option>Craft</option><option>Domain</option><option>Leadership</option></select></div>`,foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#9333ea;--brand-deep:#7e22ce" data-act="jaAddSkillSave">Add skill</button>`});};
+ACT.jaAddSkillSave=()=>{const n=(document.getElementById('ja-sk').value||'').trim(),cat=document.getElementById('ja-cat').value;if(!n){UI.toast('Name the skill.');return;}
+  DB.jobArch.skills.push({id:'sk-'+Date.now().toString(36),name:n,category:cat});audit('jobarch.skill','Added skill '+n);Store.save();UI.closeModal();UIS.jobsTab='skills';UI.toast('✓ "'+n+'" added to the skills taxonomy.');render();};
+
+/* ===================================================================
+   EFFECTIVE-DATING — the temporal spine (the #1 audit gap). A
+   future-dated change queue that activates on its effective date,
+   plus point-in-time reconstruction of a worker record. Applies
+   changes directly (does NOT touch the applyBP golden thread).
+   =================================================================== */
+function buildScheduledChanges(employees){
+  const active=employees.filter(e=>e.status==='active'),A=i=>active[i%active.length];
+  const byName=n=>(employees.find(e=>e.name===n)||A(0)).id;
+  return [
+    {id:'SCH-1',employeeId:byName('Jordan Lee'),type:'comp',label:'Q3 merit increase',from:'$118,000',to:'$126,000',effectiveDate:daysAhead(24),createdBy:byName('Priya Sharma'),createdAt:daysAgo(3),status:'scheduled',note:'Q3 merit cycle'},
+    {id:'SCH-2',employeeId:A(7).id,type:'promotion',label:'Promotion',from:A(7).title,to:'Senior '+A(7).title,effectiveDate:daysAhead(24),createdBy:'E007',createdAt:daysAgo(3),status:'scheduled',note:'Endorsed in calibration'},
+    {id:'SCH-3',employeeId:A(15).id,type:'transfer',label:'Department transfer',from:deptName(A(15).dept),to:'Product',effectiveDate:daysAhead(10),createdBy:'E007',createdAt:daysAgo(5),status:'scheduled',note:'Internal mobility'},
+    {id:'SCH-4',employeeId:A(23).id,type:'comp',label:'Market adjustment',from:'$140,000',to:'$152,000',effectiveDate:daysAhead(2),createdBy:'E004',createdAt:daysAgo(1),status:'scheduled',note:'Comp review — activating soon'},
+    {id:'SCH-5',employeeId:A(31).id,type:'manager',label:'Reporting change',from:'—',to:'Nina Rossi',effectiveDate:daysAhead(5),createdBy:'E007',createdAt:daysAgo(6),status:'scheduled',note:'Reorg'},
+    {id:'SCH-6',employeeId:A(11).id,type:'title',label:'Reclassification',from:'Data Analyst',to:'Data Scientist',effectiveDate:daysAgo(4),createdBy:'E007',createdAt:daysAgo(24),status:'activated',activatedAt:daysAgo(4),note:'Job-architecture update'}
+  ];
+}
+const schTypeIcon={comp:'💰',promotion:'⬆️',transfer:'🔀',manager:'🧭',title:'🏷️'};
+Views.effdate=param=>{
+  const S=DB.scheduledChanges;if(!S)return '<div class="card empty"><div class="big">🕰️</div>Effective-dating not initialized.</div>';
+  const due=S.filter(c=>c.status==='scheduled'&&c.effectiveDate<=todayISO()).length;
+  const tabs=[['eoverview','Overview',due],['queue','Scheduled changes',0],['pit','Point-in-time',0]];
+  if(param)UIS.effTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.effTab||'eoverview'))?(UIS.effTab||'eoverview'):'eoverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Effective dating</h1>
+    <div class="page-sub">Schedule changes ahead of time; they activate on their effective date. The temporal system-of-record spine.</div></div>
+    <button class="btn primary" style="--brand:#0f766e;--brand-deep:#115e59" data-act="schNew">${I.plus} Schedule a change</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setEffTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='eoverview'?effOverview():tab==='queue'?effQueue():effPit()}`;
+};
+ACT.setEffTab=a=>{UIS.effTab=a;history.replaceState(null,'','#/effdate/'+a);render();};
+function effOverview(){
+  const S=DB.scheduledChanges,sched=S.filter(c=>c.status==='scheduled'),wk=sched.filter(c=>c.effectiveDate<=daysAhead(7)),act=S.filter(c=>c.status==='activated');
+  const upcoming=sched.slice().sort((a,b)=>a.effectiveDate<b.effectiveDate?-1:1);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Scheduled ahead',sched.length,'future-dated changes','#0f766e')}
+    ${statCard('Activating ≤ 7 days',wk.length,'auto-apply on date',wk.length?'var(--warn-text)':'#94a3b8')}
+    ${statCard('Activated',act.length,'now part of history','var(--ok-text)')}
+    ${statCard('Retro corrections',0,'none pending','#94a3b8')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Change timeline</h3><span class="spacer"></span><span class="tiny faint">today: ${fmtDshort(todayISO())}</span></div><div class="card-body">
+    ${upcoming.map(c=>{const e=emp(c.employeeId),days=Math.round((new Date(c.effectiveDate)-now())/864e5),dueNow=c.effectiveDate<=todayISO();return `<div class="row between" style="padding:11px 0;border-top:1px solid var(--line)">
+      <div class="row" style="gap:10px;align-items:center"><span style="font-size:20px">${schTypeIcon[c.type]||'📌'}</span><div>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':''} <span class="tiny faint">— ${esc(c.label)}</span><div class="tiny faint">${esc(c.from)} → <b>${esc(c.to)}</b></div></div></div>
+      <div style="text-align:right">${dueNow?finPill('Due now','var(--warn-text)'):finPill('in '+days+'d','#0f766e')}<div class="tiny faint">${fmtDshort(c.effectiveDate)}</div></div></div>`;}).join('')||'<div class="empty"><div class="big">🕰️</div>No changes scheduled.</div>'}
+  </div></div>`;
+}
+function effQueue(){
+  const S=DB.scheduledChanges.slice().sort((a,b)=>a.effectiveDate<b.effectiveDate?-1:1);
+  return `
+  <div class="card"><div class="card-head"><h3>Scheduled &amp; activated changes</h3></div>
+    <table class="tbl"><thead><tr><th>Employee</th><th>Change</th><th>From → To</th><th>Effective</th><th>Status</th><th></th></tr></thead><tbody>
+    ${S.map(c=>{const e=emp(c.employeeId),dueNow=c.status==='scheduled'&&c.effectiveDate<=todayISO();return `<tr><td>${e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':esc(c.employeeId)}</td><td>${schTypeIcon[c.type]||''} <span class="small">${esc(c.label)}</span></td><td class="tiny">${esc(c.from)} → <b>${esc(c.to)}</b></td><td class="tiny">${fmtDshort(c.effectiveDate)}</td><td>${c.status==='activated'?finPill('Activated','var(--ok-text)'):c.status==='cancelled'?finPill('Cancelled','#94a3b8'):dueNow?finPill('Due now','var(--warn-text)'):finPill('Scheduled','#0f766e')}</td><td class="r">${c.status==='scheduled'?`<button class="btn xs ${dueNow?'good':'soft'}" data-act="schActivate" data-arg="${c.id}">${dueNow?'Activate':'Activate early'}</button> <button class="btn xs soft" data-act="schCancel" data-arg="${c.id}">Cancel</button>`:c.status==='activated'&&c.activatedAt?'<span class="tiny faint">'+fmtDshort(c.activatedAt)+'</span>':''}</td></tr>`;}).join('')}</tbody></table>
+    <div class="pad tiny faint">A scheduled change activates automatically on its effective date — or activate it early here. Activation writes the new value onto the worker record and into history.</div></div>`;
+}
+function effPit(){
+  const eid=UIS.pitEmp||(DB.scheduledChanges[0]||{}).employeeId,e=emp(eid);
+  const changes=DB.scheduledChanges.filter(c=>c.employeeId===eid).slice().sort((a,b)=>a.effectiveDate<b.effectiveDate?-1:1);
+  const opts=DB.employees.filter(x=>x.status==='active').map(x=>`<option value="${x.id}" ${x.id===eid?'selected':''}>${esc(x.name)}</option>`).join('');
+  return `
+  <div class="card mb16"><div class="card-body"><div class="row wrap" style="gap:12px;align-items:center"><b class="small">Reconstruct record for</b>
+    <select onchange="UIS.pitEmp=this.value;render()" style="background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:7px 11px;font-size:13px">${opts}</select>
+    <span class="tiny faint">— their timeline of what-was and what-will-be</span></div></div></div>
+  ${e?`<div class="grid g2 mb16">
+    <div class="card pad"><b class="small">Current record</b><div class="mt8 small"><div class="row between" style="padding:4px 0"><span class="faint">Title</span><b>${esc(e.title)}</b></div><div class="row between" style="padding:4px 0"><span class="faint">Department</span><b>${deptName(e.dept)}</b></div><div class="row between" style="padding:4px 0"><span class="faint">Base pay</span><b>${e.comp?fmt$(e.comp.base):'—'}</b></div><div class="row between" style="padding:4px 0"><span class="faint">Manager</span><b>${esc((emp(e.managerId)||{}).name||'—')}</b></div></div></div>
+    <div class="card pad"><b class="small">Change history &amp; future</b>${changes.length?`<div class="mt8">${changes.map(c=>`<div class="row" style="gap:9px;padding:7px 0;border-top:1px solid var(--line)"><span style="font-size:16px">${schTypeIcon[c.type]||'📌'}</span><div style="flex:1"><b class="tiny">${esc(c.label)}</b><div class="tiny faint">${esc(c.from)} → ${esc(c.to)}</div></div><div style="text-align:right">${c.status==='activated'?finPill('✓ '+fmtDshort(c.activatedAt),'var(--ok-text)'):finPill(fmtDshort(c.effectiveDate),'#0f766e')}</div></div>`).join('')}</div>`:'<div class="tiny faint mt8">No scheduled or historical changes.</div>'}</div>
+  </div>
+  <div class="card pad" style="border-left:3px solid #0f766e"><b class="small">🕰️ Point-in-time</b><div class="tiny faint mt4">Because every change carries an effective date, any record can be reconstructed as-of any date — the org chart, comp, and reporting line on a past or future day. This is what makes Mosaic a true temporal system of record rather than a snapshot.</div></div>`:'<div class="empty">Select an employee.</div>'}`;
+}
+/* Effective-dating interactions — activation mutates the worker record directly */
+ACT.schActivate=id=>{const c=(DB.scheduledChanges||[]).find(x=>x.id===id);if(!c||c.status!=='scheduled')return;const e=emp(c.employeeId);
+  if(e){if(c.type==='comp'&&e.comp){const n=+String(c.to).replace(/[^0-9.]/g,'');if(n>0)e.comp.base=n;}
+    else if((c.type==='title'||c.type==='promotion')&&c.to)e.title=c.to;}
+  c.status='activated';c.activatedAt=todayISO();
+  audit('effdate.activate',c.label+' — '+(e||{}).name+' ('+c.from+' → '+c.to+')');Store.save();UI.toast('✓ Activated — '+(e?e.name.split(' ')[0]:'')+"'s "+c.label.toLowerCase()+' is now in effect.');render();};
+ACT.schCancel=id=>{const c=(DB.scheduledChanges||[]).find(x=>x.id===id);if(!c||c.status!=='scheduled')return;c.status='cancelled';audit('effdate.cancel',c.label);Store.save();UI.toast('Scheduled change cancelled.');render();};
+ACT.schNew=()=>{const opts=DB.employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  UI.modal({title:'Schedule a future change',sub:'It activates automatically on the effective date',body:`<div class="field"><label>Employee</label><select id="sch-emp">${opts}</select></div>
+    <div class="grid g2"><div class="field"><label>Type</label><select id="sch-type"><option value="comp">💰 Comp change</option><option value="promotion">⬆️ Promotion</option><option value="title">🏷️ Title change</option><option value="transfer">🔀 Transfer</option><option value="manager">🧭 Manager change</option></select></div>
+    <div class="field"><label>Effective date</label><input type="date" id="sch-date" value="${daysAhead(14)}"></div></div>
+    <div class="field"><label>New value</label><input id="sch-to" placeholder="e.g. $130,000 or Senior Engineer"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0f766e;--brand-deep:#115e59" data-act="schNewSave">Schedule change</button>`});};
+ACT.schNewSave=()=>{const eid=document.getElementById('sch-emp').value,type=document.getElementById('sch-type').value,date=document.getElementById('sch-date').value,to=(document.getElementById('sch-to').value||'').trim();
+  if(!to){UI.toast('Enter the new value.');return;}if(!date||date<=todayISO()){UI.toast('Pick a future effective date.');return;}
+  const e=emp(eid),from=type==='comp'?(e.comp?fmt$(e.comp.base):'—'):(type==='transfer'?deptName(e.dept):type==='manager'?((emp(e.managerId)||{}).name||'—'):e.title);
+  const labels={comp:'Comp change',promotion:'Promotion',title:'Title change',transfer:'Department transfer',manager:'Reporting change'};
+  DB.scheduledChanges.unshift({id:'SCH-'+Date.now().toString(36),employeeId:eid,type,label:labels[type],from,to,effectiveDate:date,createdBy:DB.me.employeeId,createdAt:todayISO(),status:'scheduled',note:''});
+  audit('effdate.schedule',labels[type]+' for '+(e||{}).name+' eff '+date);Store.save();UI.closeModal();UI.toast('🕰️ Scheduled — activates '+fmtDshort(date)+'.');render();};
+
+/* ===================================================================
    BACKGROUND CHECKS (native) — replaces Checkr. FCRA-compliant
    screening ordered at the offer stage: package tiers, per-screen
    results, individualized-assessment adjudication and the two-notice
@@ -14152,7 +15060,7 @@ ACT.finRunClose=()=>{
 Views.spend=param=>{
   const nExp=DB.spend.expenses.filter(x=>expNeedsMe(x)&&x.employeeId!==DB.me.employeeId).length;
   const nInv=canFinance()?DB.spend.invoices.filter(v=>v.status==='pending-match').length:0;
-  const tabs=[['soverview','Overview',0],['expenses','Expenses',nExp]].concat(canFinance()?[['invoices','Invoices',nInv],['vendors','Vendors',0],['budgets','Budgets',0]]:[]);
+  const tabs=[['soverview','Overview',0],['expenses','Expenses',nExp]].concat(canFinance()?[['cards','Cards',((DB.spend||{}).txns||[]).filter(t=>t.status==='declined').length],['invoices','Invoices',nInv],['vendors','Vendors',0],['budgets','Budgets',0]]:[]);
   if(param)UIS.spendTab=param;
   const tab=tabs.some(t=>t[0]===(UIS.spendTab||'soverview'))?(UIS.spendTab||'soverview'):'soverview';
   return `
@@ -14162,9 +15070,40 @@ Views.spend=param=>{
     <button class="btn ghost" data-act="nav" data-arg="#/flows">🧾 New requisition</button>
     <button class="btn primary" style="--brand:#1d4ed8;--brand-deep:#1e40af" data-act="expNew">${I.plus} New expense</button></div>
   <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setSpendTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
-  ${tab==='soverview'?spendOverview():tab==='expenses'?spendExpenses():tab==='invoices'?spendInvoices():tab==='vendors'?spendVendors():spendBudgets()}`;
+  ${tab==='soverview'?spendOverview():tab==='expenses'?spendExpenses():tab==='cards'?spendCards():tab==='invoices'?spendInvoices():tab==='vendors'?spendVendors():spendBudgets()}`;
 };
 ACT.setSpendTab=a=>{UIS.spendTab=a;history.replaceState(null,'','#/spend/'+a);render();};
+/* corporate cards & real-time spend (native Brex) */
+function spendCards(){
+  const S=DB.spend,cards=S.cards||[],txns=S.txns||[];
+  const active=cards.filter(c=>c.status==='active'),cycle=sum(cards.map(c=>c.spentCycle||0));
+  const frozen=cards.filter(c=>c.status==='frozen').length,noRcpt=txns.filter(t=>t.status!=='declined'&&!t.receipt).length,decl=txns.filter(t=>t.status==='declined').length;
+  const polName=id=>((S.policies||[]).find(p=>p.id===id)||{}).name||id;
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Cards issued',cards.length,active.length+' active · '+frozen+' frozen','#1d4ed8')}
+    ${statCard('Cycle spend',fmt$(cycle),'this 30-day cycle','#5b21b6')}
+    ${statCard('Missing receipts',noRcpt,'need attachment','var(--warn-text)')}
+    ${statCard('Declined',decl,'over limit / policy','var(--bad-text)')}
+  </div>
+  <div class="card mb16"><div class="card-head"><h3>Card fleet</h3><span class="spacer"></span><button class="btn xs primary" style="--brand:#1d4ed8;--brand-deep:#1e40af" data-act="cardIssue">${I.plus} Issue card</button></div>
+    <table class="tbl"><thead><tr><th>Holder</th><th>Card</th><th>Policy</th><th class="r">Cycle / limit</th><th>Status</th><th></th></tr></thead><tbody>
+    ${cards.slice().sort((a,b)=>b.spentCycle-a.spentCycle).map(c=>{const e=emp(c.holderId),usePct=pct(c.spentCycle,c.limit);return `<tr><td>${c.shared?'🏷️ <b class="small">'+esc(c.name)+'</b>':(e?av(e,'sm')+' <b class="small">'+esc(e.name)+'</b>':'')}</td><td class="tiny">${c.type==='physical'?'💳':'▫️'} ••••${c.last4}<div class="tiny faint">${c.type}</div></td><td class="tiny">${esc(polName(c.policyId))}</td><td class="r"><b class="small">${fmt$(c.spentCycle)}</b> <span class="tiny faint">/ ${fmt$(c.limit)}</span><div style="height:5px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${Math.min(100,usePct)}%;background:${usePct>90?'var(--bad-text)':'#1d4ed8'}"></div></div></td><td>${c.status==='active'?finPill('Active','var(--ok-text)'):c.status==='frozen'?finPill('Frozen','#0ea5e9'):finPill(c.status,'#94a3b8')}</td><td class="r">${c.status==='active'?`<button class="btn xs soft" data-act="cardFreeze" data-arg="${c.id}">Freeze</button>`:c.status==='frozen'?`<button class="btn xs soft" data-act="cardUnfreeze" data-arg="${c.id}">Unfreeze</button>`:''}</td></tr>`;}).join('')}</tbody></table></div>
+  <div class="card"><div class="card-head"><h3>Live transactions</h3><span class="spacer"></span><span class="tiny faint">last 30 days</span></div>
+    <table class="tbl"><thead><tr><th>Date</th><th>Holder</th><th>Merchant</th><th>Category</th><th class="r">Amount</th><th>Receipt</th><th>Status</th></tr></thead><tbody>
+    ${txns.slice(0,30).map(t=>{const e=emp(t.holderId);return `<tr><td class="tiny">${fmtDshort(t.at)}</td><td class="tiny">${e?esc(e.name.split(' ')[0]):''}</td><td class="small">${esc(t.merchant)}</td><td class="tiny">${esc(t.category)}</td><td class="r num">${fmt$(t.amount)}</td><td>${t.status==='declined'?'—':t.receipt?'📎':`<button class="btn xs soft" data-act="txnReceipt" data-arg="${t.id}">Add</button>`}</td><td>${t.status==='cleared'?finPill('Cleared','var(--ok-text)'):t.status==='pending'?finPill('Pending','var(--warn-text)'):finPill('Declined','var(--bad-text)')}</td></tr>`;}).join('')}</tbody></table>
+    <div class="pad tiny faint">Cleared card transactions post to the general ledger (acct 2300 · credit card payable) — reconciled in Finance.</div></div>`;
+}
+ACT.cardFreeze=id=>{const c=(DB.spend.cards||[]).find(x=>x.id===id);if(!c)return;c.status='frozen';audit('card.freeze','••••'+c.last4);Store.save();UI.toast('🧊 Card ••••'+c.last4+' frozen — new charges will decline.');render();};
+ACT.cardUnfreeze=id=>{const c=(DB.spend.cards||[]).find(x=>x.id===id);if(!c)return;c.status='active';audit('card.unfreeze','••••'+c.last4);Store.save();UI.toast('✅ Card ••••'+c.last4+' active.');render();};
+ACT.txnReceipt=id=>{const t=(DB.spend.txns||[]).find(x=>x.id===id);if(!t)return;t.receipt=true;Store.save();UI.toast('📎 Receipt attached & matched.');render();};
+ACT.cardIssue=()=>{const opts=DB.employees.filter(e=>e.status==='active'&&!(DB.spend.cards||[]).some(c=>c.holderId===e.id)).map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  UI.modal({title:'Issue a corporate card',body:`<div class="field"><label>Employee</label><select id="cd-emp">${opts}</select></div><div class="grid g2"><div class="field"><label>Type</label><select id="cd-type"><option value="virtual">Virtual (instant)</option><option value="physical">Physical</option></select></div><div class="field"><label>Policy</label><select id="cd-pol">${(DB.spend.policies||[]).map(p=>`<option value="${p.id}">${esc(p.name)} — ${fmt$(p.cap)}/mo</option>`).join('')}</select></div></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#1d4ed8;--brand-deep:#1e40af" data-act="cardIssueSave">Issue card</button>`});};
+ACT.cardIssueSave=()=>{const eid=document.getElementById('cd-emp').value,type=document.getElementById('cd-type').value,pol=document.getElementById('cd-pol').value;
+  if(!eid){UI.toast('Select an employee.');return;}const P=(DB.spend.policies||[]).find(p=>p.id===pol),nums=(DB.spend.cards||[]).map(c=>+String(c.id).replace(/\D/g,'')).filter(Number.isFinite);
+  DB.spend.cards.unshift({id:'CARD-'+((nums.length?Math.max(...nums):1000)+1),holderId:eid,last4:String(1000+(nums.length*7%9000)),type,network:'Mosaic Visa',status:'active',policyId:pol,limit:(P||{}).cap||2000,spentCycle:0,issuedAt:todayISO()});
+  notify(eid,'💳','A '+type+' corporate card was issued to you','#/spend/cards');audit('card.issue',(emp(eid)||{}).name+' · '+(P||{}).name);Store.save();UI.closeModal();UI.toast('💳 '+type+' card issued'+(type==='virtual'?' — usable instantly':'')+'.');render();};
 function spendOverview(){
   const S=DB.spend;
   const pos=DB.flows.filter(f=>f.templateId==='purchase'&&f.po);

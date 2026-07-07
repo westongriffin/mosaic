@@ -3333,7 +3333,7 @@ function buildSeed(){
   const mail=buildMail(employees);
   mail.forEach(m=>{m.threadId=m.thread==='offer-alex'||/Offer — Senior Robotics/.test(m.subject)?'th-offer-alex':uid('TH');m.labels=m.labels||[];});
   const pt=buildProjects(employees);
-  return {v:17,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
+  return {v:19,savedAt:Date.now(),me:{employeeId:'E007',role:'admin'},
     projects:pt.projects,tasks:pt.tasks,
     mailLabels:[{id:'lb1',name:'Benefits',color:'#10b981'},{id:'lb2',name:'Launch',color:'#6d28d9'},{id:'lb3',name:'Board',color:'#f59e0b'}],
     channels:chat.channels,chatMsgs:chat.msgs,mail,events:buildEvents(employees),
@@ -3358,11 +3358,11 @@ function buildSeed(){
     policyCampaigns:[{id:'PC-101',title:'Updated Remote Work & Equipment Policy',due:daysAhead(10),created:daysAgo(6),audience:'*',
       acks:employees.filter((e,i)=>e.status==='active'&&hash32(e.id+'ack')%10<6).map(e=>e.id)}],
     accrual:{vacation:{perMonth:1.67,cap:30,carryover:5},sick:{perMonth:0.83,cap:15,carryover:0}},
-    integrations:INTEGRATIONS.map(i=>({...i}))};
+    integrations:INTEGRATIONS.map(i=>({...i})),finance:buildFinance(employees),equity:buildEquity(employees)};
 }
 let _undo=[],_redo=[];const UNDO_CAP=10;
 const Store={
-  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===17){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
+  load(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.v===19){DB=d;return;}}}catch(e){console.warn('Seed rebuild:',e);}DB=buildSeed();this.save(true);},
   /* save(silent): on a normal save, snapshot the prior persisted state so Ctrl+Z can return to it */
   save(silent){
     if(!silent){try{const prev=localStorage.getItem(LS_KEY);if(prev){_undo.push(prev);if(_undo.length>UNDO_CAP)_undo.shift();_redo.length=0;}}catch(e){}}
@@ -3405,6 +3405,7 @@ const canSee=mod=>{
   const role=myRole();
   const map={
     home:['admin','manager','employee'],people:['admin','manager','employee'],
+    finance:['admin'],equity:['admin'],
     recruit:['admin','manager'],onboard:['admin','manager'],
     learn:['admin','manager','employee'],grow:['admin','manager','employee'],
     time:['admin','manager','employee'],pay:['admin','manager','employee'],
@@ -3754,6 +3755,7 @@ const MODULES=[
   {id:'grow',label:'Performance',icon:'grow',color:'var(--c-grow)',group:'Talent',desc:'Goals, reviews & feedback'},
   {id:'flows',label:'Workflows',icon:'zap',color:'#e0457b',group:'Operations',desc:'Projects, tasks & requests — plan it, run it, route the approvals'},
   {id:'spend',label:'Spend',icon:'pay',color:'#1d4ed8',group:'Operations',desc:'Procurement, invoices, budgets & expenses — Coupa/NetSuite/Concur tier'},
+  {id:'finance',label:'Finance',icon:'pay',color:'#0f766e',group:'Operations',desc:'General ledger, financial statements, A/R & A/P and the monthly close — native accounting, no NetSuite'},
   {id:'schedule',label:'Scheduling',icon:'time',color:'#0b7268',group:'Operations',desc:'Shift scheduling, clock-in & timesheets for hourly teams'},
   {id:'hrops',label:'HR Ops',icon:'shield',color:'#0f766e',group:'Operations',desc:'Payroll workbench, compliance, data health & process control — the operational backbone'},
   {id:'sign',label:'MosaicSign',icon:'edit',color:'#d97706',group:'Operations',desc:'E-signatures with an ESIGN-grade audit trail'},
@@ -3762,6 +3764,7 @@ const MODULES=[
   {id:'benefits',label:'Benefits',icon:'shield',color:'#0b7268',group:'Talent',desc:'Plans, elections, life events — plus the admin console'},
   {id:'engage',label:'Engagement',icon:'engage',color:'var(--c-engage)',group:'Operations',desc:'Pulse surveys & eNPS'},
   {id:'insights',label:'Insights',icon:'insights',color:'var(--c-insights)',group:'Company',desc:'Cross-module analytics'},
+  {id:'equity',label:'Cap Table',icon:'insights',color:'#7c3aed',group:'Company',desc:'Cap table, equity grants, 409A & exit waterfall — Carta-tier, native'},
   {id:'atlas',label:'Atlas',icon:'globe',color:'#0ea5e9',group:'Company',desc:'Where everyone works — offices & remote'},
   {id:'help',label:'Help Center',icon:'help',color:'var(--c-help)',group:'Company',desc:'Answers & support for every work question'},
   {id:'askpeople',label:'Ask People',icon:'chat',color:'#ff5e00',group:'Company',desc:'People-team ticketing console (security-group gated)'},
@@ -13284,6 +13287,495 @@ function budgetRows(){
     return {d,annual,spent,committed};
   });
 }
+/* ===================================================================
+   CAP TABLE & EQUITY (native) — replaces Carta. Share classes,
+   financing rounds, option grants with cliff/vesting, 409A history,
+   fully-diluted ownership and a non-participating exit waterfall.
+   Grants tie 1:1 to each employee's comp.equity option count.
+   =================================================================== */
+function buildEquity(employees){
+  const founders={E007:4200000,E001:3800000,E002:2600000};
+  const grants=[];
+  Object.keys(founders).forEach(id=>{const e=byId(employees,id);if(e)grants.push({id:'GR-'+id,employeeId:id,classId:'SC-common',type:'Common',qty:founders[id],strike:0,grantDate:'2019-03-01',cliffMonths:0,vestMonths:48,status:'active'});});
+  const strikeByYear={2019:0.80,2020:1.60,2021:3.10,2022:5.40,2023:8.60,2024:10.20,2025:11.40,2026:12.40};
+  let allocated=0;
+  employees.filter(e=>e.status==='active'&&!founders[e.id]).forEach(e=>{const q=(e.comp&&e.comp.equity)||0;if(q<=0)return;allocated+=q;
+    const gd=e.hireDate||'2022-01-15',yr=+String(gd).slice(0,4);
+    grants.push({id:'GR-'+e.id,employeeId:e.id,classId:'SC-pool',type:hash32(e.id+'opt')%3===0?'NSO':'ISO',qty:q,strike:strikeByYear[yr]||6.0,grantDate:gd,cliffMonths:12,vestMonths:48,status:'active'});});
+  const commonIssued=Object.values(founders).reduce((a,b)=>a+b,0),seedSh=6200000,aSh=7400000,bSh=5100000,poolReserved=9000000;
+  const shareClasses=[
+    {id:'SC-common',name:'Common',kind:'common',color:'#6366f1',pps:0,liqPref:0,seniority:0,authorized:12000000,issued:commonIssued,holder:'Founders & common'},
+    {id:'SC-seed',name:'Seed Preferred',kind:'preferred',color:'#0ea5e9',pps:0.90,liqPref:1,seniority:1,authorized:seedSh,issued:seedSh,holder:'Root Ventures'},
+    {id:'SC-a',name:'Series A Preferred',kind:'preferred',color:'#22c55e',pps:3.10,liqPref:1,seniority:2,authorized:aSh,issued:aSh,holder:'Lux Capital'},
+    {id:'SC-b',name:'Series B Preferred',kind:'preferred',color:'#f59e0b',pps:8.90,liqPref:1,seniority:3,authorized:bSh,issued:bSh,holder:'Andreessen Horowitz'},
+    {id:'SC-pool',name:'Option Pool',kind:'pool',color:'#ec4899',pps:0,liqPref:0,seniority:0,authorized:poolReserved,issued:allocated,holder:'Employees'}];
+  const rounds=[
+    {id:'RD-seed',name:'Seed',closed:'2019-06-01',raised:3500000,pps:0.90,preMoney:9000000,postMoney:12500000,lead:'Root Ventures'},
+    {id:'RD-a',name:'Series A',closed:'2021-04-15',raised:22000000,pps:3.10,preMoney:78000000,postMoney:100000000,lead:'Lux Capital'},
+    {id:'RD-b',name:'Series B',closed:'2022-09-20',raised:55000000,pps:8.90,preMoney:245000000,postMoney:300000000,lead:'Andreessen Horowitz'}];
+  const valuations=[
+    {date:'2019-06-10',fmv:0.80,firm:'Scalar Analytics',method:'Backsolve',basis:'Seed'},
+    {date:'2021-05-01',fmv:3.10,firm:'Scalar Analytics',method:'OPM',basis:'Series A'},
+    {date:'2022-10-05',fmv:5.40,firm:'Scalar Analytics',method:'OPM',basis:'Series B'},
+    {date:'2023-10-01',fmv:8.60,firm:'Scalar Analytics',method:'OPM',basis:'Annual'},
+    {date:iso(new Date(now().getFullYear(),0,15)),fmv:12.40,firm:'Scalar Analytics',method:'OPM',basis:'Annual 409A',current:true}];
+  return {shareClasses,rounds,grants,exercises:[],valuations,pool:{reserved:poolReserved,allocated,available:poolReserved-allocated},params:{fmv:12.40}};
+}
+function eqFD(){const E=DB.equity;return E.shareClasses.reduce((s,c)=>s+(c.id==='SC-pool'?c.authorized:c.issued),0);}
+function eqVest(g){const gd=new Date(g.grantDate),months=Math.max(0,(now()-gd)/2629746000);
+  if((g.vestMonths||0)<=0)return {granted:g.qty,vested:g.qty,unvested:0,pct:100};
+  if(months<(g.cliffMonths||0))return {granted:g.qty,vested:0,unvested:g.qty,pct:0};
+  const frac=Math.min(1,months/g.vestMonths),vested=Math.round(g.qty*frac);return {granted:g.qty,vested,unvested:g.qty-vested,pct:Math.round(frac*100)};}
+function eqOwnership(){const E=DB.equity,fd=eqFD(),rows=[];
+  rows.push({label:'Founders & common',shares:E.grants.filter(g=>g.classId==='SC-common').reduce((s,g)=>s+g.qty,0),color:'#6366f1',kind:'founder'});
+  E.shareClasses.filter(c=>c.kind==='preferred').forEach(c=>rows.push({label:c.holder,shares:c.issued,color:c.color,kind:'investor'}));
+  rows.push({label:'Employees (options)',shares:E.pool.allocated,color:'#ec4899',kind:'employee'});
+  const un=E.pool.reserved-E.pool.allocated;if(un>0)rows.push({label:'Unallocated pool',shares:un,color:'#cbd5e1',kind:'pool'});
+  return rows.map(r=>({...r,pctFd:fd?r.shares/fd*100:0}));}
+function eqWaterfall(exit){const E=DB.equity,fd=eqFD(),prefs=E.shareClasses.filter(c=>c.kind==='preferred');
+  /* only ISSUED shares receive proceeds — unallocated pool options are cancelled at exit, so the per-share base uses pool.allocated, not reserved (keeps total payout == exit value) */
+  const founderSh=E.grants.filter(g=>g.classId==='SC-common').reduce((s,g)=>s+g.qty,0),commonPool=founderSh+E.pool.allocated;
+  const prefStack=prefs.reduce((s,c)=>s+c.issued*c.pps,0);
+  const converts={};
+  if(exit<=prefStack){ // small exit: prefs paid by seniority, common gets nothing
+    let rem=exit;const bySr=prefs.slice().sort((a,b)=>b.seniority-a.seniority),pay={};
+    bySr.forEach(c=>{const p=Math.min(c.issued*c.pps,Math.max(0,rem));pay[c.id]=p;rem-=p;});
+    const rows=[{label:'Founders & common',shares:founderSh,payout:0,note:'common'}];
+    prefs.forEach(c=>rows.push({label:c.holder,shares:c.issued,payout:pay[c.id]||0,note:'liq pref (senior first)'}));
+    rows.push({label:'Employees (options)',shares:E.pool.allocated,payout:0,note:'common'});
+    return {rows,perShare:0,prefStack};}
+  let changed=true,guard=0;
+  while(changed&&guard++<12){changed=false;
+    const takenPref=prefs.filter(c=>!converts[c.id]).reduce((s,c)=>s+c.issued*c.pps,0);
+    const residual=Math.max(0,exit-takenPref),convSh=prefs.filter(c=>converts[c.id]).reduce((s,c)=>s+c.issued,0);
+    const base=commonPool+convSh,per=base>0?residual/base:0;
+    prefs.forEach(c=>{const should=(c.issued*per)>(c.issued*c.pps);if(!!converts[c.id]!==should){converts[c.id]=should;changed=true;}});}
+  const takenPref=prefs.filter(c=>!converts[c.id]).reduce((s,c)=>s+c.issued*c.pps,0),residual=Math.max(0,exit-takenPref);
+  const convSh=prefs.filter(c=>converts[c.id]).reduce((s,c)=>s+c.issued,0),base=commonPool+convSh,per=base>0?residual/base:0;
+  const rows=[{label:'Founders & common',shares:founderSh,payout:founderSh*per,note:'common'}];
+  prefs.forEach(c=>rows.push({label:c.holder,shares:c.issued,payout:converts[c.id]?c.issued*per:c.issued*c.pps,note:converts[c.id]?'as-converted':'liq pref'}));
+  rows.push({label:'Employees (options)',shares:E.pool.allocated,payout:E.pool.allocated*per,note:'common'});
+  return {rows,perShare:per,prefStack};}
+const eqBadge=(kind)=>kind==='common'?badge('b-info','Common'):kind==='preferred'?badge('b-vio','Preferred'):badge('b-warn','Pool');
+Views.equity=param=>{
+  const E=DB.equity;if(!E)return '<div class="card empty"><div class="big">📈</div>Cap table not initialized.</div>';
+  const tabs=[['eoverview','Overview',0],['captable','Cap table',0],['grants','Grants',0],['shareholders','Shareholders',0],['valuations','409A & rounds',0],['waterfall','Exit waterfall',0]];
+  if(param)UIS.equityTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.equityTab||'eoverview'))?(UIS.equityTab||'eoverview'):'eoverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Cap Table</h1>
+    <div class="page-sub">Ownership, grants, 409A &amp; exit waterfall — the single source of truth, native to Mosaic (migrated off Carta)</div></div>
+    <button class="btn ghost" data-act="nav" data-arg="#/pay">Compensation ↗</button>
+    <button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="grantNew">${I.plus} New grant</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setEquityTab" data-arg="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${tab==='eoverview'?eqOverview():tab==='captable'?eqCaptable():tab==='grants'?eqGrants():tab==='shareholders'?eqShareholders():tab==='valuations'?eqValuations():eqWaterfallView()}`;
+};
+ACT.setEquityTab=a=>{UIS.equityTab=a;history.replaceState(null,'','#/equity/'+a);render();};
+function eqOverview(){
+  const E=DB.equity,fd=eqFD(),fmv=E.params.fmv,own=eqOwnership();
+  const maxV=Math.max(...E.valuations.map(v=>v.fmv),1);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Fully-diluted shares',(fd/1e6).toFixed(1)+'M','across all classes + pool','#7c3aed',undefined,'','#/equity/captable')}
+    ${statCard('409A fair value','$'+fmv.toFixed(2),'per share · '+fmtDshort(E.valuations[E.valuations.length-1].date),'#22c55e',undefined,'','#/equity/valuations')}
+    ${statCard('Implied valuation',finCompact(fd*fmv),'fully-diluted × 409A','#0ea5e9')}
+    ${statCard('Option pool left',pct(E.pool.available,E.pool.reserved)+'%',(E.pool.available/1e6).toFixed(1)+'M of '+(E.pool.reserved/1e6).toFixed(1)+'M unallocated','#ec4899',undefined,'','#/equity/grants')}
+  </div>
+  <div class="grid g2 mb16">
+    <div class="card"><div class="card-head"><h3>Ownership · fully-diluted</h3></div><div class="card-body" style="display:grid;place-items:center">
+      ${Chart.donut(own.map(r=>({label:r.label,v:r.shares,color:r.color})),170,0.62,'Ownership fully diluted')}
+      <div class="row wrap mt12 legend" style="justify-content:center">${own.map(r=>`<span><i style="background:${r.color}"></i>${esc(r.label)} ${r.pctFd.toFixed(1)}%</span>`).join('')}</div></div></div>
+    <div class="card"><div class="card-head"><h3>409A fair value · history</h3></div><div class="card-body"><div style="display:flex;align-items:flex-end;gap:14px;height:172px;padding:6px 4px">
+      ${E.valuations.map(v=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div class="tiny" style="font-weight:700">$${v.fmv.toFixed(2)}</div><div title="$${v.fmv} — ${esc(v.basis)}" style="width:100%;max-width:40px;height:${Math.round(v.fmv/maxV*120)}px;background:${v.current?'#7c3aed':'#c4b5fd'};border-radius:4px 4px 0 0"></div><div class="tiny faint">${String(v.date).slice(0,4)}</div></div>`).join('')}
+    </div></div></div>
+  </div>
+  <div class="card"><div class="card-head"><h3>Financing rounds</h3></div>
+    <table class="tbl"><thead><tr><th>Round</th><th>Closed</th><th class="r">Raised</th><th class="r">Price/sh</th><th class="r">Post-money</th><th>Lead</th></tr></thead><tbody>
+    ${E.rounds.map(r=>`<tr><td><b class="small">${esc(r.name)}</b></td><td class="tiny">${fmtDshort(r.closed)}</td><td class="r num">${finCompact(r.raised)}</td><td class="r num">$${r.pps.toFixed(2)}</td><td class="r num">${finCompact(r.postMoney)}</td><td class="small">${esc(r.lead)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function eqCaptable(){
+  const E=DB.equity,fd=eqFD();
+  const seg=E.shareClasses.map(c=>({c,sh:c.id==='SC-pool'?c.authorized:c.issued})).filter(x=>x.sh>0);
+  return `
+  <div class="card mb16"><div class="card-head"><h3>Ownership ribbon · fully-diluted</h3><span class="spacer"></span><span class="tiny faint">${(fd/1e6).toFixed(2)}M shares</span></div><div class="card-body">
+    <div style="display:flex;height:16px;border-radius:99px;overflow:hidden">${seg.map(x=>`<div title="${esc(x.c.name)} ${(x.sh/fd*100).toFixed(1)}%" style="width:${x.sh/fd*100}%;background:${x.c.color}"></div>`).join('')}</div>
+    <div class="row wrap mt12 legend">${seg.map(x=>`<span><i style="background:${x.c.color}"></i>${esc(x.c.name)} ${(x.sh/fd*100).toFixed(1)}%</span>`).join('')}</div></div></div>
+  <div class="card"><div class="card-head"><h3>Capitalization by class</h3></div>
+    <table class="tbl"><thead><tr><th>Class</th><th>Type</th><th class="r">Authorized</th><th class="r">Issued</th><th class="r">Price/sh</th><th class="r">Liq. pref</th><th class="r">% FD</th></tr></thead><tbody>
+    ${E.shareClasses.map(c=>{const sh=c.id==='SC-pool'?c.authorized:c.issued;return `<tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${c.color};margin-right:7px"></span><b class="small">${esc(c.name)}</b></td><td>${eqBadge(c.kind)}</td><td class="r num">${c.authorized.toLocaleString()}</td><td class="r num">${c.issued.toLocaleString()}</td><td class="r num">${c.pps?'$'+c.pps.toFixed(2):'—'}</td><td class="r num">${c.liqPref?c.liqPref+'×':'—'}</td><td class="r num">${(sh/fd*100).toFixed(1)}%</td></tr>`;}).join('')}
+    <tr style="border-top:2px solid var(--line);font-weight:800"><td>Fully diluted</td><td></td><td class="r num">${E.shareClasses.reduce((s,c)=>s+c.authorized,0).toLocaleString()}</td><td class="r num">${eqFD().toLocaleString()}</td><td></td><td></td><td class="r num">100%</td></tr></tbody></table>
+    <div class="pad tiny faint">Fully-diluted counts the entire authorized option pool (issued + unallocated), the standard basis for ownership math.</div></div>`;
+}
+function eqGrants(){
+  const E=DB.equity,fmv=E.params.fmv,gs=E.grants.slice().sort((a,b)=>(a.classId==='SC-pool'?0:1)-(b.classId==='SC-pool'?0:1)||b.qty-a.qty);
+  const tv=gs.reduce((s,g)=>s+g.qty,0),vv=gs.reduce((s,g)=>s+eqVest(g).vested,0);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Grants outstanding',gs.length,'options + common','#7c3aed')}
+    ${statCard('Shares granted',(tv/1e6).toFixed(1)+'M','of '+(eqFD()/1e6).toFixed(1)+'M FD','#0ea5e9')}
+    ${statCard('Vested',(vv/1e6).toFixed(2)+'M',pct(vv,tv)+'% of granted','#22c55e')}
+    ${statCard('Pool available',(E.pool.available/1e6).toFixed(1)+'M',E.pool.available<E.pool.reserved*0.15?'⚠ pool running low':'healthy',E.pool.available<E.pool.reserved*0.15?'var(--bad-text)':'#ec4899')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Grant ledger</h3><span class="spacer"></span><button class="btn xs primary" data-act="grantNew">${I.plus} New grant</button></div>
+    <table class="tbl"><thead><tr><th>Holder</th><th>Type</th><th class="r">Granted</th><th class="r">Strike</th><th class="r">Vested</th><th style="width:120px">Progress</th><th class="r">In-the-money</th></tr></thead><tbody>
+    ${gs.map(g=>{const e=emp(g.employeeId),v=eqVest(g),itm=Math.max(0,fmv-(g.strike||0))*v.vested;return `<tr class="click" data-act="grantOpen" data-arg="${g.id}"><td>${e?`${av(e,'sm')} <b class="small">${esc(e.name)}</b>`:esc(g.employeeId)}</td><td><span class="tiny" style="font-weight:700">${g.type}</span></td><td class="r num">${g.qty.toLocaleString()}</td><td class="r num">${g.strike?'$'+g.strike.toFixed(2):'—'}</td><td class="r num">${v.vested.toLocaleString()}</td><td><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden"><div style="height:100%;width:${v.pct}%;background:#7c3aed;border-radius:5px"></div></div><div class="tiny faint">${v.pct}%</div></td><td class="r num">${fmt$(itm)}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function eqShareholders(){
+  const E=DB.equity,fd=eqFD(),fmv=E.params.fmv,own=eqOwnership();
+  return `
+  <div class="grid g2 mb16"><div class="card"><div class="card-head"><h3>Ownership by holder</h3></div><div class="card-body" style="display:grid;place-items:center">
+    ${Chart.donut(own.map(r=>({label:r.label,v:r.shares,color:r.color})),160,0.62,'Ownership by holder')}</div></div>
+    <div class="card"><div class="card-head"><h3>Concentration</h3></div><div class="card-body">
+    ${own.map(r=>`<div style="margin-bottom:10px"><div class="tiny" style="display:flex;justify-content:space-between"><span>${esc(r.label)}</span><b>${r.pctFd.toFixed(1)}%</b></div><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${r.pctFd}%;background:${r.color};border-radius:5px"></div></div></div>`).join('')}</div></div></div>
+  <div class="card"><div class="card-head"><h3>Shareholder register</h3></div>
+    <table class="tbl"><thead><tr><th>Holder</th><th>Kind</th><th class="r">Shares</th><th class="r">% FD</th><th class="r">Value @ 409A</th></tr></thead><tbody>
+    ${own.map(r=>`<tr><td><b class="small">${esc(r.label)}</b></td><td><span class="tiny faint">${r.kind==='founder'?'Founder':r.kind==='investor'?'Investor':r.kind==='employee'?'Employees':'Reserved'}</span></td><td class="r num">${r.shares.toLocaleString()}</td><td class="r num">${r.pctFd.toFixed(1)}%</td><td class="r num">${finCompact(r.shares*fmv)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function eqValuations(){
+  const E=DB.equity,maxV=Math.max(...E.valuations.map(v=>v.fmv),1);
+  return `
+  <div class="card mb16"><div class="card-head"><h3>409A valuation history</h3><span class="spacer"></span><button class="btn xs ghost" data-act="val409A">Adopt new 409A</button></div>
+    <div class="card-body"><div style="display:flex;align-items:flex-end;gap:16px;height:150px;padding:6px 4px 0">
+      ${E.valuations.map(v=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div class="tiny" style="font-weight:700">$${v.fmv.toFixed(2)}</div><div style="width:100%;max-width:44px;height:${Math.round(v.fmv/maxV*110)}px;background:${v.current?'#7c3aed':'#c4b5fd'};border-radius:4px 4px 0 0"></div><div class="tiny faint">${fmtDshort(v.date)}</div></div>`).join('')}</div></div>
+    <table class="tbl"><thead><tr><th>Date</th><th class="r">Fair value</th><th>Method</th><th>Firm</th><th>Basis</th><th></th></tr></thead><tbody>
+    ${E.valuations.slice().reverse().map(v=>`<tr><td class="small">${fmtDshort(v.date)}</td><td class="r num">$${v.fmv.toFixed(2)}</td><td class="tiny">${esc(v.method)}</td><td class="tiny">${esc(v.firm)}</td><td class="tiny">${esc(v.basis)}</td><td>${v.current?finPill('Current','var(--ok-text)'):''}</td></tr>`).join('')}</tbody></table></div>
+  <div class="card"><div class="card-head"><h3>Financing rounds</h3><span class="spacer"></span><button class="btn xs ghost" data-act="roundNew">Record round</button></div>
+    <table class="tbl"><thead><tr><th>Round</th><th>Closed</th><th class="r">Raised</th><th class="r">Pre-money</th><th class="r">Post-money</th><th class="r">Dilution</th><th>Lead</th></tr></thead><tbody>
+    ${E.rounds.map(r=>`<tr><td><b class="small">${esc(r.name)}</b></td><td class="tiny">${fmtDshort(r.closed)}</td><td class="r num">${finCompact(r.raised)}</td><td class="r num">${finCompact(r.preMoney)}</td><td class="r num">${finCompact(r.postMoney)}</td><td class="r num">${pct(r.raised,r.postMoney)}%</td><td class="small">${esc(r.lead)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function eqWaterfallView(){
+  const exit=UIS.wfExit||150000000,w=eqWaterfall(exit),tot=w.rows.reduce((s,r)=>s+r.payout,0);
+  const maxP=Math.max(...w.rows.map(r=>r.payout),1),presets=[50000000,150000000,400000000,800000000];
+  const empRow=w.rows.find(r=>/Employees/.test(r.label)),perOpt=empRow&&DB.equity.pool.allocated?empRow.payout/DB.equity.pool.allocated:0;
+  return `
+  <div class="card mb16"><div class="card-head"><h3>Exit waterfall — model a liquidity event</h3></div><div class="card-body">
+    <div class="row wrap" style="gap:8px;align-items:center"><span class="tiny faint">Exit value:</span>${presets.map(p=>`<button class="btn xs ${exit===p?'primary':'soft'}" data-act="wfSet" data-arg="${p}">${finCompact(p)}</button>`).join('')}
+      <span class="tiny faint" style="margin-left:8px">Pref stack: ${finCompact(w.prefStack)} · non-participating</span></div>
+    <div style="display:flex;height:26px;border-radius:8px;overflow:hidden;margin:16px 0 6px">${w.rows.filter(r=>r.payout>0).map((r,i)=>`<div title="${esc(r.label)}: ${finCompact(r.payout)}" style="width:${r.payout/tot*100}%;background:${['#6366f1','#0ea5e9','#22c55e','#f59e0b','#ec4899'][i%5]};min-width:2px"></div>`).join('')}</div>
+    <div class="tiny faint">Distributing ${finCompact(exit)} across the stack</div></div></div>
+  <div class="card"><div class="card-head"><h3>Payout by stakeholder</h3><span class="spacer"></span><span class="tiny faint">${perOpt?'≈ $'+perOpt.toFixed(2)+'/vested option to employees':''}</span></div>
+    <table class="tbl"><thead><tr><th>Stakeholder</th><th class="r">Shares</th><th>Treatment</th><th class="r">Payout</th><th class="r">% of exit</th></tr></thead><tbody>
+    ${w.rows.map(r=>`<tr><td><b class="small">${esc(r.label)}</b></td><td class="r num">${r.shares.toLocaleString()}</td><td><span class="tiny faint">${esc(r.note)}</span></td><td class="r num">${finCompact(r.payout)}</td><td class="r num">${pct(r.payout,exit)}%</td></tr>`).join('')}
+    <tr style="border-top:2px solid var(--line);font-weight:800"><td>Total distributed</td><td></td><td></td><td class="r num">${finCompact(tot)}</td><td class="r num">${pct(tot,exit)}%</td></tr></tbody></table></div>`;
+}
+/* Equity interactions */
+ACT.grantOpen=id=>{const g=byId(DB.equity.grants,id);if(!g)return;const e=emp(g.employeeId),v=eqVest(g),fmv=DB.equity.params.fmv;
+  UI.modal({title:(e?esc(e.name):g.employeeId)+' — '+g.type+' grant',sub:g.qty.toLocaleString()+' shares · strike $'+(g.strike||0).toFixed(2)+' · granted '+fmtDshort(g.grantDate),
+    body:`<div class="grid g3 mb16">${statCard('Vested',v.vested.toLocaleString(),v.pct+'% of grant','#22c55e')}${statCard('Unvested',v.unvested.toLocaleString(),'continues monthly','#94a3b8')}${statCard('In-the-money',fmt$(Math.max(0,fmv-(g.strike||0))*v.vested),'vested × (409A − strike)','#7c3aed')}</div>
+      <div style="height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0"><div style="height:100%;width:${v.pct}%;background:#7c3aed"></div></div>
+      <div class="tiny faint mt8">${g.vestMonths?('4-year vest, '+(g.cliffMonths||0)+'-month cliff — '+v.pct+'% vested to date'):'Fully vested (founder common)'}</div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Close</button>${v.vested>0&&g.strike?`<button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="grantExercise" data-arg="${g.id}">Exercise ${v.vested.toLocaleString()} vested</button>`:''}`});};
+ACT.grantExercise=id=>{const g=byId(DB.equity.grants,id);if(!g)return;const v=eqVest(g);if(v.vested<=0)return;
+  DB.equity.exercises.unshift({id:'EX-'+Date.now().toString(36),grantId:g.id,employeeId:g.employeeId,qty:v.vested,strike:g.strike,at:todayISO(),cost:v.vested*(g.strike||0)});
+  audit('equity.exercise','Exercised '+v.vested.toLocaleString()+' options on '+g.id);Store.save();UI.closeModal();UI.toast('✓ Exercise recorded — '+v.vested.toLocaleString()+' shares at $'+(g.strike||0).toFixed(2)+'.');render();};
+ACT.grantNew=()=>{const opts=DB.employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  UI.modal({title:'New option grant',sub:'Draws from the option pool and vests over 4 years with a 1-year cliff',
+    body:`<div class="field"><label>Employee</label><select id="gr-emp">${opts}</select></div>
+      <div class="grid g2"><div class="field"><label>Options</label><input type="number" id="gr-qty" min="1" step="1000" placeholder="e.g. 25000"></div>
+      <div class="field"><label>Type</label><select id="gr-type"><option>ISO</option><option>NSO</option></select></div></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="grantNewSave">Grant options</button>`});};
+ACT.grantNewSave=()=>{const eid=document.getElementById('gr-emp').value,qty=Math.round(parseFloat(document.getElementById('gr-qty').value)),type=document.getElementById('gr-type').value;
+  if(!(qty>0)){UI.toast('Enter a share count.');return;}
+  if(qty>DB.equity.pool.available){UI.toast('Only '+DB.equity.pool.available.toLocaleString()+' options left in the pool.');return;}
+  const pool=DB.equity.shareClasses.find(c=>c.id==='SC-pool');
+  DB.equity.grants.unshift({id:'GR-'+eid+'-'+Date.now().toString(36),employeeId:eid,classId:'SC-pool',type,qty,strike:DB.equity.params.fmv,grantDate:todayISO(),cliffMonths:12,vestMonths:48,status:'active'});
+  pool.issued+=qty;DB.equity.pool.allocated+=qty;DB.equity.pool.available-=qty;
+  notify(eid,'📈','You were granted '+qty.toLocaleString()+' '+type+' options at $'+DB.equity.params.fmv.toFixed(2)+' strike','#/pay');
+  audit('equity.grant','Granted '+qty.toLocaleString()+' options to '+(emp(eid)||{}).name);Store.save();UI.closeModal();UI.toast('📈 '+qty.toLocaleString()+' options granted.');render();};
+ACT.wfSet=v=>{UIS.wfExit=+v;render();};
+ACT.val409A=()=>{UI.modal({title:'Adopt a new 409A valuation',sub:'Board action — updates the fair market value used for grants',
+    body:`<div class="grid g2"><div class="field"><label>Fair value / share ($)</label><input type="number" id="v409-fmv" min="0.01" step="0.01" value="${DB.equity.params.fmv.toFixed(2)}"></div>
+      <div class="field"><label>Valuation firm</label><input id="v409-firm" value="Scalar Analytics"></div></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="val409ASave">Adopt 409A</button>`});};
+ACT.val409ASave=()=>{const fmv=Math.round(parseFloat(document.getElementById('v409-fmv').value)*100)/100,firm=(document.getElementById('v409-firm').value||'').trim();
+  if(!(fmv>0)){UI.toast('Enter a fair value.');return;}
+  DB.equity.valuations.forEach(v=>v.current=false);
+  DB.equity.valuations.push({date:todayISO(),fmv,firm:firm||'—',method:'OPM',basis:'Interim 409A',current:true});
+  DB.equity.params.fmv=fmv;audit('equity.409a','Adopted 409A at $'+fmv.toFixed(2));Store.save();UI.closeModal();UI.toast('✓ 409A adopted at $'+fmv.toFixed(2)+'.');render();};
+ACT.roundNew=()=>{UI.modal({title:'Record a financing round',sub:'Adds a preferred class and updates the cap table',
+    body:`<div class="field"><label>Round name</label><input id="rd-name" placeholder="e.g. Series C"></div>
+      <div class="grid g2"><div class="field"><label>Amount raised ($)</label><input type="number" id="rd-raise" min="1" placeholder="e.g. 90000000"></div>
+      <div class="field"><label>Price / share ($)</label><input type="number" id="rd-pps" min="0.01" step="0.01" placeholder="e.g. 15.50"></div></div>
+      <div class="field"><label>Lead investor</label><input id="rd-lead" placeholder="Fund name"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#7c3aed;--brand-deep:#6d28d9" data-act="roundNewSave">Record round</button>`});};
+ACT.roundNewSave=()=>{const name=(document.getElementById('rd-name').value||'').trim(),raise=parseFloat(document.getElementById('rd-raise').value),pps=parseFloat(document.getElementById('rd-pps').value),lead=(document.getElementById('rd-lead').value||'').trim();
+  if(!name||!(raise>0)||!(pps>0)){UI.toast('Fill in name, raise and price.');return;}
+  const newSh=Math.round(raise/pps),preMoney=eqFD()*pps,postMoney=preMoney+raise,n=DB.equity.shareClasses.length;
+  DB.equity.shareClasses.push({id:'SC-r'+n,name:name+' Preferred',kind:'preferred',color:['#8b5cf6','#14b8a6','#f43f5e'][n%3],pps,liqPref:1,seniority:5+n,authorized:newSh,issued:newSh,holder:lead||'New investors'});
+  DB.equity.rounds.push({id:'RD-'+n,name,closed:todayISO(),raised:raise,pps,preMoney,postMoney,lead:lead||'—'});
+  DB.equity.valuations.forEach(v=>v.current=false);DB.equity.valuations.push({date:todayISO(),fmv:pps,firm:'Round price',method:'Financing',basis:name,current:true});DB.equity.params.fmv=pps;
+  audit('equity.round','Recorded '+name+' — '+finCompact(raise));Store.save();UI.closeModal();UI.toast('✓ '+name+' recorded — '+newSh.toLocaleString()+' preferred shares issued.');render();};
+
+/* ===================================================================
+   FINANCE & ACCOUNTING (native General Ledger) — replaces NetSuite.
+   Double-entry journal, chart of accounts, P&L, balance sheet, A/R,
+   A/P and the monthly close. Every entry is balanced, so the trial
+   balance and balance sheet reconcile by construction.
+   =================================================================== */
+function buildFinance(employees){
+  const coa=[
+    {code:'1000',name:'Cash & equivalents',type:'asset'},{code:'1100',name:'Accounts receivable',type:'asset'},
+    {code:'1200',name:'Prepaid expenses',type:'asset'},{code:'1500',name:'Equipment & fixtures',type:'asset'},
+    {code:'1600',name:'Accumulated depreciation',type:'contra'},
+    {code:'2000',name:'Accounts payable',type:'liability'},{code:'2100',name:'Accrued payroll',type:'liability'},
+    {code:'2200',name:'Deferred revenue',type:'liability'},{code:'2300',name:'Credit card payable',type:'liability'},
+    {code:'2400',name:'Taxes payable',type:'liability'},
+    {code:'3000',name:'Common stock & APIC',type:'equity'},{code:'3100',name:'Retained earnings',type:'equity'},
+    {code:'4000',name:'Product revenue',type:'revenue'},{code:'4100',name:'Services & support revenue',type:'revenue'},
+    {code:'5000',name:'Salaries & wages',type:'expense'},{code:'5100',name:'Payroll taxes & benefits',type:'expense'},
+    {code:'5200',name:'Rent & facilities',type:'expense'},{code:'5300',name:'Software & SaaS',type:'expense'},
+    {code:'5400',name:'Marketing & growth',type:'expense'},{code:'5500',name:'Travel & entertainment',type:'expense'},
+    {code:'5600',name:'Professional services',type:'expense'},{code:'5700',name:'Depreciation',type:'expense'},
+    {code:'5800',name:'Other operating',type:'expense'}];
+  const J=[];let jn=4000;
+  const mk=(date,memo,source,lines,locked)=>J.push({id:'JE-'+(++jn),date,memo,source,lines,posted:true,locked:!!locked});
+  const y=now().getFullYear(),mo=now().getMonth();
+  mk(iso(new Date(y,0,1)),'Opening balances — FY'+y,'Opening',[
+    {acct:'1000',dr:18400000,cr:0},{acct:'1500',dr:2600000,cr:0},{acct:'1100',dr:1250000,cr:0},
+    {acct:'1600',dr:0,cr:520000},{acct:'2000',dr:0,cr:480000},{acct:'2300',dr:0,cr:140000},{acct:'3000',dr:0,cr:21110000}],true);
+  for(let i=6;i>=1;i--){
+    const end=new Date(y,mo-i+1,0),d=iso(end),g=1+(6-i)*0.035,locked=i>1,ms=end.toLocaleString('en-US',{month:'short'});
+    const prod=Math.round(1650000*g),serv=Math.round(620000*g),rev=prod+serv,ar=Math.round(rev*0.4),cash=rev-ar;
+    mk(d,'Revenue recognition — '+ms,'Revenue',[{acct:'1000',dr:cash,cr:0},{acct:'1100',dr:ar,cr:0},{acct:'4000',dr:0,cr:prod},{acct:'4100',dr:0,cr:serv}],locked);
+    const sal=Math.round(1020000*g),ptx=Math.round(205000*g);
+    mk(d,'Payroll — '+ms,'Payroll',[{acct:'5000',dr:sal,cr:0},{acct:'5100',dr:ptx,cr:0},{acct:'1000',dr:0,cr:sal+ptx}],locked);
+    mk(d,'Rent & facilities — '+ms,'Opex',[{acct:'5200',dr:78000,cr:0},{acct:'1000',dr:0,cr:78000}],locked);
+    mk(d,'Software & SaaS — '+ms,'Opex',[{acct:'5300',dr:96000,cr:0},{acct:'2300',dr:0,cr:96000}],locked);
+    mk(d,'Marketing & growth — '+ms,'Opex',[{acct:'5400',dr:Math.round(140000*g),cr:0},{acct:'1000',dr:0,cr:Math.round(140000*g)}],locked);
+    mk(d,'Travel & entertainment — '+ms,'Opex',[{acct:'5500',dr:52000,cr:0},{acct:'2300',dr:0,cr:52000}],locked);
+    mk(d,'Professional services — '+ms,'Opex',[{acct:'5600',dr:60000,cr:0},{acct:'2000',dr:0,cr:60000}],locked);
+    mk(d,'Depreciation — '+ms,'Opex',[{acct:'5700',dr:43000,cr:0},{acct:'1600',dr:0,cr:43000}],locked);
+  }
+  const custs=[['Atlas Robotics',220000,52,30],['Nimbus Logistics',148000,40,30],['Vantage Health',96000,31,45],['Orbital Dynamics',312000,64,30],['Peak Manufacturing',74000,18,15],['Cedar Grove University',52000,9,30],['Harbor Freight Co.',188000,47,30]];
+  const ar=custs.map((c,i)=>{const issued=daysAgo(c[2]),due=iso(new Date(new Date(issued).getTime()+c[3]*864e5)),paid=[true,false,false,true,false,false,false][i];
+    return {id:'INV-'+(2040+i),customer:c[0],amount:c[1],issued,due,terms:'Net '+c[3],status:paid?'paid':(due<todayISO()?'overdue':'open'),paidAt:paid?daysAgo(20):null};});
+  const vends=[['Amazon Web Services',96000,12,10],['WeWork',78000,20,-2],['Rippling Insurance',44000,8,14],['Iron Mountain',12000,25,5],['Adobe',18000,15,9],['FedEx Freight',9500,5,20],['Latham & Watkins LLP',60000,30,-5]];
+  const ap=vends.map((v,i)=>{const paid=[false,false,false,true,false,false,false][i];
+    return {id:'BILL-'+(3080+i),vendor:v[0],amount:v[1],issued:daysAgo(v[2]),due:daysAhead(v[3]),status:paid?'paid':(daysAhead(v[3])<todayISO()?'overdue':'open'),paidAt:paid?daysAgo(4):null};});
+  return {coa,journal:J,ar,ap,closedThrough:iso(new Date(y,mo-1,0))};
+}
+/* GL math — every helper reads the balanced journal, so statements reconcile */
+function finNet(code,upTo){let n=0;((DB.finance||{}).journal||[]).forEach(j=>{if(upTo&&j.date>upTo)return;(j.lines||[]).forEach(l=>{if(l.acct===code)n+=(l.dr||0)-(l.cr||0);});});return n;}
+function finType(t){return ((DB.finance||{}).coa||[]).filter(a=>a.type===t).reduce((s,a)=>s+finNet(a.code),0);}
+function finPL(){const rev=-(finType('revenue')),exp=finType('expense');return {rev,exp,ni:rev-exp};}
+function finBS(){const assets=finType('asset')+finType('contra'),liab=-(finType('liability')),eqBook=-(finType('equity')),ni=finPL().ni;return {assets,liab,equity:eqBook+ni,eqBook,ni};}
+function finMonthly(){const out={},coa=(DB.finance||{}).coa||[];((DB.finance||{}).journal||[]).forEach(j=>{const k=j.date.slice(0,7);(j.lines||[]).forEach(l=>{const a=coa.find(x=>x.code===l.acct);if(!a)return;out[k]=out[k]||{rev:0,exp:0};if(a.type==='revenue')out[k].rev+=(l.cr||0)-(l.dr||0);if(a.type==='expense')out[k].exp+=(l.dr||0)-(l.cr||0);});});
+  const yr=(''+now().getFullYear());return Object.keys(out).filter(k=>k.slice(0,4)===yr&&(out[k].rev||out[k].exp)).sort().map(k=>({m:k,rev:out[k].rev,exp:out[k].exp,ni:out[k].rev-out[k].exp}));}
+function finJE(date,memo,source,lines){const nums=((DB.finance||{}).journal||[]).map(j=>+String(j.id).slice(3)).filter(Number.isFinite);const id='JE-'+((nums.length?Math.max(...nums):4000)+1);DB.finance.journal.unshift({id,date,memo,source,lines,posted:true,locked:false});return id;}
+const finPill=(txt,c)=>`<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;background:color-mix(in srgb,${c} 15%,transparent);color:${c}">${txt}</span>`;
+const finStatusPill=s=>s==='paid'?finPill('Paid','var(--ok-text)'):s==='overdue'?finPill('Overdue','var(--bad-text)'):finPill('Open','var(--warn-text)');
+const finCompact=n=>{const a=Math.abs(n);return (n<0?'-$':'$')+(a>=1e6?(a/1e6).toFixed(a>=1e7?1:2)+'M':a>=1e3?Math.round(a/1e3)+'K':Math.round(a));};
+Views.finance=param=>{
+  const F=DB.finance;if(!F)return '<div class="card empty"><div class="big">📊</div>Finance ledger not initialized.</div>';
+  const tabs=[['foverview','Overview',0],['fledger','General ledger',0],['fpnl','P&L',0],['fbalance','Balance sheet',0],['far','Invoicing · A/R',F.ar.filter(a=>a.status!=='paid').length],['fap','Bills · A/P',F.ap.filter(a=>a.status!=='paid').length],['fclose','Close',0]];
+  if(param)UIS.finTab=param;
+  const tab=tabs.some(t=>t[0]===(UIS.finTab||'foverview'))?(UIS.finTab||'foverview'):'foverview';
+  return `
+  <div class="page-head"><div style="flex:1"><h1 class="page">Finance</h1>
+    <div class="page-sub">General ledger, financial statements, A/R &amp; A/P and the monthly close — a native accounting core, no NetSuite required</div></div>
+    <button class="btn ghost" data-act="finNewInvoice">${I.plus} New invoice</button>
+    <button class="btn primary" style="--brand:#0f766e;--brand-deep:#115e59" data-act="finPost">${I.plus} Journal entry</button></div>
+  <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="setFinTab" data-arg="${t[0]}">${t[1]}${tabN(t[2])}</button>`).join('')}</div>
+  ${tab==='foverview'?finOverview():tab==='fledger'?finLedger():tab==='fpnl'?finPnl():tab==='fbalance'?finBalance():tab==='far'?finAR():tab==='fap'?finAP():finCloseView()}`;
+};
+ACT.setFinTab=a=>{UIS.finTab=a;history.replaceState(null,'','#/finance/'+a);render();};
+function finOverview(){
+  const F=DB.finance,cash=finNet('1000'),pl=finPL(),bs=finBS();
+  const arOut=F.ar.filter(a=>a.status!=='paid').reduce((s,a)=>s+a.amount,0),arOd=F.ar.filter(a=>a.status==='overdue').reduce((s,a)=>s+a.amount,0);
+  const apDue=F.ap.filter(a=>a.status!=='paid').reduce((s,a)=>s+a.amount,0);
+  const mon=finMonthly(),last=mon[mon.length-1]||{rev:0,exp:0,ni:0};
+  const burn=Math.max(0,last.exp-last.rev),runway=burn>0?Math.round(cash/burn):null;
+  const maxV=Math.max(1,...mon.map(x=>Math.max(x.rev,x.exp)));
+  const expMix=F.coa.filter(a=>a.type==='expense').map(a=>({label:a.name,v:finNet(a.code)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  const bal=Math.abs(bs.assets-(bs.liab+bs.equity))<1;
+  const recent=F.journal.slice().sort((a,b)=>b.date<a.date?-1:1).slice(0,7);
+  return `
+  <div class="grid g4 mb16">
+    ${statCard('Cash on hand',finCompact(cash),'general ledger · acct 1000','#0f766e',undefined,'','#/finance/fbalance')}
+    ${statCard('Revenue · YTD',finCompact(pl.rev),mon.length+' months booked','#0ea5e9',undefined,'','#/finance/fpnl')}
+    ${statCard('Net income · YTD',finCompact(pl.ni),pct(pl.ni,pl.rev)+'% margin',pl.ni>=0?'var(--ok-text)':'var(--bad-text)',undefined,'','#/finance/fpnl')}
+    ${statCard(runway?'Runway':'Profitability',runway?runway+' mo':'Cash-flow positive',runway?'at '+finCompact(burn)+'/mo net burn':'revenue &gt; spend last month','#8b5cf6')}
+  </div>
+  <div class="grid g2 mb16">
+    <div class="card"><div class="card-head"><h3>Revenue vs. expenses</h3><span class="spacer"></span><span class="row" style="gap:12px"><span class="tiny"><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--ok-text);vertical-align:middle"></i> Revenue</span><span class="tiny"><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#f0648c;vertical-align:middle"></i> Expenses</span></span></div>
+      <div class="card-body"><div style="display:flex;align-items:flex-end;gap:12px;height:172px;padding:6px 4px">
+        ${mon.map(x=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="display:flex;align-items:flex-end;gap:4px;height:140px"><div title="Revenue ${fmt$(x.rev)}" style="width:13px;height:${Math.round(x.rev/maxV*140)}px;background:var(--ok-text);border-radius:3px 3px 0 0"></div><div title="Expenses ${fmt$(x.exp)}" style="width:13px;height:${Math.round(x.exp/maxV*140)}px;background:#f0648c;border-radius:3px 3px 0 0"></div></div><div class="tiny faint">${new Date(x.m+'-01T00:00').toLocaleString('en-US',{month:'short'})}</div></div>`).join('')}
+      </div></div></div>
+    <div class="card"><div class="card-head"><h3>Where the money goes · YTD</h3></div><div class="card-body">
+      ${expMix.slice(0,8).map(x=>`<div style="margin-bottom:9px"><div class="tiny" style="display:flex;justify-content:space-between"><span>${esc(x.label)}</span><b>${fmt$(x.v)}</b></div><div style="height:7px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${Math.round(x.v/expMix[0].v*100)}%;background:#0f766e;border-radius:5px"></div></div></div>`).join('')}
+    </div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>A/R &amp; A/P</h3></div><div class="card-body">
+      <div class="row between" style="padding:6px 0"><span>Receivable outstanding</span><b>${fmt$(arOut)}</b></div>
+      <div class="row between" style="padding:6px 0"><span class="faint">— of which overdue</span><span style="color:var(--bad-text);font-weight:700">${fmt$(arOd)}</span></div>
+      <div class="row between" style="padding:6px 0;border-top:1px solid var(--line)"><span>Payable due</span><b>${fmt$(apDue)}</b></div>
+      <div class="row between" style="padding:10px 0 2px"><span class="tiny faint">Books ${bal?'balance':'DO NOT balance'} — A = L + E</span>${bal?finPill('In balance ✓','var(--ok-text)'):finPill('Out of balance','var(--bad-text)')}</div></div></div>
+    <div class="card"><div class="card-head"><h3>Recent journal entries</h3><span class="spacer"></span><button class="btn xs ghost" data-act="setFinTab" data-arg="fledger">View ledger</button></div>
+      <table class="tbl"><tbody>${recent.map(j=>`<tr><td class="num"><b class="small">${j.id}</b><div class="tiny faint">${fmtDshort(j.date)}</div></td><td>${esc(j.memo)}<div class="tiny faint">${esc(j.source)}${j.locked?' · 🔒 closed':''}</div></td><td class="r num">${fmt$(sum(j.lines.map(l=>l.dr||0)))}</td></tr>`).join('')}</tbody></table></div>
+  </div>`;
+}
+function finLedger(){
+  const F=DB.finance;
+  const tb=F.coa.map(a=>({...a,net:finNet(a.code)})).filter(a=>Math.abs(a.net)>0.5);
+  const totDr=sum(tb.map(a=>a.net>0?a.net:0)),totCr=sum(tb.map(a=>a.net<0?-a.net:0));
+  const entries=F.journal.slice().sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
+  const nameOf=c=>(F.coa.find(a=>a.code===c)||{}).name||c;
+  return `
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Trial balance</h3><span class="spacer"></span><span class="tiny faint">as of ${fmtDshort(todayISO())}</span></div>
+      <table class="tbl"><thead><tr><th>Acct</th><th>Account</th><th class="r">Debit</th><th class="r">Credit</th></tr></thead><tbody>
+      ${tb.map(a=>`<tr><td class="num tiny">${a.code}</td><td class="small">${esc(a.name)}</td><td class="r num">${a.net>0?fmt$(a.net):''}</td><td class="r num">${a.net<0?fmt$(-a.net):''}</td></tr>`).join('')}
+      <tr style="border-top:2px solid var(--line);font-weight:800"><td></td><td>Total</td><td class="r num">${fmt$(totDr)}</td><td class="r num">${fmt$(totCr)}</td></tr>
+      </tbody></table>
+      <div class="pad tiny ${Math.abs(totDr-totCr)<1?'':'p-x'}" style="text-align:center">${Math.abs(totDr-totCr)<1?'✓ Debits equal credits — the ledger is in balance':'⚠ Ledger out of balance by '+fmt$(Math.abs(totDr-totCr))}</div></div>
+    <div class="card"><div class="card-head"><h3>Journal</h3><span class="spacer"></span><span class="tiny faint">${entries.length} entries</span></div>
+      <div style="max-height:560px;overflow:auto">${entries.slice(0,40).map(j=>`<details class="je"><summary style="cursor:pointer;padding:9px 12px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center"><span class="num tiny" style="flex:none;width:58px"><b>${j.id}</b></span><span style="flex:1"><b class="small">${esc(j.memo)}</b><div class="tiny faint">${fmtDshort(j.date)} · ${esc(j.source)}${j.locked?' · 🔒':''}</div></span><span class="num small">${fmt$(sum(j.lines.map(l=>l.dr||0)))}</span></summary>
+        <table class="tbl" style="margin:0 0 4px"><tbody>${j.lines.map(l=>`<tr><td class="tiny num" style="width:52px">${l.acct}</td><td class="small">${esc(nameOf(l.acct))}</td><td class="r num tiny">${l.dr?fmt$(l.dr):''}</td><td class="r num tiny">${l.cr?fmt$(l.cr):''}</td></tr>`).join('')}</tbody></table></details>`).join('')}</div></div>
+  </div>`;
+}
+function finStatementRow(label,val,opt){opt=opt||{};return `<div class="row between" style="padding:7px 2px;${opt.bold?'font-weight:800;border-top:2px solid var(--line);margin-top:4px':opt.sub?'padding-left:16px':''}"><span class="${opt.sub?'faint':''}">${esc(label)}</span><span class="num" style="${opt.neg&&val<0?'color:var(--bad-text)':''}">${val<0?'('+fmt$(-val)+')':fmt$(val)}</span></div>`;}
+function finPnl(){
+  const F=DB.finance,revA=F.coa.filter(a=>a.type==='revenue'),expA=F.coa.filter(a=>a.type==='expense');
+  const rev=-(finType('revenue')),exp=finType('expense'),ni=rev-exp,gross=rev; // (COGS not separately modeled in this demo)
+  return `
+  <div class="card" style="max-width:720px"><div class="card-head"><h3>Income statement</h3><span class="spacer"></span><span class="tiny faint">FY${now().getFullYear()} · year to date</span></div>
+    <div class="card-body">
+      <div class="tiny faint" style="text-transform:uppercase;letter-spacing:.08em;margin:2px 0 4px">Revenue</div>
+      ${revA.map(a=>finStatementRow(a.name,-finNet(a.code),{sub:true})).join('')}
+      ${finStatementRow('Total revenue',rev,{bold:true})}
+      <div class="tiny faint" style="text-transform:uppercase;letter-spacing:.08em;margin:14px 0 4px">Operating expenses</div>
+      ${expA.map(a=>finNet(a.code)>0?finStatementRow(a.name,finNet(a.code),{sub:true}):'').join('')}
+      ${finStatementRow('Total operating expenses',exp,{bold:true})}
+      <div style="height:8px"></div>
+      ${finStatementRow('Net income',ni,{bold:true,neg:true})}
+      <div class="row between" style="padding:8px 2px;color:var(--ink3)"><span class="tiny">Net margin</span><span class="tiny">${pct(ni,rev)}%</span></div>
+    </div></div>`;
+}
+function finBalance(){
+  const F=DB.finance,bs=finBS(),assetA=F.coa.filter(a=>a.type==='asset'||a.type==='contra'),liabA=F.coa.filter(a=>a.type==='liability'),eqA=F.coa.filter(a=>a.type==='equity');
+  const bal=Math.abs(bs.assets-(bs.liab+bs.equity))<1;
+  return `
+  <div class="card" style="max-width:720px"><div class="card-head"><h3>Balance sheet</h3><span class="spacer"></span><span class="tiny faint">as of ${fmtDshort(todayISO())}</span></div>
+    <div class="card-body">
+      <div class="tiny faint" style="text-transform:uppercase;letter-spacing:.08em;margin:2px 0 4px">Assets</div>
+      ${assetA.map(a=>{const n=finNet(a.code);return Math.abs(n)>0.5?finStatementRow(a.name,n,{sub:true}):'';}).join('')}
+      ${finStatementRow('Total assets',bs.assets,{bold:true})}
+      <div class="tiny faint" style="text-transform:uppercase;letter-spacing:.08em;margin:14px 0 4px">Liabilities</div>
+      ${liabA.map(a=>{const n=-finNet(a.code);return Math.abs(n)>0.5?finStatementRow(a.name,n,{sub:true}):'';}).join('')}
+      ${finStatementRow('Total liabilities',bs.liab,{bold:true})}
+      <div class="tiny faint" style="text-transform:uppercase;letter-spacing:.08em;margin:14px 0 4px">Equity</div>
+      ${eqA.map(a=>{const n=-finNet(a.code);return Math.abs(n)>0.5?finStatementRow(a.name,n,{sub:true}):'';}).join('')}
+      ${finStatementRow('Retained earnings — current year',bs.ni,{sub:true})}
+      ${finStatementRow('Total equity',bs.equity,{bold:true})}
+      <div class="row between" style="padding:12px 2px 2px;border-top:2px solid var(--line);margin-top:8px;font-weight:800"><span>Liabilities + equity</span><span class="num">${fmt$(bs.liab+bs.equity)}</span></div>
+      <div class="pad tiny" style="text-align:center">${bal?'✓ Assets equal liabilities plus equity':'⚠ Out of balance by '+fmt$(Math.abs(bs.assets-(bs.liab+bs.equity)))}</div>
+    </div></div>`;
+}
+function finAR(){
+  const F=DB.finance,rows=F.ar.slice().sort((a,b)=>a.status==='paid'?1:b.status==='paid'?-1:a.due<b.due?-1:1);
+  const out=F.ar.filter(a=>a.status!=='paid').reduce((s,a)=>s+a.amount,0),od=F.ar.filter(a=>a.status==='overdue').reduce((s,a)=>s+a.amount,0);
+  return `
+  <div class="grid g3 mb16">
+    ${statCard('Outstanding',fmt$(out),F.ar.filter(a=>a.status!=='paid').length+' open invoices','#0ea5e9')}
+    ${statCard('Overdue',fmt$(od),F.ar.filter(a=>a.status==='overdue').length+' past due','var(--bad-text)')}
+    ${statCard('Collected · YTD',fmt$(F.ar.filter(a=>a.status==='paid').reduce((s,a)=>s+a.amount,0)),'posted to cash','var(--ok-text)')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Customer invoices</h3><span class="spacer"></span><button class="btn xs primary" data-act="finNewInvoice">${I.plus} New invoice</button></div>
+    <table class="tbl"><thead><tr><th>Invoice</th><th>Customer</th><th>Issued</th><th>Due</th><th class="r">Amount</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.map(a=>`<tr><td class="num"><b class="small">${a.id}</b></td><td class="small">${esc(a.customer)}<div class="tiny faint">${esc(a.terms)}</div></td><td class="tiny">${fmtDshort(a.issued)}</td><td class="tiny">${fmtDshort(a.due)}</td><td class="r num">${fmt$(a.amount)}</td><td>${finStatusPill(a.status)}</td><td class="r">${a.status!=='paid'?`<button class="btn xs good" data-act="arPay" data-arg="${a.id}">Record payment</button>`:'<span class="tiny faint">'+(a.paidAt?fmtDshort(a.paidAt):'')+'</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function finAP(){
+  const F=DB.finance,rows=F.ap.slice().sort((a,b)=>a.status==='paid'?1:b.status==='paid'?-1:a.due<b.due?-1:1);
+  const due=F.ap.filter(a=>a.status!=='paid').reduce((s,a)=>s+a.amount,0),od=F.ap.filter(a=>a.status==='overdue').reduce((s,a)=>s+a.amount,0);
+  return `
+  <div class="grid g3 mb16">
+    ${statCard('Payable due',fmt$(due),F.ap.filter(a=>a.status!=='paid').length+' open bills','#f59e0b')}
+    ${statCard('Overdue',fmt$(od),F.ap.filter(a=>a.status==='overdue').length+' past due','var(--bad-text)')}
+    ${statCard('Paid · YTD',fmt$(F.ap.filter(a=>a.status==='paid').reduce((s,a)=>s+a.amount,0)),'settled from cash','var(--ok-text)')}
+  </div>
+  <div class="card"><div class="card-head"><h3>Vendor bills</h3></div>
+    <table class="tbl"><thead><tr><th>Bill</th><th>Vendor</th><th>Issued</th><th>Due</th><th class="r">Amount</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.map(a=>`<tr><td class="num"><b class="small">${a.id}</b></td><td class="small">${esc(a.vendor)}</td><td class="tiny">${fmtDshort(a.issued)}</td><td class="tiny">${fmtDshort(a.due)}</td><td class="r num">${fmt$(a.amount)}</td><td>${finStatusPill(a.status)}</td><td class="r">${a.status!=='paid'?`<button class="btn xs primary" data-act="apPay" data-arg="${a.id}">Pay bill</button>`:'<span class="tiny faint">'+(a.paidAt?fmtDshort(a.paidAt):'')+'</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function finCloseView(){
+  const F=DB.finance,byMonth={};F.journal.forEach(j=>{const k=j.date.slice(0,7);byMonth[k]=byMonth[k]||{n:0,locked:0};byMonth[k].n++;if(j.locked)byMonth[k].locked++;});
+  const months=Object.keys(byMonth).sort();
+  const openM=months.find(k=>byMonth[k].locked<byMonth[k].n);
+  const bs=finBS(),bal=Math.abs(bs.assets-(bs.liab+bs.equity))<1;
+  const arRec=F.ar.length,apRec=F.ap.length;
+  return `
+  <div class="grid g2 mb16">
+    <div class="card"><div class="card-head"><h3>Monthly close</h3></div><div class="card-body">
+      <div class="row between" style="padding:6px 0"><span>Closed through</span><b>${fmtDshort(F.closedThrough)}</b></div>
+      <div class="row between" style="padding:6px 0"><span>Open period</span><b>${openM?new Date(openM+'-01T00:00').toLocaleString('en-US',{month:'long',year:'numeric'}):'— all closed —'}</b></div>
+      ${openM?`<button class="btn primary mt12" style="--brand:#0f766e;--brand-deep:#115e59" data-act="finRunClose">📕 Close ${new Date(openM+'-01T00:00').toLocaleString('en-US',{month:'long'})}</button>`:'<div class="tiny faint mt12">Every period through today is locked.</div>'}
+    </div></div>
+    <div class="card"><div class="card-head"><h3>Pre-close checklist</h3></div><div class="card-body">
+      <div class="row between" style="padding:7px 0"><span>Trial balance in balance</span>${bal?finPill('✓','var(--ok-text)'):finPill('✕','var(--bad-text)')}</div>
+      <div class="row between" style="padding:7px 0"><span>A/R reconciled (${arRec} invoices)</span>${finPill('✓','var(--ok-text)')}</div>
+      <div class="row between" style="padding:7px 0"><span>A/P reconciled (${apRec} bills)</span>${finPill('✓','var(--ok-text)')}</div>
+      <div class="row between" style="padding:7px 0"><span>All journal entries posted</span>${finPill('✓','var(--ok-text)')}</div>
+    </div></div>
+  </div>
+  <div class="card"><div class="card-head"><h3>Period register</h3></div>
+    <table class="tbl"><thead><tr><th>Period</th><th class="r">Entries</th><th>Status</th></tr></thead><tbody>
+    ${months.map(k=>`<tr><td>${new Date(k+'-01T00:00').toLocaleString('en-US',{month:'long',year:'numeric'})}</td><td class="r num">${byMonth[k].n}</td><td>${byMonth[k].locked>=byMonth[k].n?finPill('Closed 🔒','var(--ok-text)'):finPill('Open','var(--warn-text)')}</td></tr>`).join('')}</tbody></table></div>`;
+}
+/* Finance interactions — all double-entry, all balanced */
+ACT.finPost=()=>{
+  const opts=DB.finance.coa.map(a=>`<option value="${a.code}">${a.code} · ${esc(a.name)}</option>`).join('');
+  UI.modal({title:'New journal entry',sub:'Double-entry — the debit and credit must be equal',
+    body:`<div class="field"><label>Date</label><input type="date" id="je-date" value="${todayISO()}"></div>
+      <div class="field"><label>Memo</label><input id="je-memo" placeholder="e.g. Reclass Q2 marketing accrual"></div>
+      <div class="grid g2"><div class="field"><label>Debit account</label><select id="je-dr">${opts}</select></div>
+      <div class="field"><label>Credit account</label><select id="je-cr">${opts.replace('value="1000"','value="1000" ').replace(/^<option/,'<option')}</select></div></div>
+      <div class="field"><label>Amount ($)</label><input type="number" id="je-amt" min="1" step="0.01" placeholder="0.00"></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0f766e;--brand-deep:#115e59" data-act="finPostSave">Post entry</button>`});
+};
+ACT.finPostSave=()=>{
+  const d=document.getElementById('je-date').value||todayISO(),memo=(document.getElementById('je-memo').value||'').trim();
+  const dr=document.getElementById('je-dr').value,cr=document.getElementById('je-cr').value,amt=Math.round(parseFloat(document.getElementById('je-amt').value)*100)/100;
+  if(!memo){UI.toast('Add a memo for the entry.');return;}
+  if(!(amt>0)){UI.toast('Enter an amount greater than zero.');return;}
+  if(dr===cr){UI.toast('Debit and credit accounts must differ.');return;}
+  if(d<=DB.finance.closedThrough){UI.toast('That period is closed — post to an open period.');return;}
+  finJE(d,memo,'Manual',[{acct:dr,dr:amt,cr:0},{acct:cr,dr:0,cr:amt}]);
+  audit('finance.journal','Posted '+fmt$(amt)+' — '+memo);Store.save();UI.closeModal();UI.toast('✓ Journal entry posted.');render();
+};
+ACT.finNewInvoice=()=>{
+  UI.modal({title:'New customer invoice',sub:'Bills a customer and books it to A/R and product revenue',
+    body:`<div class="field"><label>Customer</label><input id="inv-cust" placeholder="Customer name"></div>
+      <div class="grid g2"><div class="field"><label>Amount ($)</label><input type="number" id="inv-amt" min="1" step="0.01" placeholder="0.00"></div>
+      <div class="field"><label>Terms</label><select id="inv-terms"><option>Net 30</option><option>Net 15</option><option>Net 45</option><option>Net 60</option></select></div></div>`,
+    foot:`<button class="btn ghost" data-act="closeModal">Cancel</button><button class="btn primary" style="--brand:#0ea5e9;--brand-deep:#0284c7" data-act="finInvoiceSave">Create &amp; send</button>`});
+};
+ACT.finInvoiceSave=()=>{
+  const cust=(document.getElementById('inv-cust').value||'').trim(),amt=Math.round(parseFloat(document.getElementById('inv-amt').value)*100)/100,terms=document.getElementById('inv-terms').value;
+  if(!cust){UI.toast('Enter a customer name.');return;}
+  if(!(amt>0)){UI.toast('Enter an amount greater than zero.');return;}
+  const days=+terms.replace(/\D/g,'')||30,nums=DB.finance.ar.map(a=>+String(a.id).slice(4)).filter(Number.isFinite);
+  const id='INV-'+((nums.length?Math.max(...nums):2040)+1);
+  DB.finance.ar.unshift({id,customer:cust,amount:amt,issued:todayISO(),due:daysAhead(days),terms,status:'open',paidAt:null});
+  finJE(todayISO(),'Invoice '+id+' — '+cust,'A/R',[{acct:'1100',dr:amt,cr:0},{acct:'4000',dr:0,cr:amt}]);
+  audit('finance.invoice','Issued '+id+' to '+cust+' for '+fmt$(amt));Store.save();UI.closeModal();UI.toast('🧾 Invoice '+id+' created.');render();
+};
+ACT.arPay=id=>{const inv=(DB.finance.ar||[]).find(a=>a.id===id);if(!inv||inv.status==='paid')return;
+  inv.status='paid';inv.paidAt=todayISO();
+  finJE(todayISO(),'Payment received — '+inv.customer+' ('+id+')','A/R',[{acct:'1000',dr:inv.amount,cr:0},{acct:'1100',dr:0,cr:inv.amount}]);
+  audit('finance.receipt','Collected '+fmt$(inv.amount)+' on '+id);Store.save();UI.toast('✓ '+fmt$(inv.amount)+' posted to cash.');render();};
+ACT.apPay=id=>{const bill=(DB.finance.ap||[]).find(a=>a.id===id);if(!bill||bill.status==='paid')return;
+  bill.status='paid';bill.paidAt=todayISO();
+  finJE(todayISO(),'Bill paid — '+bill.vendor+' ('+id+')','A/P',[{acct:'2000',dr:bill.amount,cr:0},{acct:'1000',dr:0,cr:bill.amount}]);
+  audit('finance.payment','Paid '+fmt$(bill.amount)+' on '+id);Store.save();UI.toast('✓ '+bill.vendor+' paid — '+fmt$(bill.amount)+'.');render();};
+ACT.finRunClose=()=>{
+  const F=DB.finance,open=F.journal.filter(j=>!j.locked&&j.date>F.closedThrough);
+  if(!open.length){UI.toast('Every period through today is already closed.');return;}
+  const month=open.map(j=>j.date.slice(0,7)).sort()[0];let n=0;
+  F.journal.forEach(j=>{if(j.date.slice(0,7)===month){j.locked=true;n++;}});
+  const [yy,mm]=month.split('-').map(Number);F.closedThrough=iso(new Date(yy,mm,0));
+  audit('finance.close','Closed '+month+' — '+n+' entries locked');Store.save();UI.toast('📕 '+new Date(month+'-01T00:00').toLocaleString('en-US',{month:'long'})+' closed — '+n+' entries locked.');render();};
+
 Views.spend=param=>{
   const nExp=DB.spend.expenses.filter(x=>expNeedsMe(x)&&x.employeeId!==DB.me.employeeId).length;
   const nInv=canFinance()?DB.spend.invoices.filter(v=>v.status==='pending-match').length:0;

@@ -921,9 +921,8 @@ mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;bor
 #assist-fab.mosy-away svg{opacity:.35;transition:opacity .25s}
 #assist-fab.mosy-away .mosy-badge{opacity:.4}
 #assist-fab.mosy-off svg{animation:none}  /* engagement dial = Off: still, silent button (badge still shows) */
-.mosy-spotlight{animation:mosySpot .95s ease-out 1;border-radius:10px}
-@keyframes mosySpot{0%{box-shadow:0 0 0 0 var(--brand,#6366f1)}60%{box-shadow:0 0 0 5px color-mix(in srgb,var(--brand,#6366f1) 32%,transparent)}100%{box-shadow:0 0 0 7px transparent}}
-@media (prefers-reduced-motion: reduce){#mosy-roamer{display:none!important;opacity:0!important}.mosy-spotlight{animation:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand,#6366f1) 38%,transparent)}}
+.mosy-spotlight{}  /* Mosy no longer stamps a box/outline on the elements he visits (per request) — his own pointing gesture is the cue */
+@media (prefers-reduced-motion: reduce){#mosy-roamer{display:none!important;opacity:0!important}.mosy-spotlight{box-shadow:none}}
 @media (max-width:339px){#mosy-roamer{display:none!important}}  /* roamer now welcome on phones too — only hidden on ultra-narrow screens */
 .mosy-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#f59e0b;color:#fff;font-size:10.5px;font-weight:800;line-height:1;display:none;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(10,12,26,.4);pointer-events:none}
 .mosy-badge.show{display:flex}

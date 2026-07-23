@@ -1,0 +1,18 @@
+{
+  "name": "Mosaic — The technology that powers work",
+  "short_name": "Mosaic",
+  "description": "Everything work runs on, in one file: people, hiring, learning, performance, pay, spend, e-signatures, intranet, chat, mail, calendar & meetings. Created by Wes Griffin, designed & built with AI.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c0e1a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0e1a'/%3E%3Crect x='4' y='4' width='11' height='11' rx='3.4' fill='%236366f1'/%3E%3Crect x='17' y='4' width='11' height='11' rx='3.4' fill='%23f0648c'/%3E%3Crect x='4' y='17' width='11' height='11' rx='3.4' fill='%2314b8a6'/%3E%3Crect x='17' y='17' width='11' height='11' rx='3.4' fill='%23f59e0b'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
